@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Giới thiệu về Nguyễn Văn Hảo - Digital Marketer đam mê chia sẻ kiến thức về Performance Marketing, Facebook Ads, Social Media, Content Marketing và AI.">
+    <meta name="author" content="Nguyễn Văn Hảo">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><rect x='5' y='5' width='90' height='90' rx='15' fill='none' stroke='%231F2937' stroke-width='6'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
+
+    <title>Giới thiệu - Nguyễn Văn Hảo Blog</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/main.css?v=1.4">
+    <link rel="stylesheet" href="/css/style.css?v=1.5">
+    <link rel="stylesheet" href="/css/animations.css?v=1.4">
+
+    <!-- SEO -->
+    <meta property="og:url" content="https://nguyenvanhao.name.vn/gioi-thieu">
+    <link rel="canonical" href="https://nguyenvanhao.name.vn/gioi-thieu">
+</head>
+
+<body>
+    <!-- Contact Modal -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📬 Gửi tin nhắn</h3>
+                <button class="modal-close" id="modalClose">✕</button>
+            </div>
+            <form id="modalContactForm">
+                <div class="form-group">
+                    <label class="form-label" for="modalName">Họ và tên *</label>
+                    <input type="text" id="modalName" class="form-input" placeholder="Nhập họ và tên..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="modalEmail">Email *</label>
+                    <input type="email" id="modalEmail" class="form-input" placeholder="Nhập email..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="modalMessage">Tin nhắn *</label>
+                    <textarea id="modalMessage" class="form-textarea" placeholder="Nhập nội dung tin nhắn..."
+                        required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary form-submit btn-lg" style="width: 100%;">
+                    Gửi tin nhắn →
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">H</span>
+                <span class="hide-mobile">Nguyễn Văn Hảo</span>
+            </a>
+
+            <nav class="nav">
+                <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-list" id="navList">
+                    <li><a href="/" class="nav-link">Trang chủ</a></li>
+                    <li><a href="blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="about.html" class="nav-link active">Giới thiệu</a></li>
+                    <li><a href="contact.html" class="nav-link">Liên hệ</a></li>
+                </ul>
+
+                <button class="btn btn-primary hide-mobile" id="contactBtn">Liên hệ ngay</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- About Hero -->
+    <section class="about-hero">
+        <div class="container about-hero-inner">
+            <div class="about-image-wrapper">
+                <div class="clay-card" style="padding: 0; overflow: hidden; max-width: 400px;">
+                    <div
+                        style="width: 100%; height: 450px; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-mint) 100%); display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 10rem;">👨‍💻</span>
+                    </div>
+                </div>
+                <div class="about-floating-badge badge-1 animate-float">
+                    🚀 Digital Marketer
+                </div>
+                <div class="about-floating-badge badge-2 animate-float" style="animation-delay: 0.5s;">
+                    ✨ Content Creator
+                </div>
+                <div class="about-floating-badge badge-3 animate-float" style="animation-delay: 1s;">
+                    🤖 AI Enthusiast
+                </div>
+            </div>
+
+            <div class="about-content">
+                <span class="section-badge">👋 Xin chào!</span>
+                <h1>Mình là <span class="text-gradient">Nguyễn Văn Hảo</span></h1>
+
+                <p class="about-intro">
+                    Digital Marketer với niềm đam mê chia sẻ kiến thức và kinh nghiệm về Performance Marketing, Facebook
+                    Ads, Social Media, Content Marketing và <strong>AI</strong>.
+                </p>
+
+                <p style="color: var(--color-gray-dark); margin-bottom: 24px;">
+                    Mình tin rằng việc học hỏi và chia sẻ kiến thức là cách tốt nhất để phát triển. Thông qua blog này,
+                    mình muốn giúp mọi người hiểu rõ hơn về Digital Marketing và ứng dụng AI trong công việc.
+                </p>
+
+                <p style="color: var(--color-gray-dark); margin-bottom: 32px;">
+                    Với kinh nghiệm làm việc trong lĩnh vực Digital Marketing kết hợp với sự quan tâm đến AI và
+                    automation, mình đã có cơ hội khám phá nhiều công cụ mới và học được nhiều bài học quý giá.
+                </p>
+
+                <div class="about-skills">
+                    <span class="skill-badge">Performance Marketing</span>
+                    <span class="skill-badge">Facebook Ads</span>
+                    <span class="skill-badge">Google Ads</span>
+                    <span class="skill-badge">Social Media</span>
+                    <span class="skill-badge">Content Marketing</span>
+                    <span class="skill-badge">SEO</span>
+                    <span class="skill-badge">Data Analytics</span>
+                    <span class="skill-badge">E-commerce</span>
+                    <span class="skill-badge"
+                        style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); color: white;">AI
+                        Tools</span>
+                    <span class="skill-badge"
+                        style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); color: white;">Prompt
+                        Engineering</span>
+                    <span class="skill-badge"
+                        style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); color: white;">AI
+                        Automation</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="section"
+        style="background: var(--color-white); border-top: 3px solid var(--color-black); border-bottom: 3px solid var(--color-black);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge" style="background: var(--color-blue);">💪 Kỹ năng</span>
+                <h2 class="section-title">Những gì mình làm tốt</h2>
+                <p class="section-description">
+                    Các lĩnh vực chuyên môn trong Digital Marketing và AI
+                </p>
+            </div>
+
+            <div class="posts-grid skills-grid-redesign">
+                <!-- Skill 1 -->
+                <div class="clay-card" style="text-align: center; padding: 32px 24px;">
+                    <div
+                        style="width: 80px; height: 80px; margin: 0 auto 16px; background: var(--color-primary); border: 3px solid var(--color-black); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; box-shadow: 4px 4px 0 var(--color-black);">
+                        📈
+                    </div>
+                    <h4 style="margin-bottom: 8px;">Performance Marketing</h4>
+                    <p style="font-size: 0.9rem; color: var(--color-gray);">Tối ưu chiến dịch quảng cáo dựa trên hiệu
+                        suất và ROI</p>
+                </div>
+
+                <!-- Skill 2 -->
+                <div class="clay-card" style="text-align: center; padding: 32px 24px;">
+                    <div
+                        style="width: 80px; height: 80px; margin: 0 auto 16px; background: var(--color-blue); border: 3px solid var(--color-black); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; box-shadow: 4px 4px 0 var(--color-black);">
+                        📱
+                    </div>
+                    <h4 style="margin-bottom: 8px;">Facebook Ads</h4>
+                    <p style="font-size: 0.9rem; color: var(--color-gray);">Thiết kế và quản lý chiến dịch quảng cáo
+                        Facebook</p>
+                </div>
+
+                <!-- Skill 3 -->
+                <div class="clay-card" style="text-align: center; padding: 32px 24px;">
+                    <div
+                        style="width: 80px; height: 80px; margin: 0 auto 16px; background: var(--color-lavender); border: 3px solid var(--color-black); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; box-shadow: 4px 4px 0 var(--color-black);">
+                        📣
+                    </div>
+                    <h4 style="margin-bottom: 8px;">Social Media</h4>
+                    <p style="font-size: 0.9rem; color: var(--color-gray);">Xây dựng và phát triển kênh social media</p>
+                </div>
+
+                <!-- Skill 4 -->
+                <div class="clay-card" style="text-align: center; padding: 32px 24px;">
+                    <div
+                        style="width: 80px; height: 80px; margin: 0 auto 16px; background: var(--color-coral); border: 3px solid var(--color-black); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; box-shadow: 4px 4px 0 var(--color-black);">
+                        ✍️
+                    </div>
+                    <h4 style="margin-bottom: 8px;">Content Marketing</h4>
+                    <p style="font-size: 0.9rem; color: var(--color-gray);">Tạo nội dung chất lượng thu hút khách hàng
+                    </p>
+                </div>
+
+                <!-- Skill 5: AI -->
+                <div class="clay-card" style="text-align: center; padding: 32px 24px;">
+                    <div
+                        style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); border: 3px solid var(--color-black); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; box-shadow: 4px 4px 0 var(--color-black);">
+                        🤖
+                    </div>
+                    <h4 style="margin-bottom: 8px;">AI & Automation</h4>
+                    <p style="font-size: 0.9rem; color: var(--color-gray);">Ứng dụng AI để tự động hóa và tối ưu công
+                        việc</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Journey Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge" style="background: var(--color-yellow);">🛤️ Hành trình</span>
+                <h2 class="section-title">Con đường Digital Marketing</h2>
+                <p class="section-description">
+                    Những cột mốc quan trọng trong sự nghiệp
+                </p>
+            </div>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <!-- Timeline Item 1 -->
+                <div class="clay-card"
+                    style="margin-bottom: 24px; display: flex; gap: 24px; align-items: flex-start; padding: 24px;">
+                    <div
+                        style="width: 60px; height: 60px; flex-shrink: 0; background: var(--color-primary); border: 3px solid var(--color-black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; box-shadow: 3px 3px 0 var(--color-black);">
+                        🎓
+                    </div>
+                    <div>
+                        <span class="tag tag-mint" style="margin-bottom: 8px;">Bắt đầu</span>
+                        <h4 style="margin: 8px 0;">Khám phá Digital Marketing</h4>
+                        <p style="color: var(--color-gray); margin: 0;">Bắt đầu tìm hiểu và học tập về Digital
+                            Marketing, nghiên cứu các nền tảng quảng cáo và chiến lược marketing online.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="clay-card"
+                    style="margin-bottom: 24px; display: flex; gap: 24px; align-items: flex-start; padding: 24px;">
+                    <div
+                        style="width: 60px; height: 60px; flex-shrink: 0; background: var(--color-blue); border: 3px solid var(--color-black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; box-shadow: 3px 3px 0 var(--color-black);">
+                        💼
+                    </div>
+                    <div>
+                        <span class="tag tag-blue" style="margin-bottom: 8px;">Phát triển</span>
+                        <h4 style="margin: 8px 0;">Thực hành và tích lũy kinh nghiệm</h4>
+                        <p style="color: var(--color-gray); margin: 0;">Làm việc với nhiều dự án Digital Marketing, từ
+                            Facebook Ads đến Google Ads, xây dựng chiến lược content và social media.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3: AI -->
+                <div class="clay-card"
+                    style="margin-bottom: 24px; display: flex; gap: 24px; align-items: flex-start; padding: 24px;">
+                    <div
+                        style="width: 60px; height: 60px; flex-shrink: 0; background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); border: 3px solid var(--color-black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; box-shadow: 3px 3px 0 var(--color-black);">
+                        🤖
+                    </div>
+                    <div>
+                        <span class="tag tag-ai" style="margin-bottom: 8px;">AI Era</span>
+                        <h4 style="margin: 8px 0;">Khám phá AI & Automation</h4>
+                        <p style="color: var(--color-gray); margin: 0;">Bắt đầu tìm hiểu và ứng dụng AI vào công việc
+                            Marketing. Sử dụng các công cụ như AI Antigravity, ChatGPT, và các automation tools để tối
+                            ưu hiệu suất.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 4 -->
+                <div class="clay-card" style="display: flex; gap: 24px; align-items: flex-start; padding: 24px;">
+                    <div
+                        style="width: 60px; height: 60px; flex-shrink: 0; background: var(--color-coral); border: 3px solid var(--color-black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; box-shadow: 3px 3px 0 var(--color-black);">
+                        ✨
+                    </div>
+                    <div>
+                        <span class="tag tag-coral" style="margin-bottom: 8px;">Hiện tại</span>
+                        <h4 style="margin: 8px 0;">Chia sẻ kiến thức</h4>
+                        <p style="color: var(--color-gray); margin: 0;">Mở blog để chia sẻ kiến thức về Digital
+                            Marketing và AI, giúp cộng đồng tiếp cận công nghệ mới và áp dụng vào công việc.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="clay-card newsletter-card">
+                <h2 class="newsletter-title">🤝 Kết nối với mình</h2>
+                <p class="newsletter-description">
+                    Bạn có câu hỏi hoặc muốn hợp tác? Đừng ngại liên hệ với mình nhé!
+                </p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <a href="contact.html" class="btn"
+                        style="background: var(--color-white); color: var(--color-black);">
+                        ✉️ Gửi tin nhắn
+                    </a>
+                    <a href="index.html#posts" class="btn"
+                        style="background: var(--color-black); color: var(--color-white);">
+                        📚 Xem bài viết
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="footer-logo-icon">H</span>
+                        <span>Nguyễn Văn Hảo</span>
+                    </div>
+                    <p class="footer-description">
+                        Digital Marketer đam mê chia sẻ kiến thức về Performance Marketing, Facebook Ads, Social Media,
+                        Content Marketing và AI.
+                    </p>
+                    <div class="footer-social" style="display: flex; gap: 12px;">
+                        <a href="https://www.facebook.com/nguyenvanhao97/" target="_blank" class="social-link facebook"
+                            aria-label="Facebook">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/nguy%E1%BB%85n-v%C4%83n-h%E1%BA%A3o-b85128217/"
+                            target="_blank" class="social-link linkedin" aria-label="LinkedIn">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                        </a>
+                        <a href="https://zalo.me/0368419289" target="_blank" class="social-link zalo" aria-label="Zalo">
+                            <span style="font-weight: bold; font-size: 12px;">Zalo</span>
+                        </a>
+                        <a href="mailto:contact@nguyenvanhao.name.vn" class="social-link email" aria-label="Email">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Trang</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="about.html">Giới thiệu</a></li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Chủ đề</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#posts">Digital Marketing</a></li>
+                        <li><a href="index.html#posts">Facebook Ads</a></li>
+                        <li><a href="index.html#posts">Social Media</a></li>
+                        <li><a href="index.html#posts">Content Marketing</a></li>
+                        <li><a href="index.html#posts">AI</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Liên hệ</h4>
+                    <ul class="footer-links">
+                        <li>📧 contact@nguyenvanhao.name.vn</li>
+                        <li>📱 Zalo: 0368419289</li>
+                        <li>📍 Việt Nam</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 Nguyễn Văn Hảo. All rights reserved.</p>
+                <p class="footer-made">Made with <span>❤️</span> in Vietnam</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>

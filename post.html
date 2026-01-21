@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bài viết về Digital Marketing - Nguyễn Văn Hảo Blog">
+    <meta name="author" content="Nguyễn Văn Hảo">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><rect x='5' y='5' width='90' height='90' rx='15' fill='none' stroke='%231F2937' stroke-width='6'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
+
+    <title>Bài viết - Nguyễn Văn Hảo Blog</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/style.css?v=1.4">
+    <link rel="stylesheet" href="/css/animations.css?v=1.4">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">H</span>
+                <span>Nguyễn Văn Hảo</span>
+            </a>
+
+            <nav class="nav">
+                <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-list" id="navList">
+                    <li><a href="/" class="nav-link">Trang chủ</a></li>
+                    <li><a href="/blog" class="nav-link">Blog</a></li>
+                    <li><a href="/gioi-thieu" class="nav-link">Giới thiệu</a></li>
+                    <li><a href="/lien-he" class="nav-link">Liên hệ</a></li>
+                </ul>
+
+                <a href="/lien-he" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Post Header -->
+    <section class="post-header">
+        <div class="container post-header-inner">
+            <div class="post-category">
+                <span class="tag tag-digital-marketing" id="postCategory">Digital Marketing</span>
+            </div>
+
+            <h1 class="post-title" id="postTitle">...</h1>
+
+            <div class="post-meta">
+                <span class="post-meta-item">
+                    📅 <span id="postDate">06/08/2025</span>
+                </span>
+                <span class="post-meta-item">
+                    🕐 <span id="postReadTime">8 phút đọc</span>
+                </span>
+                <span class="post-meta-item">
+                    ✍️ <span id="postAuthor">Nguyễn Văn Hảo</span>
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Image -->
+    <div class="container">
+        <div class="post-featured-image" id="postImage"
+            style="background: linear-gradient(135deg, #22C55E 0%, #6EE7B7 100%); height: 400px; display: flex; align-items: center; justify-content: center;">
+            <span style="font-size: 8rem;">📊</span>
+        </div>
+    </div>
+
+    <!-- Post Content -->
+    <article class="post-content" id="postContent">
+        <p style="text-align: center;">Đang tải nội dung...</p>
+    </article>
+
+    <!-- Related Posts -->
+    <section class="related-posts">
+        <div class="container">
+            <h2 class="related-posts-title">Bài viết liên quan</h2>
+
+            <div class="posts-grid" style="grid-template-columns: repeat(3, 1fr);" id="relatedPostsGrid">
+                <!-- Related posts will be loaded dynamically here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="footer-logo-icon">H</span>
+                        <span>Nguyễn Văn Hảo</span>
+                    </div>
+                    <p class="footer-description">
+                        Digital Marketer đam mê chia sẻ kiến thức và kinh nghiệm về Performance Marketing, Facebook Ads,
+                        Social Media và Content Marketing.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Facebook">📘</a>
+                        <a href="#" aria-label="LinkedIn">💼</a>
+                        <a href="#" aria-label="Twitter">🐦</a>
+                        <a href="#" aria-label="Email">📧</a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Trang</h4>
+                    <ul class="footer-links">
+                        <li><a href="/">Trang chủ</a></li>
+                        <li><a href="/gioi-thieu">Giới thiệu</a></li>
+                        <li><a href="/lien-he">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Chủ đề</h4>
+                    <ul class="footer-links">
+                        <li><a href="/#posts">Digital Marketing</a></li>
+                        <li><a href="/#posts">Facebook Ads</a></li>
+                        <li><a href="/#posts">Social Media</a></li>
+                        <li><a href="/#posts">Content Marketing</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Liên hệ</h4>
+                    <ul class="footer-links">
+                        <li>📧 contact@nguyenvanhao.name.vn</li>
+                        <li>📍 Việt Nam</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 Nguyễn Văn Hảo. All rights reserved.</p>
+                <p class="footer-made">Made with <span>❤️</span> in Vietnam</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <!-- Supabase SDK & Custom Scripts -->
+    <script src="/js/api.js"></script>
+    <script src="/js/post.js?v=1.5"></script>
+    <script src="/js/main.js?v=1.4"></script>
+</body>
+
+</html>

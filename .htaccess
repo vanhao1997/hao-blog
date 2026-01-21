@@ -1,0 +1,21 @@
+# Enable URL Rewriting
+RewriteEngine On
+RewriteBase /
+
+# Redirect /blog/slug to post.html?slug=slug
+RewriteRule ^blog/([^/]+)$ post.html?slug=$1 [L,QSA]
+
+# Extensionless URLs
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*?)$ $1.html [L]
+
+# Redirect .html to non-html (Optional but clean)
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.html\ HTTP/
+RewriteRule ^(.*)\.html$ /$1 [R=301,L]
+
+# Prevent directory listing
+Options -Indexes
+
+# Set Directory Index
+DirectoryIndex index.html
