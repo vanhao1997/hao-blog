@@ -326,9 +326,9 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Auth guard — redirect to login if not authenticated
             try {
-                const response = await fetch('/api/auth.php', { credentials: 'include' });
+                const response = await fetch('/api/auth.php?action=check', { credentials: 'include' });
                 const data = await response.json();
-                if (!data || !data.user) {
+                if (!data || !data.success || !data.user) {
                     window.location.href = '/admin/login.html';
                     return;
                 }
