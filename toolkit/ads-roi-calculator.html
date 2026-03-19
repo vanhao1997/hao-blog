@@ -19,6 +19,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="/css/main.css?v=1.4">
     <link rel="stylesheet" href="/css/style.css?v=1.5">
+    <link rel="stylesheet" href="/css/phosphor/style.css">
     <style>
         * {
             margin: 0;
@@ -246,6 +247,7 @@
                     <li><a href="/blog.html" class="nav-link">Blog</a></li>
                     <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
                     <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+                    <li><a href="/toolkit/" class="nav-link"><i class="ph-bold ph-wrench"></i> Công cụ</a></li>
                 </ul>
                 <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
             </nav>
@@ -257,7 +259,8 @@
             <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
             <div class="calc-header">
                 <span class="section-badge"
-                    style="background: var(--color-lavender); margin-bottom: 12px; display: inline-block;">📊
+                    style="background: var(--color-lavender); margin-bottom: 12px; display: inline-block;"><i
+                        class="ph-bold ph-chart-bar"></i>
                     Calculator</span>
                 <h1>Ads ROI Calculator</h1>
                 <p>Tính toán hiệu quả chiến dịch quảng cáo trong vài giây</p>
@@ -266,7 +269,7 @@
             <div class="calc-grid">
                 <!-- Input: Chi phí & Doanh thu -->
                 <div class="calc-card">
-                    <h2>💰 Chi phí & Doanh thu</h2>
+                    <h2><i class="ph-bold ph-coins" style="color: var(--color-primary)"></i> Chi phí & Doanh thu</h2>
                     <div class="input-group">
                         <label>Chi phí quảng cáo (VNĐ)</label>
                         <input type="number" id="adSpend" placeholder="5,000,000" oninput="calculate()">
@@ -283,7 +286,7 @@
 
                 <!-- Input: Hiệu suất -->
                 <div class="calc-card">
-                    <h2>📈 Hiệu suất</h2>
+                    <h2><i class="ph-bold ph-trend-up" style="color: var(--color-primary)"></i> Hiệu suất</h2>
                     <div class="input-group">
                         <label>Impressions (lượt hiển thị)</label>
                         <input type="number" id="impressions" placeholder="100,000" oninput="calculate()">
@@ -300,7 +303,7 @@
 
                 <!-- Results -->
                 <div class="calc-card results-card">
-                    <h2>🎯 Kết quả</h2>
+                    <h2><i class="ph-bold ph-crosshair" style="color: var(--color-primary)"></i> Kết quả</h2>
                     <div class="results-grid">
                         <div class="metric" id="m-roas">
                             <div class="metric-value" id="v-roas">—</div>
@@ -339,7 +342,7 @@
 
                 <!-- Insights -->
                 <div class="insight-box" id="insightBox" style="display: none;">
-                    <h3>💡 Phân tích nhanh</h3>
+                    <h3><i class="ph-bold ph-lightbulb" style="color: #22C55E"></i> Phân tích nhanh</h3>
                     <ul id="insightList"></ul>
                 </div>
             </div>
