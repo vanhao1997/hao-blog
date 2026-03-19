@@ -2,9 +2,11 @@
 <html lang="vi" data-theme="light">
 
 <head>
+    <script src="/js/tracking.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banner Generator - Nguyễn Văn Hảo</title>
+    <meta name="description" content="Tạo banner blog phong cách Hao Blog">
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,168 +18,131 @@
     <link rel="stylesheet" href="/css/style.css?v=1.5">
     <link rel="stylesheet" href="/css/toolkit.css">
     <style>
-        :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --accent-primary: #60a5fa;
-            --accent-secondary: #a78bfa;
-            --accent-gradient: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
-            --glass-bg: rgba(30, 41, 59, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --radius-xl: 1rem;
-            --font-main: 'DM Sans', sans-serif;
+        /* Banner tool uses a dark theme for the workspace */
+        .banner-workspace {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 16px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        .main-container,
-        header:not(.header) {
-            font-family: var(--font-main);
-        }
-
-        body>*:not(.header) {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            font-weight: 800;
-            font-size: 2rem;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-
-        .main-container {
+        .banner-grid {
             display: grid;
-            grid-template-columns: 450px 1fr;
-            gap: 2rem;
-            max-width: 1500px;
-            width: 100%;
+            grid-template-columns: 400px 1fr;
+            gap: 24px;
         }
 
-        @media (max-width: 1024px) {
-            .main-container {
+        @media(max-width:1024px) {
+            .banner-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        .controls {
-            background: var(--bg-secondary);
-            padding: 1.5rem;
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--glass-border);
+        .controls-panel {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, .1);
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            height: fit-content;
-            max-height: 90vh;
+            gap: 12px;
+            max-height: 85vh;
             overflow-y: auto;
         }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+        .controls-panel .section-title {
+            font-size: .7rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
         }
 
-        label {
-            font-size: 0.875rem;
+        .controls-panel label {
+            font-size: .85rem;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: #cbd5e1;
         }
 
-        textarea {
-            background: var(--bg-primary);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
+        .controls-panel textarea {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, .1);
+            color: #f8fafc;
+            padding: 10px;
+            border-radius: 8px;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: .9rem;
             outline: none;
-            transition: border-color 0.2s;
             resize: vertical;
             min-height: 70px;
+            width: 100%;
         }
 
-        textarea:focus {
-            border-color: var(--accent-primary);
+        .controls-panel textarea:focus {
+            border-color: #60a5fa;
         }
 
         .category-tabs {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
+            gap: 6px;
         }
 
         .category-tab {
             flex: 1;
-            padding: 0.6rem;
-            background: var(--bg-primary);
-            border: 2px solid var(--glass-border);
-            border-radius: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
+            padding: 8px;
+            background: #0f172a;
+            border: 2px solid rgba(255, 255, 255, .1);
+            border-radius: 8px;
+            color: #94a3b8;
+            font-size: .8rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
             text-align: center;
+            transition: .2s;
         }
 
         .category-tab:hover {
-            border-color: var(--accent-primary);
+            border-color: #60a5fa;
         }
 
         .category-tab.active {
-            border-color: var(--accent-primary);
-            background: rgba(96, 165, 250, 0.1);
-            color: var(--accent-primary);
+            border-color: #60a5fa;
+            background: rgba(96, 165, 250, .1);
+            color: #60a5fa;
         }
 
         .template-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 0.5rem;
+            gap: 6px;
         }
 
         .template-btn {
-            padding: 0.5rem;
-            background: var(--bg-primary);
-            border: 2px solid var(--glass-border);
-            border-radius: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.65rem;
+            padding: 6px;
+            background: #0f172a;
+            border: 2px solid rgba(255, 255, 255, .1);
+            border-radius: 8px;
+            color: #94a3b8;
+            font-size: .65rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: .2s;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.15rem;
+            gap: 2px;
         }
 
         .template-btn:hover {
-            border-color: var(--accent-primary);
-            color: var(--text-primary);
+            border-color: #60a5fa;
+            color: #f8fafc;
         }
 
         .template-btn.active {
-            border-color: var(--accent-primary);
-            background: rgba(96, 165, 250, 0.1);
-            color: var(--accent-primary);
+            border-color: #60a5fa;
+            background: rgba(96, 165, 250, .1);
+            color: #60a5fa;
         }
 
         .template-btn .icons {
@@ -189,34 +154,34 @@
         .btn-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 0.4rem;
+            gap: 4px;
         }
 
         .option-btn {
-            padding: 0.5rem 0.3rem;
-            background: var(--bg-primary);
-            border: 2px solid var(--glass-border);
-            border-radius: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.65rem;
+            padding: 6px 4px;
+            background: #0f172a;
+            border: 2px solid rgba(255, 255, 255, .1);
+            border-radius: 8px;
+            color: #94a3b8;
+            font-size: .65rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: .2s;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.15rem;
+            gap: 2px;
         }
 
         .option-btn:hover {
-            border-color: var(--accent-primary);
-            color: var(--text-primary);
+            border-color: #60a5fa;
+            color: #f8fafc;
         }
 
         .option-btn.active {
-            border-color: var(--accent-primary);
-            background: rgba(96, 165, 250, 0.1);
-            color: var(--accent-primary);
+            border-color: #60a5fa;
+            background: rgba(96, 165, 250, .1);
+            color: #60a5fa;
         }
 
         .option-btn .icon {
@@ -227,80 +192,70 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, .2);
         }
 
-        .actions {
-            margin-top: 0.5rem;
+        .actions-row {
             display: flex;
-            gap: 0.5rem;
+            gap: 8px;
+            margin-top: 6px;
         }
 
-        button.btn-action {
+        .actions-row .btn-action {
             flex: 1;
-            padding: 0.85rem;
+            padding: 10px;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
-            transition: opacity 0.2s;
-            font-size: 0.9rem;
+            font-size: .85rem;
+            transition: .2s;
         }
 
-        .btn-primary {
-            background: var(--accent-gradient);
-            color: white;
+        .actions-row .btn-action:hover {
+            opacity: .9;
         }
 
-        .btn-secondary {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            border: 1px solid var(--glass-border);
+        .btn-action.btn-dl-primary {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            color: #fff;
         }
 
-        .btn-shuffle {
+        .btn-action.btn-dl-secondary {
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .btn-action.btn-shuffle {
             background: #22c55e;
-            color: white;
-        }
-
-        button.btn-action:hover {
-            opacity: 0.9;
+            color: #fff;
         }
 
         .preview-area {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
             align-items: center;
+            gap: 12px;
         }
 
-        canvas {
+        .preview-area canvas {
             width: 100%;
             height: auto;
             max-width: 800px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, .3);
             border-radius: 8px;
         }
 
         .preview-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        .section-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-secondary);
-            margin-bottom: 0.25rem;
-            padding-bottom: 0.4rem;
-            border-bottom: 1px solid var(--glass-border);
+            font-size: .85rem;
+            color: #94a3b8;
         }
     </style>
 </head>
 
 <body>
-    <header class="header" style="position:relative; z-index:100;">
+    <header class="header">
         <div class="container header-inner">
             <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
             <nav class="nav">
@@ -318,62 +273,65 @@
         </div>
     </header>
 
-    <div style="text-align:center; padding:12px 0 0;"><a href="/toolkit/" class="back-link" style="color:#94a3b8;">←
-            Quay lại Toolkit</a></div>
+    <section class="calc-page">
+        <div class="container">
+            <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+            <div class="calc-header">
+                <span class="section-badge"
+                    style="background:var(--color-lavender);margin-bottom:12px;display:inline-block;">🎨 Banner
+                    Tool</span>
+                <h1>Banner Generator</h1>
+                <p>Tạo banner blog phong cách Hao Blog — chọn template, theme màu, pattern rồi tải về.</p>
+            </div>
 
-    <header style="margin-bottom:2rem; text-align:center; padding:0 2rem;">
-        <h1>Banner Generator</h1>
-        <p>Create blog banners in the style of Hao Blog</p>
-    </header>
+            <div class="banner-workspace">
+                <div class="banner-grid">
+                    <div class="controls-panel">
+                        <div>
+                            <div class="section-title">Category</div>
+                            <div class="category-tabs">
+                                <button class="category-tab active" data-category="marketing">Marketing</button>
+                                <button class="category-tab" data-category="ai">AI</button>
+                                <button class="category-tab" data-category="tool">Tool</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="section-title">Template Style</div>
+                            <div class="template-grid" id="templateGrid"></div>
+                        </div>
+                        <div>
+                            <label>Blog Post Title</label>
+                            <textarea id="inputTitle"
+                                placeholder="Enter post title...">Chiến Lược Digital Marketing Hiệu Quả Cho Doanh Nghiệp Nhỏ</textarea>
+                        </div>
+                        <div>
+                            <div class="section-title">Color Theme</div>
+                            <div class="btn-grid" id="themeGrid"></div>
+                        </div>
+                        <div>
+                            <div class="section-title">Background Pattern</div>
+                            <div class="btn-grid" id="patternGrid"></div>
+                        </div>
+                        <div class="actions-row">
+                            <button class="btn-action btn-shuffle" id="btnShuffle"
+                                title="Randomize icon positions">Shuffle</button>
+                        </div>
+                        <div class="actions-row">
+                            <button class="btn-action btn-dl-primary" id="btnDownloadPNG">PNG</button>
+                            <button class="btn-action btn-dl-secondary" id="btnDownloadJPG">JPG</button>
+                        </div>
+                    </div>
 
-    <div class="main-container">
-        <div class="controls">
-            <div class="input-group">
-                <div class="section-title">Category</div>
-                <div class="category-tabs">
-                    <button class="category-tab active" data-category="marketing">Marketing</button>
-                    <button class="category-tab" data-category="ai">AI</button>
-                    <button class="category-tab" data-category="tool">Tool</button>
+                    <div class="preview-area">
+                        <span class="preview-label">Preview (1200 x 630)</span>
+                        <canvas id="bannerCanvas" width="1200" height="630"></canvas>
+                    </div>
                 </div>
             </div>
-
-            <div class="input-group">
-                <div class="section-title">Template Style</div>
-                <div class="template-grid" id="templateGrid"></div>
-            </div>
-
-            <div class="input-group">
-                <label>Blog Post Title</label>
-                <textarea id="inputTitle"
-                    placeholder="Enter post title...">Chiến Lược Digital Marketing Hiệu Quả Cho Doanh Nghiệp Nhỏ</textarea>
-            </div>
-
-            <div class="input-group">
-                <div class="section-title">Color Theme</div>
-                <div class="btn-grid" id="themeGrid"></div>
-            </div>
-
-            <div class="input-group">
-                <div class="section-title">Background Pattern</div>
-                <div class="btn-grid" id="patternGrid"></div>
-            </div>
-
-            <div class="actions">
-                <button class="btn-action btn-shuffle" id="btnShuffle" title="Randomize icon positions">Shuffle</button>
-            </div>
-
-            <div class="actions">
-                <button class="btn-action btn-primary" id="btnDownloadPNG">PNG</button>
-                <button class="btn-action btn-secondary" id="btnDownloadJPG">JPG</button>
-            </div>
         </div>
+    </section>
 
-        <div class="preview-area">
-            <span class="preview-label">Preview (1200 x 630)</span>
-            <canvas id="bannerCanvas" width="1200" height="630"></canvas>
-        </div>
-    </div>
-
+    <script src="/js/main.js?v=1.4"></script>
     <script>
         const canvas = document.getElementById('bannerCanvas');
         const ctx = canvas.getContext('2d');
@@ -382,36 +340,14 @@
         let currentTemplateIndex = 0;
         let currentTheme = 'blue';
         let currentPattern = 'grid';
-        let iconPositions = []; // Store random positions
+        let iconPositions = [];
 
-        // Templates per category
         const templates = {
-            marketing: [
-                { name: 'Growth', icons: ['📈', '💰', '🚀', '✨'] },
-                { name: 'Social', icons: ['📱', '💬', '❤️', '🔔'] },
-                { name: 'Analytics', icons: ['📊', '📉', '🎯', '💡'] },
-                { name: 'Ads', icons: ['💸', '🎪', '📣', '⭐'] }
-            ],
-            ai: [
-                { name: 'Robot', icons: ['🤖', '⚡', '🧠', '💡'] },
-                { name: 'Neural', icons: ['🧬', '🔮', '✨', '🌐'] },
-                { name: 'Data', icons: ['📡', '🔢', '⚙️', '🔗'] },
-                { name: 'Future', icons: ['🚀', '🌟', '💎', '🔥'] }
-            ],
-            tool: [
-                { name: 'Build', icons: ['🛠️', '⚙️', '🔧', '📦'] },
-                { name: 'Code', icons: ['💻', '🖥️', '⌨️', '🖱️'] },
-                { name: 'Mobile', icons: ['📱', '📲', '🔌', '🔋'] },
-                { name: 'Cloud', icons: ['☁️', '🌐', '📡', '🔒'] }
-            ]
+            marketing: [{ name: 'Growth', icons: ['📈', '💰', '🚀', '✨'] }, { name: 'Social', icons: ['📱', '💬', '❤️', '🔔'] }, { name: 'Analytics', icons: ['📊', '📉', '🎯', '💡'] }, { name: 'Ads', icons: ['💸', '🎪', '📣', '⭐'] }],
+            ai: [{ name: 'Robot', icons: ['🤖', '⚡', '🧠', '💡'] }, { name: 'Neural', icons: ['🧬', '🔮', '✨', '🌐'] }, { name: 'Data', icons: ['📡', '🔢', '⚙️', '🔗'] }, { name: 'Future', icons: ['🚀', '🌟', '💎', '🔥'] }],
+            tool: [{ name: 'Build', icons: ['🛠️', '⚙️', '🔧', '📦'] }, { name: 'Code', icons: ['💻', '🖥️', '⌨️', '🖱️'] }, { name: 'Mobile', icons: ['📱', '📲', '🔌', '🔋'] }, { name: 'Cloud', icons: ['☁️', '🌐', '📡', '🔒'] }]
         };
-
-        const categoryLabels = {
-            marketing: 'DIGITAL MARKETING',
-            ai: 'ARTIFICIAL INTELLIGENCE',
-            tool: 'TOOL & RESOURCES'
-        };
-
+        const categoryLabels = { marketing: 'DIGITAL MARKETING', ai: 'ARTIFICIAL INTELLIGENCE', tool: 'TOOL & RESOURCES' };
         const themes = {
             blue: { name: 'Blue', bgStart: '#0f172a', bgEnd: '#1e293b', accentStart: '#60a5fa', accentEnd: '#a78bfa', text: '#ffffff', subText: '#94a3b8', cardBg: 'rgba(255,255,255,0.05)', swatch: 'linear-gradient(135deg, #60a5fa, #a78bfa)' },
             purple: { name: 'Purple', bgStart: '#1e1b4b', bgEnd: '#312e81', accentStart: '#c084fc', accentEnd: '#e879f9', text: '#ffffff', subText: '#c4b5fd', cardBg: 'rgba(255,255,255,0.05)', swatch: 'linear-gradient(135deg, #c084fc, #e879f9)' },
@@ -422,343 +358,103 @@
             gold: { name: 'Gold', bgStart: '#1c1a0f', bgEnd: '#3f3f0d', accentStart: '#fbbf24', accentEnd: '#f59e0b', text: '#ffffff', subText: '#fef3c7', cardBg: 'rgba(255,255,255,0.05)', swatch: 'linear-gradient(135deg, #fbbf24, #f59e0b)' },
             dark: { name: 'Dark', bgStart: '#09090b', bgEnd: '#18181b', accentStart: '#a1a1aa', accentEnd: '#71717a', text: '#ffffff', subText: '#a1a1aa', cardBg: 'rgba(255,255,255,0.03)', swatch: 'linear-gradient(135deg, #a1a1aa, #52525b)' }
         };
+        const patterns = { grid: { name: 'Dots', icon: '⬤' }, lines: { name: 'Lines', icon: '═' }, waves: { name: 'Waves', icon: '〰️' }, circles: { name: 'Circles', icon: '◯' }, triangles: { name: 'Triangles', icon: '△' }, hexagons: { name: 'Hex', icon: '⬡' }, noise: { name: 'Noise', icon: '▓' }, none: { name: 'None', icon: '∅' } };
 
-        const patterns = {
-            grid: { name: 'Dots', icon: '⬤' },
-            lines: { name: 'Lines', icon: '═' },
-            waves: { name: 'Waves', icon: '〰️' },
-            circles: { name: 'Circles', icon: '◯' },
-            triangles: { name: 'Triangles', icon: '△' },
-            hexagons: { name: 'Hex', icon: '⬡' },
-            noise: { name: 'Noise', icon: '▓' },
-            none: { name: 'None', icon: '∅' }
-        };
-
-        // Generate random icon positions across wider area
         function generateRandomPositions() {
             iconPositions = [];
-            // Define zones: corners and edges (avoiding center where text is)
-            const zones = [
-                { xMin: 0.02, xMax: 0.25, yMin: 0.05, yMax: 0.35 },  // Top-left
-                { xMin: 0.75, xMax: 0.98, yMin: 0.05, yMax: 0.35 },  // Top-right
-                { xMin: 0.02, xMax: 0.25, yMin: 0.65, yMax: 0.95 },  // Bottom-left
-                { xMin: 0.75, xMax: 0.98, yMin: 0.65, yMax: 0.95 },  // Bottom-right
-                { xMin: 0.02, xMax: 0.20, yMin: 0.35, yMax: 0.65 },  // Left-middle
-                { xMin: 0.80, xMax: 0.98, yMin: 0.35, yMax: 0.65 },  // Right-middle
-            ];
-
-            // Shuffle zones and pick 4
-            const shuffledZones = zones.sort(() => Math.random() - 0.5).slice(0, 4);
-
-            shuffledZones.forEach(zone => {
-                iconPositions.push({
-                    x: zone.xMin + Math.random() * (zone.xMax - zone.xMin),
-                    y: zone.yMin + Math.random() * (zone.yMax - zone.yMin),
-                    size: 50 + Math.random() * 35,
-                    rotation: (Math.random() - 0.5) * 0.4
-                });
+            const zones = [{ xMin: 0.02, xMax: 0.25, yMin: 0.05, yMax: 0.35 }, { xMin: 0.75, xMax: 0.98, yMin: 0.05, yMax: 0.35 }, { xMin: 0.02, xMax: 0.25, yMin: 0.65, yMax: 0.95 }, { xMin: 0.75, xMax: 0.98, yMin: 0.65, yMax: 0.95 }, { xMin: 0.02, xMax: 0.20, yMin: 0.35, yMax: 0.65 }, { xMin: 0.80, xMax: 0.98, yMin: 0.35, yMax: 0.65 }];
+            zones.sort(() => Math.random() - 0.5).slice(0, 4).forEach(zone => {
+                iconPositions.push({ x: zone.xMin + Math.random() * (zone.xMax - zone.xMin), y: zone.yMin + Math.random() * (zone.yMax - zone.yMin), size: 50 + Math.random() * 35, rotation: (Math.random() - 0.5) * 0.4 });
             });
         }
 
         function buildTemplateButtons() {
-            const grid = document.getElementById('templateGrid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('templateGrid'); grid.innerHTML = '';
             templates[currentCategory].forEach((tpl, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'template-btn' + (idx === currentTemplateIndex ? ' active' : '');
+                const btn = document.createElement('button'); btn.className = 'template-btn' + (idx === currentTemplateIndex ? ' active' : '');
                 btn.innerHTML = `<span class="icons">${tpl.icons.slice(0, 2).join('')}</span><span>${tpl.name}</span>`;
-                btn.addEventListener('click', () => {
-                    currentTemplateIndex = idx;
-                    document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    generateRandomPositions();
-                    draw();
-                });
+                btn.addEventListener('click', () => { currentTemplateIndex = idx; document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); generateRandomPositions(); draw(); });
                 grid.appendChild(btn);
             });
         }
 
         function buildThemeButtons() {
-            const grid = document.getElementById('themeGrid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('themeGrid'); grid.innerHTML = '';
             Object.keys(themes).forEach(key => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn' + (key === currentTheme ? ' active' : '');
+                const btn = document.createElement('button'); btn.className = 'option-btn' + (key === currentTheme ? ' active' : '');
                 btn.innerHTML = `<div class="color-swatch" style="background: ${themes[key].swatch}"></div><span>${themes[key].name}</span>`;
-                btn.addEventListener('click', () => {
-                    currentTheme = key;
-                    document.querySelectorAll('#themeGrid .option-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    draw();
-                });
+                btn.addEventListener('click', () => { currentTheme = key; document.querySelectorAll('#themeGrid .option-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); draw(); });
                 grid.appendChild(btn);
             });
         }
 
         function buildPatternButtons() {
-            const grid = document.getElementById('patternGrid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('patternGrid'); grid.innerHTML = '';
             Object.keys(patterns).forEach(key => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn' + (key === currentPattern ? ' active' : '');
+                const btn = document.createElement('button'); btn.className = 'option-btn' + (key === currentPattern ? ' active' : '');
                 btn.innerHTML = `<span class="icon">${patterns[key].icon}</span><span>${patterns[key].name}</span>`;
-                btn.addEventListener('click', () => {
-                    currentPattern = key;
-                    document.querySelectorAll('#patternGrid .option-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    draw();
-                });
+                btn.addEventListener('click', () => { currentPattern = key; document.querySelectorAll('#patternGrid .option-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); draw(); });
                 grid.appendChild(btn);
             });
         }
 
         document.querySelectorAll('.category-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentCategory = tab.dataset.category;
-                currentTemplateIndex = 0;
-                buildTemplateButtons();
-                generateRandomPositions();
-                draw();
-            });
+            tab.addEventListener('click', () => { document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); currentCategory = tab.dataset.category; currentTemplateIndex = 0; buildTemplateButtons(); generateRandomPositions(); draw(); });
         });
 
         function draw() {
-            const theme = themes[currentTheme];
-            const tpl = templates[currentCategory][currentTemplateIndex];
-            const w = canvas.width;
-            const h = canvas.height;
-
-            // Background
-            const grad = ctx.createLinearGradient(0, 0, w, h);
-            grad.addColorStop(0, theme.bgStart);
-            grad.addColorStop(1, theme.bgEnd);
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, w, h);
-
-            // Pattern
-            drawPattern(ctx, w, h, theme);
-
-            // Icons with random positions
-            drawIcons(ctx, w, h, tpl.icons);
-
-            // Glass Card
-            const margin = 60;
-            const cardW = w - (margin * 2);
-            const cardH = h - (margin * 2);
-
-            ctx.save();
-            ctx.fillStyle = theme.cardBg;
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(margin, margin, cardW, cardH, 24);
-            ctx.fill();
-            ctx.stroke();
-            ctx.restore();
-
-            // Content
-            const contentMargin = margin + 50;
-
-            // Category Badge
-            const catText = categoryLabels[currentCategory];
-            ctx.font = 'bold 20px DM Sans';
-            const catMetrics = ctx.measureText(catText);
-            const catPadX = 18, catPadY = 9;
-            const catX = contentMargin, catY = margin + 50;
-
-            const badgeGrad = ctx.createLinearGradient(catX, catY, catX + catMetrics.width + (catPadX * 2), catY);
-            badgeGrad.addColorStop(0, theme.accentStart);
-            badgeGrad.addColorStop(1, theme.accentEnd);
-
-            ctx.beginPath();
-            ctx.roundRect(catX, catY, catMetrics.width + (catPadX * 2), 20 + (catPadY * 2), 8);
-            ctx.fillStyle = badgeGrad;
-            ctx.fill();
-
-            ctx.fillStyle = '#ffffff';
-            ctx.textBaseline = 'top';
-            ctx.textAlign = 'left';
-            ctx.fillText(catText, catX + catPadX, catY + catPadY + 1);
-
-            // Title
-            const title = document.getElementById('inputTitle').value;
-            ctx.font = '800 56px DM Sans';
-            ctx.fillStyle = theme.text;
-            ctx.textBaseline = 'top';
-            ctx.textAlign = 'left';
-
+            const theme = themes[currentTheme]; const tpl = templates[currentCategory][currentTemplateIndex]; const w = canvas.width; const h = canvas.height;
+            const grad = ctx.createLinearGradient(0, 0, w, h); grad.addColorStop(0, theme.bgStart); grad.addColorStop(1, theme.bgEnd); ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+            drawPattern(ctx, w, h, theme); drawIcons(ctx, w, h, tpl.icons);
+            const margin = 60; const cardW = w - (margin * 2); const cardH = h - (margin * 2);
+            ctx.save(); ctx.fillStyle = theme.cardBg; ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(margin, margin, cardW, cardH, 24); ctx.fill(); ctx.stroke(); ctx.restore();
+            const contentMargin = margin + 50; const catText = categoryLabels[currentCategory];
+            ctx.font = 'bold 20px DM Sans'; const catMetrics = ctx.measureText(catText); const catPadX = 18; const catPadY = 9; const catX = contentMargin; const catY = margin + 50;
+            const badgeGrad = ctx.createLinearGradient(catX, catY, catX + catMetrics.width + (catPadX * 2), catY); badgeGrad.addColorStop(0, theme.accentStart); badgeGrad.addColorStop(1, theme.accentEnd);
+            ctx.beginPath(); ctx.roundRect(catX, catY, catMetrics.width + (catPadX * 2), 20 + (catPadY * 2), 8); ctx.fillStyle = badgeGrad; ctx.fill();
+            ctx.fillStyle = '#ffffff'; ctx.textBaseline = 'top'; ctx.textAlign = 'left'; ctx.fillText(catText, catX + catPadX, catY + catPadY + 1);
+            const title = document.getElementById('inputTitle').value; ctx.font = '800 56px DM Sans'; ctx.fillStyle = theme.text; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
             wrapText(ctx, title, contentMargin, catY + 75, cardW - 100, 70, theme.text);
-
-            // Footer
-            ctx.font = '500 24px DM Sans';
-            ctx.fillStyle = theme.subText;
-            ctx.textBaseline = 'bottom';
-            ctx.textAlign = 'left';
-            const footerY = h - margin - 40;
-            ctx.fillText('nguyenvanhao.name.vn', contentMargin, footerY);
-
-            ctx.beginPath();
-            ctx.strokeStyle = theme.accentStart;
-            ctx.lineWidth = 3;
-            ctx.moveTo(contentMargin, footerY + 8);
-            ctx.lineTo(contentMargin + 100, footerY + 8);
-            ctx.stroke();
+            ctx.font = '500 24px DM Sans'; ctx.fillStyle = theme.subText; ctx.textBaseline = 'bottom'; ctx.textAlign = 'left';
+            const footerY = h - margin - 40; ctx.fillText('nguyenvanhao.name.vn', contentMargin, footerY);
+            ctx.beginPath(); ctx.strokeStyle = theme.accentStart; ctx.lineWidth = 3; ctx.moveTo(contentMargin, footerY + 8); ctx.lineTo(contentMargin + 100, footerY + 8); ctx.stroke();
         }
 
         function drawPattern(ctx, w, h, theme) {
-            ctx.save();
-            ctx.globalAlpha = 0.12;
-
+            ctx.save(); ctx.globalAlpha = 0.12;
             switch (currentPattern) {
-                case 'grid':
-                    ctx.fillStyle = theme.subText;
-                    for (let x = 0; x < w; x += 35) for (let y = 0; y < h; y += 35) { ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI * 2); ctx.fill(); }
-                    break;
-                case 'lines':
-                    ctx.strokeStyle = theme.subText; ctx.lineWidth = 1;
-                    for (let i = -h; i < w + h; i += 30) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + h, h); ctx.stroke(); }
-                    break;
-                case 'waves':
-                    ctx.strokeStyle = theme.accentStart; ctx.lineWidth = 2;
-                    for (let i = 0; i < h + 200; i += 60) { ctx.beginPath(); ctx.moveTo(0, i); ctx.bezierCurveTo(w / 3, i - 60, 2 * w / 3, i + 60, w, i); ctx.stroke(); }
-                    break;
-                case 'circles':
-                    ctx.strokeStyle = theme.accentStart; ctx.lineWidth = 1;
-                    for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.arc(w * 0.8, h * 0.5, 80 + i * 60, 0, Math.PI * 2); ctx.stroke(); }
-                    break;
-                case 'triangles':
-                    ctx.strokeStyle = theme.subText; ctx.lineWidth = 1;
-                    const size = 60;
-                    for (let x = 0; x < w + size; x += size) for (let y = 0; y < h + size; y += size * 0.866) { const offset = (Math.floor(y / (size * 0.866)) % 2) * (size / 2); ctx.beginPath(); ctx.moveTo(x + offset, y); ctx.lineTo(x + offset + size / 2, y + size * 0.866); ctx.lineTo(x + offset - size / 2, y + size * 0.866); ctx.closePath(); ctx.stroke(); }
-                    break;
-                case 'hexagons':
-                    ctx.strokeStyle = theme.accentStart; ctx.lineWidth = 1;
-                    const hexSize = 40;
-                    for (let x = 0; x < w + hexSize * 2; x += hexSize * 1.5) for (let y = 0; y < h + hexSize * 2; y += hexSize * 1.732) { const offset = (Math.floor(x / (hexSize * 1.5)) % 2) * (hexSize * 0.866); drawHexagon(ctx, x, y + offset, hexSize * 0.5); }
-                    break;
-                case 'noise':
-                    const imgData = ctx.getImageData(0, 0, w, h);
-                    const data = imgData.data;
-                    for (let i = 0; i < data.length; i += 4) { const noise = (Math.random() - 0.5) * 30; data[i] = Math.min(255, Math.max(0, data[i] + noise)); data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + noise)); data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + noise)); }
-                    ctx.putImageData(imgData, 0, 0);
-                    break;
+                case 'grid': ctx.fillStyle = theme.subText; for (let x = 0; x < w; x += 35) for (let y = 0; y < h; y += 35) { ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI * 2); ctx.fill(); } break;
+                case 'lines': ctx.strokeStyle = theme.subText; ctx.lineWidth = 1; for (let i = -h; i < w + h; i += 30) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + h, h); ctx.stroke(); } break;
+                case 'waves': ctx.strokeStyle = theme.accentStart; ctx.lineWidth = 2; for (let i = 0; i < h + 200; i += 60) { ctx.beginPath(); ctx.moveTo(0, i); ctx.bezierCurveTo(w / 3, i - 60, 2 * w / 3, i + 60, w, i); ctx.stroke(); } break;
+                case 'circles': ctx.strokeStyle = theme.accentStart; ctx.lineWidth = 1; for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.arc(w * 0.8, h * 0.5, 80 + i * 60, 0, Math.PI * 2); ctx.stroke(); } break;
+                case 'triangles': ctx.strokeStyle = theme.subText; ctx.lineWidth = 1; const size = 60; for (let x = 0; x < w + size; x += size) for (let y = 0; y < h + size; y += size * 0.866) { const offset = (Math.floor(y / (size * 0.866)) % 2) * (size / 2); ctx.beginPath(); ctx.moveTo(x + offset, y); ctx.lineTo(x + offset + size / 2, y + size * 0.866); ctx.lineTo(x + offset - size / 2, y + size * 0.866); ctx.closePath(); ctx.stroke(); } break;
+                case 'hexagons': ctx.strokeStyle = theme.accentStart; ctx.lineWidth = 1; const hexSize = 40; for (let x = 0; x < w + hexSize * 2; x += hexSize * 1.5) for (let y = 0; y < h + hexSize * 2; y += hexSize * 1.732) { const offset = (Math.floor(x / (hexSize * 1.5)) % 2) * (hexSize * 0.866); drawHexagon(ctx, x, y + offset, hexSize * 0.5); } break;
+                case 'noise': const imgData = ctx.getImageData(0, 0, w, h); const data = imgData.data; for (let i = 0; i < data.length; i += 4) { const noise = (Math.random() - 0.5) * 30; data[i] = Math.min(255, Math.max(0, data[i] + noise)); data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + noise)); data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + noise)); } ctx.putImageData(imgData, 0, 0); break;
             }
             ctx.restore();
         }
 
-        function drawHexagon(ctx, x, y, r) {
-            ctx.beginPath();
-            for (let i = 0; i < 6; i++) { const angle = (Math.PI / 3) * i - Math.PI / 6; const px = x + r * Math.cos(angle); const py = y + r * Math.sin(angle); if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
-            ctx.closePath(); ctx.stroke();
-        }
+        function drawHexagon(ctx, x, y, r) { ctx.beginPath(); for (let i = 0; i < 6; i++) { const angle = (Math.PI / 3) * i - Math.PI / 6; const px = x + r * Math.cos(angle); const py = y + r * Math.sin(angle); if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); } ctx.closePath(); ctx.stroke(); }
 
-        function drawIcons(ctx, w, h, icons) {
-            ctx.save();
-            ctx.globalAlpha = 0.3;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
+        function drawIcons(ctx, w, h, icons) { ctx.save(); ctx.globalAlpha = 0.3; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; icons.forEach((icon, i) => { const pos = iconPositions[i]; if (pos) { ctx.save(); ctx.translate(w * pos.x, h * pos.y); ctx.rotate(pos.rotation); ctx.font = `${pos.size}px serif`; ctx.fillText(icon, 0, 0); ctx.restore(); } }); ctx.restore(); }
 
-            icons.forEach((icon, i) => {
-                const pos = iconPositions[i];
-                if (pos) {
-                    ctx.save();
-                    ctx.translate(w * pos.x, h * pos.y);
-                    ctx.rotate(pos.rotation);
-                    ctx.font = `${pos.size}px serif`;
-                    ctx.fillText(icon, 0, 0);
-                    ctx.restore();
-                }
-            });
-            ctx.restore();
-        }
-
-        function wrapText(ctx, text, x, y, maxWidth, lineHeight, color) {
-            ctx.fillStyle = color;
-            const words = text.split(' ');
-            let line = '', lines = [];
-
-            for (let n = 0; n < words.length; n++) {
-                const testLine = line + words[n] + ' ';
-                if (ctx.measureText(testLine).width > maxWidth && n > 0) { lines.push(line.trim()); line = words[n] + ' '; }
-                else { line = testLine; }
-            }
-            lines.push(line.trim());
-
-            if (lines.length > 3) { lines = lines.slice(0, 3); lines[2] = lines[2].substring(0, lines[2].length - 3) + '...'; }
-
-            for (let k = 0; k < lines.length; k++) ctx.fillText(lines[k], x, y + (k * lineHeight));
-        }
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight, color) { ctx.fillStyle = color; const words = text.split(' '); let line = '', lines = []; for (let n = 0; n < words.length; n++) { const testLine = line + words[n] + ' '; if (ctx.measureText(testLine).width > maxWidth && n > 0) { lines.push(line.trim()); line = words[n] + ' '; } else { line = testLine; } } lines.push(line.trim()); if (lines.length > 3) { lines = lines.slice(0, 3); lines[2] = lines[2].substring(0, lines[2].length - 3) + '...'; } for (let k = 0; k < lines.length; k++) ctx.fillText(lines[k], x, y + (k * lineHeight)); }
 
         document.getElementById('inputTitle').addEventListener('input', draw);
+        document.getElementById('btnShuffle').addEventListener('click', () => { generateRandomPositions(); draw(); });
 
-        // Shuffle button - regenerate random positions
-        document.getElementById('btnShuffle').addEventListener('click', () => {
-            generateRandomPositions();
-            draw();
-        });
+        function slugify(text) { return text.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'd').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 50); }
 
-        // Slugify text for SEO-friendly filename
-        function slugify(text) {
-            return text
-                .toString()
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-                .replace(/đ/g, 'd').replace(/Đ/g, 'd') // Vietnamese đ
-                .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
-                .trim()
-                .replace(/\s+/g, '-') // Replace spaces with -
-                .replace(/-+/g, '-') // Replace multiple - with single -
-                .substring(0, 50); // Limit length
-        }
-
-        // Download helper using Blob for proper filename
         function downloadCanvas(format) {
-            const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
-            const ext = format;
-            const title = document.getElementById('inputTitle').value;
-            const slug = slugify(title) || 'banner';
-            const filename = `${slug}-${currentCategory}.${ext}`;
-
-            canvas.toBlob((blob) => {
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = filename;
-                link.style.display = 'none';
-                document.body.appendChild(link);
-                link.click();
-
-                // Cleanup
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                }, 100);
-            }, mimeType, 0.95);
+            const mimeType = format === 'png' ? 'image/png' : 'image/jpeg'; const title = document.getElementById('inputTitle').value;
+            const slug = slugify(title) || 'banner'; const filename = `${slug}-${currentCategory}.${format}`;
+            canvas.toBlob((blob) => { const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = filename; link.style.display = 'none'; document.body.appendChild(link); link.click(); setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(url); }, 100); }, mimeType, 0.95);
         }
 
-        // Download PNG
         document.getElementById('btnDownloadPNG').addEventListener('click', () => downloadCanvas('png'));
-
-        // Download JPG
         document.getElementById('btnDownloadJPG').addEventListener('click', () => downloadCanvas('jpg'));
 
-        // Init
-        document.fonts.ready.then(() => {
-            generateRandomPositions();
-            buildTemplateButtons();
-            buildThemeButtons();
-            buildPatternButtons();
-            draw();
-        });
-
-    </script>
-    <script>
-        const menuToggle = document.getElementById('menuToggle');
-        const navList = document.getElementById('navList');
-        if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
+        document.fonts.ready.then(() => { generateRandomPositions(); buildTemplateButtons(); buildThemeButtons(); buildPatternButtons(); draw(); });
     </script>
 </body>
 

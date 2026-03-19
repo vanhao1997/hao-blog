@@ -2,14 +2,13 @@
 <html lang="vi" data-theme="light">
 
 <head>
+  <script src="/js/tracking.js"></script>
   <meta charset="UTF-8" />
   <title>Phân tích Kênh TikTok (Export) - Nguyễn Văn Hảo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Trích xuất dữ liệu video TikTok với nhiều tùy chọn API">
   <link rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
-
-  <script src="https://cdn.tailwindcss.com"></script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -18,14 +17,18 @@
   <link rel="stylesheet" href="/css/main.css?v=1.4">
   <link rel="stylesheet" href="/css/style.css?v=1.5">
   <link rel="stylesheet" href="/css/toolkit.css">
-
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
   <style>
-    /* Inherit site-wide font from main.css */
-
     .spinner {
       animation: spin 1s linear infinite;
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--color-border);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 6px;
     }
 
     @keyframes spin {
@@ -34,54 +37,98 @@
       }
     }
 
-    #results::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
-    #results::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-size: 0.85rem;
+      transition: 0.2s;
     }
 
-    #results::-webkit-scrollbar-thumb {
-      background: #d1d5db;
-      border-radius: 10px;
+    .tab-btn.active {
+      background: var(--color-primary);
+      color: #fff;
     }
 
-    #results::-webkit-scrollbar-thumb:hover {
-      background: #9ca3af;
+    .tab-btn:not(.active) {
+      background: var(--color-bg, #f1f5f9);
+      color: var(--color-text);
     }
 
-    .tab-btn-active {
-      background-color: #2563eb;
-      color: white;
+    .hidden {
+      display: none !important;
     }
 
-    .tab-btn-inactive {
-      background-color: #e5e7eb;
-      color: #111827;
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      background: var(--color-bg, #f8fafc);
+      margin-bottom: 16px;
+    }
+
+    .profile-card img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 12px;
+    }
+
+    .data-table th,
+    .data-table td {
+      border: 1px solid var(--color-border);
+      padding: 8px;
+      text-align: left;
+    }
+
+    .data-table th {
+      background: var(--color-bg, #f8fafc);
+      font-weight: 700;
+    }
+
+    .data-table tr:hover {
+      background: rgba(0, 0, 0, .02);
     }
 
     .copy-btn {
-      background-color: #f3f4f6;
-      color: #4b5563;
-      border: 1px solid #d1d5db;
+      background: var(--color-bg, #f3f4f6);
+      color: var(--color-gray);
+      border: 1px solid var(--color-border);
       padding: 2px 8px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: 0.2s;
     }
 
     .copy-btn:hover {
-      background-color: #e5e7eb;
+      background: var(--color-border);
     }
   </style>
 </head>
 
-<body class="text-gray-800">
+<body>
   <header class="header">
     <div class="container header-inner">
       <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
@@ -99,128 +146,100 @@
     </div>
   </header>
 
-  <div class="container mx-auto max-w-5xl p-4 sm:p-6 lg:p-8">
-    <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
-
-    <div class="text-center mb-8">
-      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Phân tích TikTok</h1>
-      <p class="mt-2 text-md text-gray-600">Trích xuất thông tin và danh sách video từ tài khoản hoặc danh sách link
-        TikTok.</p>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-
-      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-        <label for="tokenSelect" class="block text-sm font-medium text-gray-700 mb-1">
-          Chọn Option API (Công cụ sẽ tự chọn)
-        </label>
-        <select id="tokenSelect" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm 
-                     focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-          <option value="" class="text-red-600 font-bold"> -- Chọn Option -- </option>
-          <option value="apify_api_4hNHrxA9JKTUEcAf4dsi1GyAeeafA70xiVp3">Option 1</option>
-          <option value="apify_api_vEzNRPTPbRwWk5XAt7ZZSBVuhcaYL00MZYPx">Option 2</option>
-          <option value="apify_api_vVeWJdL0kjKZO6yga3mYCKDk5qLzar3QMLhw">Option 3</option>
-          <option value="apify_api_MDtcZFG8e7kC70XGt2q1DZPLVbCEM21eDDSZ">Option 4</option>
-          <option value="apify_api_IPiCpAsN7VocO1SHyb7GdHT04fOzY50Vqmer">Option 5</option>
-          <option value="apify_api_bjrOJUSNgj6cU0VbskdbAMxJHijLC322ls19">Option 6</option>
-          <option value="apify_api_5lVTWGaeMWEbnFHUuMOxHHV9k2qETN3MwwUh">Option 7</option>
-          <option value="apify_api_IdbPrRwolcGMrllv0pMaNhPFk7jHsc3fGkm7">Option 8</option>
-          <option value="apify_api_8WB2mXbOAqQinR0t3xFBA4DrdEq9s23Kps60">Option 9</option>
-          <option value="apify_api_5YQIebMAJqBS6fKsd5lHktTzQgLRhj2yHLey">Option 10</option>
-          <option value="apify_api_8FF8IkoEqbD4xvfb12OuVVCfcmrZIG3GUTQc">Option 11</option>
-          <option value="apify_api_6gor9Sj91NTXR9YZ5r7HNOffPtGBF93yoQw7">Option 12</option>
-          <option value="apify_api_WRggvffpoO0aNjOGDuMWIc5UbqTJ0u2utLnN">Option 13</option>
-          <option value="apify_api_BfMSGj74gvX3DdnwX9RAjsWKvLpy4U1le0BL">Option 14</option>
-          <option value="apify_api_GpvgqqayoUCCSxKkxG96Jqfup6Z64j28zWFE">Option 15</option>
-          <option value="apify_api_dFLcJDqblvw9RODS0XmZpUSwes4rNz34VQ9Q">Option 16</option>
-          <option value="apify_api_roGEM1o8Kph9MztX9Pq41zg7RfCfVQ17Equ7">Option 17</option>
-          <option value="apify_api_D7qyF2XOfOgDBVghHTRsX0mjp4FFdu2H2QN2">Option 18</option>
-        </select>
-        <div id="apify-balance" class="text-sm text-gray-700 mt-3">Đang kiểm tra credit còn lại...</div>
+  <section class="calc-page">
+    <div class="container">
+      <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+      <div class="calc-header">
+        <span class="section-badge" style="background:var(--color-lavender);margin-bottom:12px;display:inline-block;">📊
+          TikTok Export</span>
+        <h1>Phân tích TikTok (Export)</h1>
+        <p>Trích xuất thông tin và danh sách video từ tài khoản hoặc danh sách link TikTok.</p>
       </div>
 
-      <div class="flex items-center gap-2 mb-4">
-        <button id="tab-channel" class="px-4 py-2 rounded-lg font-semibold tab-btn-active"
-          onclick="switchTab('channel')">Lọc theo kênh</button>
-        <button id="tab-urls" class="px-4 py-2 rounded-lg font-semibold tab-btn-inactive"
-          onclick="switchTab('urls')">Lọc theo danh sách video</button>
-      </div>
+      <div class="calc-grid">
+        <!-- Token Select -->
+        <div class="calc-card full-width">
+          <h2>🔑 Chọn API Token</h2>
+          <div class="input-group">
+            <label>Chọn Option API (Công cụ sẽ tự chọn)</label>
+            <select id="tokenSelect">
+              <option value="" style="color:red;font-weight:bold;"> -- Chọn Option -- </option>
+              <option value="apify_api_4hNHrxA9JKTUEcAf4dsi1GyAeeafA70xiVp3">Option 1</option>
+              <option value="apify_api_vEzNRPTPbRwWk5XAt7ZZSBVuhcaYL00MZYPx">Option 2</option>
+              <option value="apify_api_vVeWJdL0kjKZO6yga3mYCKDk5qLzar3QMLhw">Option 3</option>
+              <option value="apify_api_MDtcZFG8e7kC70XGt2q1DZPLVbCEM21eDDSZ">Option 4</option>
+              <option value="apify_api_IPiCpAsN7VocO1SHyb7GdHT04fOzY50Vqmer">Option 5</option>
+              <option value="apify_api_bjrOJUSNgj6cU0VbskdbAMxJHijLC322ls19">Option 6</option>
+              <option value="apify_api_5lVTWGaeMWEbnFHUuMOxHHV9k2qETN3MwwUh">Option 7</option>
+              <option value="apify_api_IdbPrRwolcGMrllv0pMaNhPFk7jHsc3fGkm7">Option 8</option>
+              <option value="apify_api_8WB2mXbOAqQinR0t3xFBA4DrdEq9s23Kps60">Option 9</option>
+              <option value="apify_api_5YQIebMAJqBS6fKsd5lHktTzQgLRhj2yHLey">Option 10</option>
+              <option value="apify_api_8FF8IkoEqbD4xvfb12OuVVCfcmrZIG3GUTQc">Option 11</option>
+              <option value="apify_api_6gor9Sj91NTXR9YZ5r7HNOffPtGBF93yoQw7">Option 12</option>
+              <option value="apify_api_WRggvffpoO0aNjOGDuMWIc5UbqTJ0u2utLnN">Option 13</option>
+              <option value="apify_api_BfMSGj74gvX3DdnwX9RAjsWKvLpy4U1le0BL">Option 14</option>
+              <option value="apify_api_GpvgqqayoUCCSxKkxG96Jqfup6Z64j28zWFE">Option 15</option>
+              <option value="apify_api_dFLcJDqblvw9RODS0XmZpUSwes4rNz34VQ9Q">Option 16</option>
+              <option value="apify_api_roGEM1o8Kph9MztX9Pq41zg7RfCfVQ17Equ7">Option 17</option>
+              <option value="apify_api_D7qyF2XOfOgDBVghHTRsX0mjp4FFdu2H2QN2">Option 18</option>
+            </select>
+          </div>
+          <div id="apify-balance" style="font-size:0.85rem;margin-top:8px;color:var(--color-gray);">Đang kiểm tra credit
+            còn lại...</div>
+        </div>
 
-      <div id="panel-channel">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="md:col-span-2">
-            <label for="usernameInput" class="block text-sm font-medium text-gray-700 mb-1">Tên tài khoản TikTok</label>
-            <input type="text" id="usernameInput" placeholder="Ví dụ: voguevn"
-              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" />
+        <!-- Tabs + Forms -->
+        <div class="calc-card full-width">
+          <div class="tab-bar">
+            <button id="tab-channel" class="tab-btn active" onclick="switchTab('channel')">Lọc theo kênh</button>
+            <button id="tab-urls" class="tab-btn" onclick="switchTab('urls')">Lọc theo danh sách video</button>
           </div>
-          <div>
-            <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Lọc theo kênh — Từ ngày</label>
-            <input id="startDate" type="date" placeholder="dd/mm/yyyy"
-              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+
+          <div id="panel-channel">
+            <div class="input-group" style="margin-bottom:12px;"><label>Tên tài khoản TikTok</label><input type="text"
+                id="usernameInput" placeholder="Ví dụ: voguevn"></div>
+            <div class="input-row">
+              <div class="input-group"><label>Từ ngày</label><input id="startDate" type="date"></div>
+              <div class="input-group"><label>Đến ngày</label><input id="endDate" type="date"></div>
+            </div>
+            <div
+              style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding-top:12px;border-top:1px solid var(--color-border);">
+              <div id="status"
+                style="font-size:0.85rem;color:var(--color-gray);min-height:32px;display:flex;align-items:center;">
+              </div>
+              <div style="display:flex;gap:8px;"><button id="download-btn" class="btn-copy" onclick="downloadExcel()"
+                  disabled>Xuất Excel</button><button id="fetch-btn" class="btn-calc" onclick="fetchTikTokData()">Lấy Dữ
+                  Liệu theo kênh</button></div>
+            </div>
           </div>
-          <div>
-            <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">Lọc theo kênh — Đến ngày</label>
-            <input id="endDate" type="date" placeholder="dd/mm/yyyy"
-              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+
+          <div id="panel-urls" class="hidden">
+            <div class="input-group" style="margin-bottom:12px;"><label>Danh sách link video TikTok (mỗi dòng 1
+                link)</label><textarea id="videoUrls" rows="4"
+                placeholder="https://www.tiktok.com/@username/video/12345"
+                style="width:100%;padding:10px;border:1px solid var(--color-border);border-radius:8px;font-size:0.9rem;resize:vertical;"></textarea>
+            </div>
+            <div
+              style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding-top:12px;border-top:1px solid var(--color-border);">
+              <div id="status-urls"
+                style="font-size:0.85rem;color:var(--color-gray);min-height:32px;display:flex;align-items:center;">
+              </div>
+              <div style="display:flex;gap:8px;"><button id="download-btn-urls" class="btn-copy"
+                  onclick="downloadExcel()" disabled>Xuất Excel</button><button id="fetch-btn-urls" class="btn-calc"
+                  onclick="fetchTikTokByUrls()">Lấy Dữ Liệu theo danh sách link</button></div>
+            </div>
           </div>
         </div>
 
-        <div class="mt-6 flex items-center justify-between gap-4 border-t border-gray-200 pt-4">
-          <div id="status" class="status text-gray-600 text-sm flex items-center min-h-[44px]"></div>
-          <div class="flex items-center gap-3 flex-wrap">
-            <button id="download-btn"
-              class="bg-green-100 text-green-800 hover:bg-green-200 font-semibold py-2 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-              onclick="downloadExcel()" disabled>Xuất Excel</button>
-            <button id="fetch-btn"
-              class="bg-blue-600 text-white hover:bg-blue-700 font-bold py-2 px-5 rounded-lg shadow-md transition flex items-center justify-center min-w-[150px]"
-              onclick="fetchTikTokData()">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              Lấy Dữ Liệu theo kênh
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div id="panel-urls" class="hidden">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="md:col-span-2">
-            <label for="videoUrls" class="block text-sm font-medium text-gray-700 mb-1">Danh sách link video TikTok (mỗi
-              dòng 1 link)</label>
-            <textarea id="videoUrls" rows="4" placeholder="https://www.tiktok.com/@username/video/12345"
-              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
-          </div>
-
-        </div>
-
-        <div class="mt-6 flex items-center justify-between gap-4 border-t border-gray-200 pt-4">
-          <div id="status-urls" class="text-gray-600 text-sm flex items-center min-h-[44px]"></div>
-          <div class="flex items-center gap-3 flex-wrap">
-            <button id="download-btn-urls"
-              class="bg-green-100 text-green-800 hover:bg-green-200 font-semibold py-2 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-              onclick="downloadExcel()" disabled>Xuất Excel</button>
-            <button id="fetch-btn-urls"
-              class="bg-purple-600 text-white hover:bg-purple-700 font-bold py-2 px-5 rounded-lg shadow-md transition flex items-center justify-center min-w-[220px]"
-              onclick="fetchTikTokByUrls()">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              Lấy Dữ Liệu theo danh sách link
-            </button>
-          </div>
+        <div class="calc-card full-width hidden" id="results-container">
+          <div id="profile-info"></div>
+          <div id="video-list" style="overflow-x:auto;max-height:600px;"></div>
         </div>
       </div>
     </div>
+  </section>
 
-    <div id="results-container" class="mt-8 bg-white rounded-2xl shadow-lg p-6 sm:p-8 hidden">
-      <div id="profile-info"></div>
-      <div id="video-list" class="overflow-x-auto max-h-[600px] relative"></div>
-    </div>
-  </div>
-
+  <script src="/js/main.js?v=1.4"></script>
   <script>
     let currentVideoStats = [];
     let currentUsername = "";
@@ -242,384 +261,146 @@
 
     function switchTab(tab) {
       currentTab = tab;
-      const btnChannel = document.getElementById('tab-channel');
-      const btnUrls = document.getElementById('tab-urls');
-      const panelChannel = document.getElementById('panel-channel');
-      const panelUrls = document.getElementById('panel-urls');
-      if (tab === 'channel') {
-        btnChannel.classList.add('tab-btn-active'); btnChannel.classList.remove('tab-btn-inactive');
-        btnUrls.classList.add('tab-btn-inactive'); btnUrls.classList.remove('tab-btn-active');
-        panelChannel.classList.remove('hidden'); panelUrls.classList.add('hidden');
-      } else {
-        btnUrls.classList.add('tab-btn-active'); btnUrls.classList.remove('tab-btn-inactive');
-        btnChannel.classList.add('tab-btn-inactive'); btnChannel.classList.remove('tab-btn-active');
-        panelUrls.classList.remove('hidden'); panelChannel.classList.add('hidden');
-      }
+      document.getElementById('tab-channel').classList.toggle('active', tab === 'channel');
+      document.getElementById('tab-urls').classList.toggle('active', tab === 'urls');
+      document.getElementById('panel-channel').classList.toggle('hidden', tab !== 'channel');
+      document.getElementById('panel-urls').classList.toggle('hidden', tab !== 'urls');
     }
 
-    // --- UTILITY FUNCTIONS ---
     function getApifyToken() { return document.getElementById('tokenSelect').value.trim(); }
 
     function setStatus(msg, loading = false, scope = 'channel') {
       const el = scope === 'urls' ? statusUrlsEl : statusEl;
       const btn = scope === 'urls' ? fetchBtnUrls : fetchBtn;
       if (!el) return;
-      el.innerHTML = loading ? `<span class="spinner h-5 w-5 border-2 border-t-transparent border-blue-500 rounded-full mr-2"></span> ${msg}` : msg;
+      el.innerHTML = loading ? `<span class="spinner"></span> ${msg}` : msg;
       if (btn) btn.disabled = loading;
-      if (!loading && btn && scope === 'channel') btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg> Lấy Dữ Liệu theo kênh`;
-      if (!loading && btn && scope === 'urls') btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg> Lấy Dữ Liệu theo danh sách link`;
     }
 
-    // ====== Cập nhật credit cho TẤT CẢ option + TỰ ĐỘNG CHỌN option có credit cao nhất ======
     async function updateTokenOptions() {
       const select = document.getElementById('tokenSelect');
       if (!select) return;
-
+      for (let i = 0; i < select.options.length; i++) { const opt = select.options[i]; if (!opt.dataset.baseLabel) opt.dataset.baseLabel = opt.textContent.trim(); }
+      let bestIndex = -1, bestRemain = -Infinity;
       for (let i = 0; i < select.options.length; i++) {
-        const opt = select.options[i];
-        if (!opt.dataset.baseLabel) opt.dataset.baseLabel = opt.textContent.trim();
-      }
-
-      let bestIndex = -1;
-      let bestRemain = -Infinity;
-
-      for (let i = 0; i < select.options.length; i++) {
-        const opt = select.options[i];
-        const token = opt.value;
-        if (!token) continue;
-
+        const opt = select.options[i]; const token = opt.value; if (!token) continue;
         try {
-          const headers = new Headers({ 'Accept': 'application/json', 'Authorization': 'Bearer ' + token });
-          const resp = await fetch(APIFY_LIMITS_URL, { method: 'GET', headers });
+          const resp = await fetch(APIFY_LIMITS_URL, { method: 'GET', headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } });
           if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-          const json = await resp.json();
-          const data = json?.data || {};
-          const max = Number(data?.limits?.maxMonthlyUsageUsd ?? 0);
-          const used = Number(data?.current?.monthlyUsageUsd ?? 0);
-          const remain = max - used;
-
-          opt.classList.remove('text-red-600', 'font-bold', 'text-gray-400');
-
-          if (Number.isFinite(remain) && remain > 0) {
-            opt.textContent = `${opt.dataset.baseLabel} — còn $${remain.toFixed(2)}`;
-            if (remain > bestRemain) { bestRemain = remain; bestIndex = i; }
-            opt.dataset.remain = remain;
-          } else if (Number.isFinite(remain) && remain <= 0) {
-            opt.textContent = `${opt.dataset.baseLabel} — HẾT TIỀN`;
-            opt.classList.add('text-red-600', 'font-bold');
-            opt.dataset.remain = 0;
-          } else {
-            opt.textContent = `${opt.dataset.baseLabel} — không xác định`;
-            opt.classList.add('text-gray-400');
-            opt.dataset.remain = '';
-          }
-        } catch (e) {
-          console.error("Không lấy được credit:", e.message);
-          opt.textContent = `${opt.dataset.baseLabel} — Lỗi cần kiểm tra`;
-          opt.classList.add('text-gray-400');
-          opt.dataset.remain = '';
-        }
+          const json = await resp.json(); const data = json?.data || {};
+          const max = Number(data?.limits?.maxMonthlyUsageUsd ?? 0), used = Number(data?.current?.monthlyUsageUsd ?? 0), remain = max - used;
+          if (Number.isFinite(remain) && remain > 0) { opt.textContent = `${opt.dataset.baseLabel} — còn $${remain.toFixed(2)}`; if (remain > bestRemain) { bestRemain = remain; bestIndex = i; } opt.dataset.remain = remain; }
+          else if (Number.isFinite(remain) && remain <= 0) { opt.textContent = `${opt.dataset.baseLabel} — HẾT TIỀN`; opt.style.color = '#dc2626'; opt.style.fontWeight = 'bold'; opt.dataset.remain = 0; }
+          else { opt.textContent = `${opt.dataset.baseLabel} — không xác định`; opt.style.color = '#9ca3af'; }
+        } catch (e) { opt.textContent = `${opt.dataset.baseLabel} — Lỗi`; opt.style.color = '#9ca3af'; }
       }
-
-      if (bestIndex > -1 && bestRemain > 0) {
-        select.selectedIndex = bestIndex;
-      }
+      if (bestIndex > -1 && bestRemain > 0) select.selectedIndex = bestIndex;
     }
 
-    // ====== Hiển thị credit còn lại của option đang chọn (bên dưới dropdown) ======
     async function fetchApifyLimitsAndRender() {
-      const el = document.getElementById('apify-balance');
-      if (!el) return;
-      const token = getApifyToken();
-      if (!token) { el.textContent = 'Vui lòng chọn Option.'; return; }
-
+      const el = document.getElementById('apify-balance'); if (!el) return;
+      const token = getApifyToken(); if (!token) { el.textContent = 'Vui lòng chọn Option.'; return; }
       el.textContent = 'Đang kiểm tra credit còn lại...';
       try {
-        const headers = new Headers({ 'Accept': 'application/json', 'Authorization': 'Bearer ' + token });
-        const resp = await fetch(APIFY_LIMITS_URL, { method: 'GET', headers });
+        const resp = await fetch(APIFY_LIMITS_URL, { method: 'GET', headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const json = await resp.json();
-        const data = json?.data || {};
-        const max = Number(data?.limits?.maxMonthlyUsageUsd ?? NaN);
-        const used = Number(data?.current?.monthlyUsageUsd ?? NaN);
+        const json = await resp.json(); const data = json?.data || {};
+        const max = Number(data?.limits?.maxMonthlyUsageUsd ?? NaN), used = Number(data?.current?.monthlyUsageUsd ?? NaN);
         const remain = (Number.isFinite(max) && Number.isFinite(used)) ? (max - used) : null;
-        const remainTxt = (typeof remain === 'number') ? `$${remain.toFixed(2)} USD` : '—';
-        el.innerHTML = `<div class="text-green-600 font-bold">Credit còn lại: ${remainTxt}</div>`;
-      } catch (e) {
-        el.innerHTML = `<div class="text-red-600 font-bold">Không lấy được credit: ${e.message}</div>`;
-      }
+        el.innerHTML = `<div style="color:#16a34a;font-weight:700;">Credit còn lại: ${typeof remain === 'number' ? `$${remain.toFixed(2)} USD` : '—'}</div>`;
+      } catch (e) { el.innerHTML = `<div style="color:#dc2626;font-weight:700;">Không lấy được credit: ${e.message}</div>`; }
     }
 
-    // ====== Khởi tạo: cập nhật option + tự chọn option tốt nhất + render credit của option đã chọn ======
-    document.addEventListener('DOMContentLoaded', async () => {
-      await updateTokenOptions();
-      await fetchApifyLimitsAndRender();
-      document.getElementById('tokenSelect')?.addEventListener('change', fetchApifyLimitsAndRender);
-    });
+    document.addEventListener('DOMContentLoaded', async () => { await updateTokenOptions(); await fetchApifyLimitsAndRender(); document.getElementById('tokenSelect')?.addEventListener('change', fetchApifyLimitsAndRender); });
 
-    // --- DATA FETCH: BY CHANNEL ---
     async function fetchTikTokData() {
       const username = document.getElementById('usernameInput').value.trim();
       const startDate = document.getElementById('startDate').value;
       const endDate = document.getElementById('endDate').value;
       const token = getApifyToken();
-
       if (!token) { setStatus('Vui lòng chọn một Option API.', false, 'channel'); return; }
       if (!username) { setStatus('Vui lòng nhập tên tài khoản.', false, 'channel'); return; }
-
-      currentUsername = username;
-      setStatus('Đang lọc dữ liệu theo kênh...', true, 'channel');
+      currentUsername = username; setStatus('Đang lọc dữ liệu theo kênh...', true, 'channel');
       resultsContainerEl.classList.add('hidden'); profileInfoEl.innerHTML = ''; videoListEl.innerHTML = '';
       downloadBtn.disabled = true; downloadBtnUrls.disabled = true;
-
       try {
-        const response = await fetch(`${APIFY_PROFILE_ACTOR_ENDPOINT}?token=${token}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ "profiles": [username], "resultsPerPage": 200, "shouldDownloadVideos": false })
-        });
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ error: { message: 'Lỗi không xác định' } }));
-          throw new Error(`API Apify: ${errorData.error.message}`);
-        }
+        const response = await fetch(`${APIFY_PROFILE_ACTOR_ENDPOINT}?token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ "profiles": [username], "resultsPerPage": 200, "shouldDownloadVideos": false }) });
+        if (!response.ok) { const err = await response.json().catch(() => ({ error: { message: 'Lỗi' } })); throw new Error(`API: ${err.error.message}`); }
         const data = await response.json();
-        if (!data || data.length === 0) throw new Error('API không trả về dữ liệu. Tên người dùng có thể không chính xác.');
-
-        const profileData = mapProfileData(data[0]);
-        const videoData = mapVideoData(data);
-
-        displayProfileInfo(profileData);
-        displayVideoTable(videoData, startDate, endDate);
-        setStatus(`Hoàn thành. Tìm thấy ${videoData.length} video (trước khi lọc).`, false, 'channel');
+        if (!data || data.length === 0) throw new Error('Không có dữ liệu.');
+        displayProfileInfo(mapProfileData(data[0]));
+        displayVideoTable(mapVideoData(data), startDate, endDate);
+        setStatus(`Hoàn thành. Tìm thấy ${data.length} video.`, false, 'channel');
         fetchApifyLimitsAndRender();
-      } catch (err) {
-        console.error(err);
-        setStatus(`Lỗi: ${err.message}`, false, 'channel');
-      }
+      } catch (err) { setStatus(`Lỗi: ${err.message}`, false, 'channel'); }
     }
 
-    // --- DATA FETCH: BY URL LIST ---
     async function fetchTikTokByUrls() {
       const urls = document.getElementById('videoUrls').value.split('\n').map(u => u.trim()).filter(Boolean);
       const token = getApifyToken();
-
       if (!token) { setStatus('Vui lòng chọn một Option API.', false, 'urls'); return; }
       if (!urls.length) { setStatus('Vui lòng nhập ít nhất 1 link video.', false, 'urls'); return; }
-
-      currentUsername = 'URL_List';
-      setStatus('Đang lấy dữ liệu theo danh sách link...', true, 'urls');
+      currentUsername = 'URL_List'; setStatus('Đang lấy dữ liệu theo danh sách link...', true, 'urls');
       resultsContainerEl.classList.add('hidden'); profileInfoEl.innerHTML = ''; videoListEl.innerHTML = '';
       downloadBtn.disabled = true; downloadBtnUrls.disabled = true;
-
       try {
-        const response = await fetch(`${APIFY_VIDEO_ACTOR_ENDPOINT}?token=${token}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ "postURLs": urls, "shouldDownloadCovers": false, "shouldDownloadSlideshowImages": false, "shouldDownloadSubtitles": false, "shouldDownloadVideos": false })
-        });
+        const response = await fetch(`${APIFY_VIDEO_ACTOR_ENDPOINT}?token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ "postURLs": urls, "shouldDownloadCovers": false, "shouldDownloadSlideshowImages": false, "shouldDownloadSubtitles": false, "shouldDownloadVideos": false }) });
         if (!response.ok) throw new Error('API lỗi khi gọi theo link.');
         const data = await response.json();
         if (!data || data.length === 0) throw new Error('Không lấy được dữ liệu từ link.');
-
-        const videoData = mapVideoData(data);
         profileInfoEl.innerHTML = '';
-        displayVideoTable(videoData, null, null);
-        setStatus(`Hoàn thành. Lấy được ${videoData.length} video từ danh sách link.`, false, 'urls');
+        displayVideoTable(mapVideoData(data), null, null);
+        setStatus(`Hoàn thành. Lấy được ${data.length} video.`, false, 'urls');
         fetchApifyLimitsAndRender();
-      } catch (err) {
-        console.error(err);
-        setStatus(`Lỗi: ${err.message}`, false, 'urls');
-      }
+      } catch (err) { setStatus(`Lỗi: ${err.message}`, false, 'urls'); }
     }
 
-    // --- DATA MAPPING ---
-    function mapProfileData(firstVideo) {
-      return {
-        avatarUrl: firstVideo.authorMeta?.avatar,
-        nickname: firstVideo.authorMeta?.nickName,
-        uniqueId: firstVideo.authorMeta?.name,
-        followerCount: firstVideo.authorMeta?.fans,
-        followingCount: firstVideo.authorMeta?.following,
-        heartCount: firstVideo.authorMeta?.heart,
-        videoCount: firstVideo.authorMeta?.video,
-      };
-    }
+    function mapProfileData(firstVideo) { return { avatarUrl: firstVideo.authorMeta?.avatar, nickname: firstVideo.authorMeta?.nickName, uniqueId: firstVideo.authorMeta?.name, followerCount: firstVideo.authorMeta?.fans, followingCount: firstVideo.authorMeta?.following, heartCount: firstVideo.authorMeta?.heart, videoCount: firstVideo.authorMeta?.video }; }
 
-    function mapVideoData(videos) {
-      return videos.map(v => ({
-        authorName: v.authorMeta?.name,
-        desc: v.text,
-        created: new Date(v.createTimeISO || (v.createTime * 1000)),
-        playCount: v.playCount || 0,
-        likeCount: v.diggCount || 0,
-        commentCount: v.commentCount || 0,
-        shareCount: v.shareCount || 0,
-        saveCount: v.collectCount || 0,
-        url: v.webVideoUrl || `https://www.tiktok.com/@${v.authorMeta?.name}/video/${v.id}`
-      }));
-    }
+    function mapVideoData(videos) { return videos.map(v => ({ authorName: v.authorMeta?.name, desc: v.text, created: new Date(v.createTimeISO || (v.createTime * 1000)), playCount: v.playCount || 0, likeCount: v.diggCount || 0, commentCount: v.commentCount || 0, shareCount: v.shareCount || 0, saveCount: v.collectCount || 0, url: v.webVideoUrl || `https://www.tiktok.com/@${v.authorMeta?.name}/video/${v.id}` })); }
 
-    // --- UI RENDERING ---
     function displayProfileInfo(profile) {
       if (!profile?.uniqueId) { profileInfoEl.innerHTML = ''; return; }
       const fmt = new Intl.NumberFormat('vi-VN');
-      profileInfoEl.innerHTML = `
-      <h2 class="text-2xl font-bold text-gray-900 mb-4">Thông tin Kênh</h2>
-      <div class="flex items-center gap-4 sm:gap-6 border border-gray-200 bg-gray-50 p-4 rounded-lg mb-8">
-        <img src="${profile.avatarUrl}" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-full border-2 border-white shadow-md">
-        <div>
-          <h3 class="text-xl font-bold text-gray-800">${profile.nickname || ''}</h3>
-          <p class="text-md text-gray-600">@${profile.uniqueId || ''}</p>
-          <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-700">
-            <span><strong>${fmt.format(profile.followerCount || 0)}</strong> Followers</span>
-            <span><strong>${fmt.format(profile.followingCount || 0)}</strong> Following</span>
-            <span><strong>${fmt.format(profile.heartCount || 0)}</strong> Thích</span>
-            <span><strong>${fmt.format(profile.videoCount || 0)}</strong> Videos</span>
-          </div>
-        </div>
-      </div>`;
+      profileInfoEl.innerHTML = `<h2>Thông tin Kênh</h2><div class="profile-card"><img src="${profile.avatarUrl}" alt="Avatar"><div><strong style="font-size:1.1rem;">${profile.nickname || ''}</strong><div style="color:var(--color-gray);font-size:0.85rem;">@${profile.uniqueId}</div><div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:4px;font-size:0.85rem;"><span><strong>${fmt.format(profile.followerCount || 0)}</strong> Followers</span><span><strong>${fmt.format(profile.followingCount || 0)}</strong> Following</span><span><strong>${fmt.format(profile.heartCount || 0)}</strong> Thích</span><span><strong>${fmt.format(profile.videoCount || 0)}</strong> Videos</span></div></div></div>`;
     }
 
     function displayVideoTable(videos, startDate, endDate) {
       let filteredVideos = videos;
       if (currentTab === 'channel' && (startDate || endDate)) {
-        const start = startDate ? new Date(startDate) : null;
-        if (start) start.setHours(0, 0, 0, 0);
-
-        const end = endDate ? new Date(endDate) : null;
-        if (end) end.setHours(23, 59, 59, 999);
-
-        filteredVideos = videos.filter(video => {
-          const publishedDate = video.created;
-          const isAfterStart = start ? publishedDate >= start : true;
-          const isBeforeEnd = end ? publishedDate <= end : true;
-          return isAfterStart && isBeforeEnd;
-        });
+        const start = startDate ? new Date(startDate) : null; if (start) start.setHours(0, 0, 0, 0);
+        const end = endDate ? new Date(endDate) : null; if (end) end.setHours(23, 59, 59, 999);
+        filteredVideos = videos.filter(v => { const d = v.created; return (!start || d >= start) && (!end || d <= end); });
       }
-
       currentVideoStats = filteredVideos;
-
-      if (filteredVideos.length === 0) {
-        videoListEl.innerHTML = `<h3 class="text-xl font-bold text-gray-900 mb-4">Danh sách Video</h3><p class="text-center text-gray-500 py-8">Không có video nào trong khoảng thời gian đã chọn.</p>`;
-        resultsContainerEl.classList.remove('hidden');
-        return;
-      }
-
-      if (currentTab === 'channel') { downloadBtn.disabled = false; }
-      else { downloadBtnUrls.disabled = false; }
-
+      if (filteredVideos.length === 0) { videoListEl.innerHTML = `<p style="text-align:center;color:var(--color-gray);padding:24px;">Không có video nào.</p>`; resultsContainerEl.classList.remove('hidden'); return; }
+      if (currentTab === 'channel') downloadBtn.disabled = false; else downloadBtnUrls.disabled = false;
       const fmt = new Intl.NumberFormat('vi-VN');
-      let html = `
-      <h3 class="text-xl font-bold text-gray-900 mb-4">Danh sách Video (${filteredVideos.length})</h3>
-      <table class="w-full text-sm text-left text-gray-600 border border-gray-200">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="px-3 py-2 border">Tài khoản Tiktok</th>
-            <th class="px-3 py-2 border">Nội dung</th>
-            <th class="px-3 py-2 border">Ngày đăng</th>
-            <th class="px-3 py-2 border">Lượt xem</th>
-            <th class="px-3 py-2 border">Thích</th>
-            <th class="px-3 py-2 border">Bình luận</th>
-            <th class="px-3 py-2 border">Lượt chia sẻ</th>
-            <th class="px-3 py-2 border">Lượt lưu</th>
-          </tr>
-        </thead>
-        <tbody>`;
-
-      for (const v of filteredVideos) {
-        html += `
-        <tr class="hover:bg-gray-50">
-          <td class="px-3 py-2 border align-top">${v.authorName || 'N/A'}</td>
-          <td class="px-3 py-2 border align-top" title="${v.desc}"><a href="${v.url}" target="_blank" class="hover:text-blue-600 hover:underline">${(v.desc || '').slice(0, 40)}${(v.desc || '').length > 40 ? '…' : ''}</a></td>
-          <td class="px-3 py-2 border align-top">${v.created.toLocaleDateString('vi-VN')}</td>
-          <td class="px-3 py-2 border align-top">${fmt.format(v.playCount)}</td>
-          <td class="px-3 py-2 border align-top">${fmt.format(v.likeCount)}</td>
-          <td class="px-3 py-2 border align-top">${fmt.format(v.commentCount)}</td>
-          <td class="px-3 py-2 border align-top">${fmt.format(v.shareCount)}</td>
-          <td class="px-3 py-2 border align-top">${fmt.format(v.saveCount)}</td>
-        </tr>`;
-      }
-      html += `</tbody>
-        <tfoot class="bg-gray-50">
-            <tr>
-                <td class="p-2 text-center border"><button class="copy-btn" onclick="copyColumnData('authorName', this)">📋 Copy</button></td>
-                <td class="p-2 text-center border"><button class="copy-btn" onclick="copyColumnData('desc', this)">📋 Copy</button></td>
-                <td class="p-2 text-center border"><button class="copy-btn" onclick="copyColumnData('created', this)">📋 Copy</button></td>
-                <td class="p-2 text-center border"><button class="copy-btn" onclick="copyColumnData('playCount', this)">📋 Copy</button></td>
-                <td class="p-2 text-center border"><button class="copy-btn" onclick="copyColumnData('likeCount', this)">📋 Copy</button></td>
-                <td class="p-2 text-center border"><button class="copy-btn" onclick="copyColumnData('commentCount', this)">📋 Copy</button></td>
-                <td class="p-2 text-center border"><button class="copy-btn" onclick="copyColumnData('shareCount', this)">📋 Copy</button></td>
-                <td class="p-2 text-center border"><button class="copy-btn" onclick="copyColumnData('saveCount', this)">📋 Copy</button></td>
-            </tr>
-        </tfoot>
-    </table>`;
+      let html = `<h2>Danh sách Video (${filteredVideos.length})</h2><table class="data-table"><thead><tr><th>Tài khoản</th><th>Nội dung</th><th>Ngày đăng</th><th>Lượt xem</th><th>Thích</th><th>Bình luận</th><th>Chia sẻ</th><th>Lưu</th></tr></thead><tbody>`;
+      for (const v of filteredVideos) { html += `<tr><td>${v.authorName || 'N/A'}</td><td title="${v.desc}"><a href="${v.url}" target="_blank" style="color:var(--color-primary);">${(v.desc || '').slice(0, 40)}${(v.desc || '').length > 40 ? '…' : ''}</a></td><td>${v.created.toLocaleDateString('vi-VN')}</td><td>${fmt.format(v.playCount)}</td><td>${fmt.format(v.likeCount)}</td><td>${fmt.format(v.commentCount)}</td><td>${fmt.format(v.shareCount)}</td><td>${fmt.format(v.saveCount)}</td></tr>`; }
+      html += `</tbody><tfoot style="background:var(--color-bg,#f8fafc);"><tr><td style="text-align:center;"><button class="copy-btn" onclick="copyColumnData('authorName', this)">📋 Copy</button></td><td style="text-align:center;"><button class="copy-btn" onclick="copyColumnData('desc', this)">📋 Copy</button></td><td style="text-align:center;"><button class="copy-btn" onclick="copyColumnData('created', this)">📋 Copy</button></td><td style="text-align:center;"><button class="copy-btn" onclick="copyColumnData('playCount', this)">📋 Copy</button></td><td style="text-align:center;"><button class="copy-btn" onclick="copyColumnData('likeCount', this)">📋 Copy</button></td><td style="text-align:center;"><button class="copy-btn" onclick="copyColumnData('commentCount', this)">📋 Copy</button></td><td style="text-align:center;"><button class="copy-btn" onclick="copyColumnData('shareCount', this)">📋 Copy</button></td><td style="text-align:center;"><button class="copy-btn" onclick="copyColumnData('saveCount', this)">📋 Copy</button></td></tr></tfoot></table>`;
       videoListEl.innerHTML = html;
       resultsContainerEl.classList.remove('hidden');
     }
 
-    // --- COPY FUNCTION ---
     async function copyColumnData(key, buttonEl) {
       if (!currentVideoStats || currentVideoStats.length === 0) return;
-
-      const columnData = currentVideoStats.map(item => {
-        const value = item[key];
-        if (value instanceof Date) {
-          return value.toLocaleDateString('vi-VN');
-        }
-        return value !== undefined ? value : '';
-      }).join('\n');
-
-      try {
-        await navigator.clipboard.writeText(columnData);
-        const originalText = buttonEl.innerHTML;
-        buttonEl.innerHTML = 'Đã Copy!';
-        buttonEl.style.backgroundColor = '#d1fae5';
-        setTimeout(() => {
-          buttonEl.innerHTML = originalText;
-          buttonEl.style.backgroundColor = '';
-        }, 1500);
-      } catch (err) {
-        console.error('Lỗi khi sao Copy: ', err);
-        alert('Không thể sao Copy vào clipboard.');
-      }
+      const columnData = currentVideoStats.map(item => { const value = item[key]; if (value instanceof Date) return value.toLocaleDateString('vi-VN'); return value !== undefined ? value : ''; }).join('\n');
+      try { await navigator.clipboard.writeText(columnData); const originalText = buttonEl.innerHTML; buttonEl.innerHTML = 'Đã Copy!'; buttonEl.style.backgroundColor = '#d1fae5'; setTimeout(() => { buttonEl.innerHTML = originalText; buttonEl.style.backgroundColor = ''; }, 1500); }
+      catch (err) { alert('Không thể sao chép.'); }
     }
 
-    // --- EXPORT (Excel) ---
     function downloadExcel() {
       if (!currentVideoStats.length) { alert("Không có dữ liệu để xuất."); return; }
-      const rows = currentVideoStats.map(v => ({
-        "Tài khoản Tiktok": v.authorName,
-        "Nội dung": v.desc,
-        "Ngày đăng": v.created.toLocaleDateString('vi-VN'),
-        "View": v.playCount,
-        "Like": v.likeCount,
-        "Comment": v.commentCount,
-        "Share": v.shareCount,
-        "Lưu": v.saveCount,
-        "URL": v.url
-      }));
+      const rows = currentVideoStats.map(v => ({ "Tài khoản Tiktok": v.authorName, "Nội dung": v.desc, "Ngày đăng": v.created.toLocaleDateString('vi-VN'), "View": v.playCount, "Like": v.likeCount, "Comment": v.commentCount, "Share": v.shareCount, "Lưu": v.saveCount, "URL": v.url }));
       const header = ["Tài khoản Tiktok", "Nội dung", "Ngày đăng", "View", "Like", "Comment", "Share", "Lưu", "URL"];
-      const ws = XLSX.utils.json_to_sheet(rows, { header: header });
-      ws['!cols'] = [
-        { wch: 20 }, // Tài khoản
-        { wch: 40 }, // Nội dung
-        { wch: 15 }, // Ngày đăng
-        { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, // Stats
-        { wch: 50 }  // URL
-      ];
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "TikTok Videos");
+      const ws = XLSX.utils.json_to_sheet(rows, { header });
+      ws['!cols'] = [{ wch: 20 }, { wch: 40 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 50 }];
+      const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "TikTok Videos");
       const today = new Date(), y = today.getFullYear(), m = String(today.getMonth() + 1).padStart(2, '0'), d = String(today.getDate()).padStart(2, '0');
-      const fname = `TikTok_${currentUsername}_${y}${m}${d}.xlsx`;
-      XLSX.writeFile(wb, fname);
+      XLSX.writeFile(wb, `TikTok_${currentUsername}_${y}${m}${d}.xlsx`);
     }
   </script>
-  <script>
-    const menuToggle = document.getElementById('menuToggle');
-    const navList = document.getElementById('navList');
-    if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
-  </script>
-
 </body>
 
 </html>

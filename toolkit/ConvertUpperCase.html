@@ -2,6 +2,7 @@
 <html lang="vi" data-theme="light">
 
 <head>
+  <script src="/js/tracking.js"></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chuyển đổi chữ hoa / chữ thường - Nguyễn Văn Hảo</title>
@@ -17,15 +18,15 @@
   <link rel="stylesheet" href="/css/style.css?v=1.5">
   <link rel="stylesheet" href="/css/toolkit.css">
   <style>
-    .tool-card-wrap textarea {
+    .calc-card textarea {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 0.9rem;
-      min-height: 220px;
     }
 
     .stats {
       font-size: 0.8rem;
       color: var(--color-gray);
+      margin-top: 6px;
     }
   </style>
 </head>
@@ -48,53 +49,63 @@
     </div>
   </header>
 
-  <section class="tool-page">
+  <section class="calc-page">
     <div class="container">
       <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
-      <div class="tool-header">
+      <div class="calc-header">
+        <span class="section-badge" style="background:var(--color-lavender);margin-bottom:12px;display:inline-block;">🔤
+          Text Tool</span>
         <h1>Chuyển đổi chữ hoa / chữ thường</h1>
-        <p>Nhập văn bản, chọn chế độ rồi bấm Thực hiện. Xử lý hoàn toàn trên thiết bị của bạn.</p>
+        <p>Nhập văn bản, chọn chế độ rồi bấm Thực hiện. Xử lý hoàn toàn trên thiết bị.</p>
       </div>
 
-      <div class="tool-card-wrap wide">
-        <div class="tool-grid">
-          <div class="form-group">
-            <label for="input">Văn bản gốc</label>
-            <textarea id="input" placeholder="Dán hoặc nhập văn bản tại đây..."></textarea>
-            <div class="tool-actions">
-              <select id="mode" style="flex:1;">
-                <option value="upper">UPPERCASE (chữ HOA)</option>
-                <option value="lower">lowercase (chữ thường)</option>
-                <option value="title">Capitalize Words (hoa chữ cái đầu mỗi từ)</option>
-                <option value="sentence">Sentence case (hoa chữ cái đầu mỗi câu)</option>
-                <option value="invert">iNVERT cASE (đảo hoa ↔ thường)</option>
-                <option value="random">rAnDoM cAsE (ngẫu nhiên)</option>
-              </select>
-              <button class="tool-btn tool-btn-primary" id="convert" type="button">Thực hiện</button>
-            </div>
-            <div class="tool-actions">
-              <button class="tool-btn tool-btn-outline" id="swap" type="button">Đổi chỗ</button>
-              <button class="tool-btn tool-btn-danger" id="clear" type="button">Xoá</button>
-              <label style="display:flex;align-items:center;gap:6px;margin-left:auto;font-size:0.85rem;">
-                <input type="checkbox" id="auto" checked /> Tự động khi gõ
-              </label>
-            </div>
-            <span class="stats" id="stats-in">0 ký tự • 0 từ • 0 dòng</span>
+      <div class="calc-grid">
+        <!-- Input -->
+        <div class="calc-card">
+          <h2>📝 Văn bản gốc</h2>
+          <div class="input-group">
+            <textarea id="input" rows="10" placeholder="Dán hoặc nhập văn bản tại đây..."></textarea>
           </div>
-          <div class="form-group">
-            <label for="output">Kết quả</label>
-            <textarea id="output" placeholder="Kết quả sẽ hiển thị tại đây..." readonly></textarea>
-            <div class="tool-actions">
-              <button class="tool-btn tool-btn-success" id="copy" type="button">Sao chép</button>
-              <button class="tool-btn tool-btn-outline" id="download" type="button">Tải .txt</button>
-            </div>
-            <span class="stats" id="stats-out">0 ký tự • 0 từ • 0 dòng</span>
+          <div class="input-group">
+            <label>Chế độ chuyển đổi</label>
+            <select id="mode">
+              <option value="upper">UPPERCASE (chữ HOA)</option>
+              <option value="lower">lowercase (chữ thường)</option>
+              <option value="title">Capitalize Words (hoa chữ cái đầu mỗi từ)</option>
+              <option value="sentence">Sentence case (hoa chữ cái đầu mỗi câu)</option>
+              <option value="invert">iNVERT cASE (đảo hoa ↔ thường)</option>
+              <option value="random">rAnDoM cAsE (ngẫu nhiên)</option>
+            </select>
           </div>
+          <button id="convert" class="btn-calc">Thực hiện</button>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+            <button class="btn-copy" id="swap">Đổi chỗ ↕</button>
+            <button class="btn-copy" id="clear" style="color:#ef4444;border-color:#ef4444;">Xoá</button>
+            <label style="display:flex;align-items:center;gap:6px;margin-left:auto;font-size:0.85rem;">
+              <input type="checkbox" id="auto" checked /> Tự động
+            </label>
+          </div>
+          <div class="stats" id="stats-in">0 ký tự • 0 từ • 0 dòng</div>
+        </div>
+
+        <!-- Output -->
+        <div class="calc-card">
+          <h2>✅ Kết quả</h2>
+          <div class="input-group">
+            <textarea id="output" rows="10" readonly placeholder="Kết quả sẽ hiển thị tại đây..."
+              style="background:var(--color-bg,#f8fafc);"></textarea>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-calc" id="copy" style="background:#22C55E;border-color:#22C55E;">Sao chép</button>
+            <button class="btn-copy" id="download">Tải .txt</button>
+          </div>
+          <div class="stats" id="stats-out">0 ký tự • 0 từ • 0 dòng</div>
         </div>
       </div>
     </div>
   </section>
 
+  <script src="/js/main.js?v=1.4"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const $ = (id) => document.getElementById(id);
@@ -119,11 +130,6 @@
       els.clear.addEventListener('click', () => { els.input.value = ''; els.output.value = ''; renderStats(); els.input.focus(); });
       transform();
     });
-
-    // Mobile menu
-    const menuToggle = document.getElementById('menuToggle');
-    const navList = document.getElementById('navList');
-    if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
   </script>
 </body>
 

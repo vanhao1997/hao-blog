@@ -2,6 +2,7 @@
 <html lang="vi" data-theme="light">
 
 <head>
+    <script src="/js/tracking.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tính Thuế VAT Ngược - Nguyễn Văn Hảo</title>
@@ -49,29 +50,7 @@
             color: var(--color-primary);
         }
 
-        .result-box {
-            background: #f9fafb;
-            padding: 20px;
-            border-radius: 12px;
-            border: 2px solid var(--color-border);
-        }
-
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .val {
-            font-weight: 700;
-        }
-
-        .val-total {
-            font-size: 1.4rem;
-            color: #dc2626;
-        }
-
-        .tool-card-wrap input[type="text"] {
+        .calc-card input[type="text"]#postTaxInput {
             font-size: 1.3rem;
             text-align: right;
             font-weight: 700;
@@ -98,57 +77,70 @@
         </div>
     </header>
 
-    <section class="tool-page">
+    <section class="calc-page">
         <div class="container">
             <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
-            <div class="tool-header">
+            <div class="calc-header">
+                <span class="section-badge"
+                    style="background:var(--color-lavender);margin-bottom:12px;display:inline-block;">🧮
+                    Calculator</span>
                 <h1>Tính Thuế VAT Ngược</h1>
                 <p>Tính nhanh giá gốc trước thuế từ giá sau thuế</p>
             </div>
 
-            <div class="tool-card-wrap" style="max-width:500px;">
-                <div class="form-group">
-                    <label>Số tiền sau thuế</label>
-                    <input type="text" id="postTaxInput" placeholder="0" autocomplete="off">
-                </div>
-
-                <div class="chip-row">
-                    <button class="chip" onclick="setQuickValue(10000000)">10tr</button>
-                    <button class="chip" onclick="setQuickValue(15000000)">15tr</button>
-                    <button class="chip" onclick="setQuickValue(20000000)">20tr</button>
-                    <button class="chip" onclick="setQuickValue(25000000)">25tr</button>
-                    <button class="chip" onclick="setQuickValue(30000000)">30tr</button>
-                </div>
-
-                <label>Mức thuế</label>
-                <div class="tax-options">
-                    <div class="tax-option">
-                        <input type="radio" name="taxRate" id="rate8" value="0.08" checked>
-                        <label for="rate8">8%</label>
+            <div class="calc-grid" style="max-width:500px;">
+                <!-- Input card -->
+                <div class="calc-card full-width">
+                    <h2>💰 Nhập số tiền</h2>
+                    <div class="input-group">
+                        <label>Số tiền sau thuế (VNĐ)</label>
+                        <input type="text" id="postTaxInput" placeholder="0" autocomplete="off">
                     </div>
-                    <div class="tax-option">
-                        <input type="radio" name="taxRate" id="rate10" value="0.10">
-                        <label for="rate10">10%</label>
-                    </div>
-                </div>
 
-                <div class="result-box">
-                    <div class="result-item">
-                        <span>Tiền thuế:</span>
-                        <span id="taxAmount" class="val">0 đ</span>
+                    <div class="chip-row">
+                        <button class="chip" onclick="setQuickValue(10000000)">10tr</button>
+                        <button class="chip" onclick="setQuickValue(15000000)">15tr</button>
+                        <button class="chip" onclick="setQuickValue(20000000)">20tr</button>
+                        <button class="chip" onclick="setQuickValue(25000000)">25tr</button>
+                        <button class="chip" onclick="setQuickValue(30000000)">30tr</button>
                     </div>
-                    <div class="result-item" style="border-top: 1px dashed #ccc; padding-top: 10px;">
-                        <span>Giá gốc (Trước thuế):</span>
-                        <span id="preTaxResult" class="val val-total">0 đ</span>
+
+                    <div class="input-group">
+                        <label>Mức thuế</label>
+                    </div>
+                    <div class="tax-options">
+                        <div class="tax-option">
+                            <input type="radio" name="taxRate" id="rate8" value="0.08" checked>
+                            <label for="rate8">8%</label>
+                        </div>
+                        <div class="tax-option">
+                            <input type="radio" name="taxRate" id="rate10" value="0.10">
+                            <label for="rate10">10%</label>
+                        </div>
                     </div>
                 </div>
 
-                <button class="tool-btn tool-btn-primary" id="btnCopy" onclick="copyValue()"
-                    style="width:100%; margin-top:16px;">Sao chép giá gốc</button>
+                <!-- Results card -->
+                <div class="calc-card full-width">
+                    <h2>📊 Kết quả</h2>
+                    <div class="results-grid" style="grid-template-columns:1fr 1fr;">
+                        <div class="metric">
+                            <div class="metric-value" id="taxAmount">0 đ</div>
+                            <div class="metric-label">Tiền thuế</div>
+                        </div>
+                        <div class="metric metric-good">
+                            <div class="metric-value" id="preTaxResult">0 đ</div>
+                            <div class="metric-label">Giá gốc (trước thuế)</div>
+                        </div>
+                    </div>
+                    <button class="btn-calc" id="btnCopy" onclick="copyValue()" style="margin-top:16px;">Sao chép giá
+                        gốc</button>
+                </div>
             </div>
         </div>
     </section>
 
+    <script src="/js/main.js?v=1.4"></script>
     <script>
         const input = document.getElementById('postTaxInput');
         const preTaxDisplay = document.getElementById('preTaxResult');
@@ -189,11 +181,6 @@
                 setTimeout(() => { btnCopy.innerText = originalText; btnCopy.style.background = ""; }, 1500);
             });
         }
-
-        // Mobile menu
-        const menuToggle = document.getElementById('menuToggle');
-        const navList = document.getElementById('navList');
-        if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
     </script>
 </body>
 

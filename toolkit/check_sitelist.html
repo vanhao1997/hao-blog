@@ -2,229 +2,163 @@
 <html lang="vi" data-theme="light">
 
 <head>
+    <script src="/js/tracking.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bộ lọc Danh sách Trang web - Nguyễn Văn Hảo</title>
+    <meta name="description" content="Lọc danh sách website theo chủ đề và thiết bị">
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/css/main.css?v=1.4">
     <link rel="stylesheet" href="/css/style.css?v=1.5">
     <link rel="stylesheet" href="/css/toolkit.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #007bff;
-            --secondary-color: #f8f9fa;
-            --border-color: #dee2e6;
-            --text-color: #212529;
-            --background-color: #fff;
-        }
-
-        .tool-page {
-            font-family: 'Be Vietnam Pro', sans-serif;
-            padding: 20px;
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-
-        .tool-page>.container {
-            max-width: 1500px;
-            margin: 0 auto;
-            background-color: var(--background-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        .filter-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr 240px;
+            gap: 0;
+            min-height: 80vh;
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
             overflow: hidden;
+            background: #fff;
         }
 
-        .tool-page .tool-header {
+        @media(max-width:1024px) {
+            .filter-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .filter-panel {
             padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .tool-page .tool-header h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .tool-page .tool-header p {
-            margin: 5px 0 0;
-            opacity: 0.9;
-        }
-
-        main {
-            display: flex;
-            flex-wrap: nowrap;
-        }
-
-        aside,
-        section {
-            padding: 20px;
-            height: calc(88vh - 40px);
             overflow-y: auto;
+            max-height: 85vh;
         }
 
-        #topics-container {
-            flex: 2;
-            min-width: 240px;
-            border-right: 1px solid var(--border-color);
-            background-color: #fdfdfd;
-        }
-
-        #sites-container {
-            flex: 5;
-            min-width: 400px;
-        }
-
-        #selected-sites-container {
-            flex: 2;
-            min-width: 240px;
-            border-left: 1px solid var(--border-color);
-            background-color: #fdfdfd;
-        }
-
-        #topics-container h2,
-        #sites-container h2,
-        #selected-sites-container h2 {
-            margin-top: 0;
-            font-size: 18px;
+        .filter-panel h2 {
+            font-size: 1rem;
             font-weight: 700;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: 8px;
+            margin: 0 0 12px;
             position: sticky;
             top: -20px;
-            background: #fdfdfd;
+            background: inherit;
             z-index: 10;
         }
 
-        #sites-container h2 {
-            background: var(--background-color);
+        .panel-left {
+            background: #fdfdfd;
+            border-right: 1px solid var(--color-border);
         }
 
-        .site-list-wrapper h3 {
-            font-size: 17px;
-            font-weight: 500;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-        }
-
-        .site-list-wrapper h3 .fa-solid {
-            margin-right: 8px;
-            color: var(--primary-color);
+        .panel-right {
+            background: #fdfdfd;
+            border-left: 1px solid var(--color-border);
         }
 
         .topic-item label {
             display: block;
-            width: 100%;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            background-color: var(--secondary-color);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            text-align: left;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            background: var(--color-bg, #f1f5f9);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 15px;
-            transition: background-color 0.2s, color 0.2s;
-            box-sizing: border-box;
+            font-size: 0.85rem;
+            transition: 0.2s;
         }
 
-        .topic-item input[type="checkbox"] {
+        .topic-item input[type=checkbox] {
             display: none;
         }
 
         .topic-item label:hover {
-            background-color: #e2e6ea;
+            background: #e2e6ea;
         }
 
-        .topic-item input[type="checkbox"]:checked+label {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-            font-weight: 500;
+        .topic-item input:checked+label {
+            background: var(--color-primary);
+            color: #fff;
+            border-color: var(--color-primary);
+            font-weight: 600;
         }
 
         .sites-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 10px;
         }
 
         .site-item {
-            padding: 10px;
-            background-color: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 5px;
-            transition: box-shadow 0.2s;
-        }
-
-        .site-item:hover {
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            padding: 8px 10px;
+            background: var(--color-bg, #f8fafc);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
         }
 
         .site-item label {
             display: flex;
             align-items: center;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 0.8rem;
+            gap: 8px;
         }
 
-        .site-item input[type="checkbox"] {
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
+        .site-item input[type=checkbox] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .site-list-wrapper h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin: 8px 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--color-border);
         }
 
         #selected-sites-list {
-            list-style-type: none;
+            list-style: none;
             padding: 0;
+            margin: 0;
         }
 
         #selected-sites-list li {
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
+            padding: 4px 0;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.8rem;
         }
 
         #selected-sites-list li a {
+            color: var(--color-primary);
             text-decoration: none;
-            color: var(--primary-color);
-            transition: opacity 0.2s;
         }
 
         #selected-sites-list li a:hover {
-            opacity: 0.8;
             text-decoration: underline;
         }
 
-        #view-toggle-container {
+        .view-toggle {
             display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
+            gap: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--color-border);
         }
 
-        #view-toggle-container label {
+        .view-toggle label {
             display: flex;
             align-items: center;
-            font-size: 16px;
+            font-size: 0.85rem;
+            gap: 6px;
             cursor: pointer;
-        }
-
-        #view-toggle-container input {
-            margin-right: 8px;
-            width: 18px;
-            height: 18px;
         }
     </style>
 </head>
@@ -247,61 +181,77 @@
             </nav>
         </div>
     </header>
-    <div style="padding:16px 24px;"><a href="/toolkit/" class="back-link">← Quay lại Toolkit</a></div>
-    <main>
-        <aside id="topics-container">
-            <h2>Chủ đề</h2>
-            <div id="topics-list">
-                <div class="topic-item">
-                    <input type="checkbox" id="topic_all" value="all" checked>
-                    <label for="topic_all">Tất cả chủ đề</label>
-                </div>
-                <div class="topic-item"><input type="checkbox" id="topic_1" value="1"><label for="topic_1">Tin tức tổng
-                        hợp</label></div>
-                <div class="topic-item"><input type="checkbox" id="topic_2" value="2"><label for="topic_2">Kinh tế tài
-                        chính</label></div>
-                <div class="topic-item"><input type="checkbox" id="topic_3" value="3"><label for="topic_3">Công nghệ -
-                        khoa học</label></div>
-                <div class="topic-item"><input type="checkbox" id="topic_4" value="4"><label for="topic_4">Gia đình phụ
-                        nữ</label></div>
-                <div class="topic-item"><input type="checkbox" id="topic_6" value="6"><label for="topic_6">Giáo
-                        dục</label></div>
-                <div class="topic-item"><input type="checkbox" id="topic_7" value="7"><label for="topic_7">Mua sắm -
-                        tiêu dùng</label></div>
-                <div class="topic-item"><input type="checkbox" id="topic_8" value="8"><label for="topic_8">Sức
-                        khỏe</label></div>
-                <div class="topic-item"><input type="checkbox" id="topic_9" value="9"><label for="topic_9">Thể Thao và
-                        xe cộ</label></div>
-                <div class="topic-item"><input type="checkbox" id="topic_10" value="10"><label for="topic_10">Phong cách
-                        sống và du lịch</label></div>
-                <div class="topic-item"><input type="checkbox" id="topic_18" value="18"><label for="topic_18">App - Ứng
-                        dụng</label></div>
-                <div class="topic-item"><input type="checkbox" id="topic_17" value="17"><label for="topic_17">Các site
-                        khác</label></div>
-            </div>
-        </aside>
-        <section id="sites-container">
-            <h2>Danh sách Website</h2>
-            <div id="view-toggle-container">
-                <label><input type="checkbox" name="view-toggle" value="pc" checked> PC</label>
-                <label><input type="checkbox" name="view-toggle" value="mobile" checked> Mobile</label>
-            </div>
-            <div class="site-list-wrapper" id="pc-wrapper">
-                <h3><i class="fa-solid fa-desktop"></i> Website PC</h3>
-                <div id="sites-list-pc" class="sites-list"></div>
-            </div>
-            <div class="site-list-wrapper" id="mobile-wrapper">
-                <h3><i class="fa-solid fa-mobile-screen-button"></i> Website Mobile</h3>
-                <div id="sites-list-mobile" class="sites-list"></div>
-            </div>
-        </section>
-        <aside id="selected-sites-container">
-            <h2>Website đã chọn</h2>
-            <ul id="selected-sites-list"></ul>
-        </aside>
-    </main>
-    </div>
 
+    <section class="calc-page">
+        <div class="container">
+            <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+            <div class="calc-header">
+                <span class="section-badge"
+                    style="background:var(--color-lavender);margin-bottom:12px;display:inline-block;">🌐 Site
+                    Filter</span>
+                <h1>Bộ lọc Danh sách Trang web</h1>
+                <p>Lọc danh sách website theo chủ đề và thiết bị (PC/Mobile).</p>
+            </div>
+
+            <div class="filter-layout">
+                <!-- Topics panel -->
+                <aside class="filter-panel panel-left" id="topics-container">
+                    <h2>Chủ đề</h2>
+                    <div id="topics-list">
+                        <div class="topic-item"><input type="checkbox" id="topic_all" value="all" checked><label
+                                for="topic_all">Tất cả chủ đề</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_1" value="1"><label for="topic_1">Tin
+                                tức tổng hợp</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_2" value="2"><label for="topic_2">Kinh
+                                tế tài chính</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_3" value="3"><label for="topic_3">Công
+                                nghệ - khoa học</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_4" value="4"><label for="topic_4">Gia
+                                đình phụ nữ</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_6" value="6"><label for="topic_6">Giáo
+                                dục</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_7" value="7"><label for="topic_7">Mua
+                                sắm - tiêu dùng</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_8" value="8"><label for="topic_8">Sức
+                                khỏe</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_9" value="9"><label for="topic_9">Thể
+                                Thao và xe cộ</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_10" value="10"><label
+                                for="topic_10">Phong cách sống và du lịch</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_18" value="18"><label
+                                for="topic_18">App - Ứng dụng</label></div>
+                        <div class="topic-item"><input type="checkbox" id="topic_17" value="17"><label
+                                for="topic_17">Các site khác</label></div>
+                    </div>
+                </aside>
+
+                <!-- Sites panel -->
+                <section class="filter-panel" id="sites-container">
+                    <h2>Danh sách Website</h2>
+                    <div class="view-toggle" id="view-toggle-container">
+                        <label><input type="checkbox" name="view-toggle" value="pc" checked> 🖥️ PC</label>
+                        <label><input type="checkbox" name="view-toggle" value="mobile" checked> 📱 Mobile</label>
+                    </div>
+                    <div class="site-list-wrapper" id="pc-wrapper">
+                        <h3>🖥️ Website PC</h3>
+                        <div id="sites-list-pc" class="sites-list"></div>
+                    </div>
+                    <div class="site-list-wrapper" id="mobile-wrapper">
+                        <h3>📱 Website Mobile</h3>
+                        <div id="sites-list-mobile" class="sites-list"></div>
+                    </div>
+                </section>
+
+                <!-- Selected sites panel -->
+                <aside class="filter-panel panel-right" id="selected-sites-container">
+                    <h2>Website đã chọn</h2>
+                    <ul id="selected-sites-list"></ul>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <script src="/js/main.js?v=1.4"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const pcSitesData = [{ name: 'dantri.com.vn', topics: ['1', '2'] }, { name: 'soha.vn', topics: ['1', '2', '3', '4', '8', '9', '10'] }, { name: 'nld.com.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'giadinh.suckhoedoisong.vn', topics: ['1', '2', '3', '4', '8', '10', '11'] }, { name: 'cafebiz.vn', topics: ['1', '2', '3'] }, { name: 'docbao.vn', topics: ['1', '4', '11'] }, { name: 'thanhnien.vn', topics: ['1', '2', '3', '4', '6', '7', '8', '9', '10', '11', '16'] }, { name: 'laodong.vn', topics: ['1', '2', '4', '6', '8', '9', '10'] }, { name: 'enbac.com', topics: ['7'] }, { name: 'genk.vn', topics: ['1', '3', '7'] }, { name: 'f319.com', topics: ['1', '2'] }, { name: 'thethaovanhoa.vn', topics: ['1', '9', '11', '17'] }, { name: 'thethao247.vn', topics: ['1', '9'] }, { name: 'vietbao.vn', topics: ['1', '11', '17'] }, { name: 'thongtintuyensinh.vn', topics: ['6'] }, { name: 'kienthuc.net.vn', topics: ['1', '6', '17'] }, { name: 'petrotimes.vn', topics: ['1', '2'] }, { name: 'phunuvagiadinh.vn', topics: ['1', '4', '17'] }, { name: 'saostar.vn', topics: ['1', '11', '17'] }, { name: 'vov.vn', topics: ['1'] }, { name: 'baophapluat.vn', topics: ['1'] }, { name: 'webthethao.vn', topics: ['9', '11'] }, { name: 'vietnamfinance.vn', topics: ['2'] }, { name: 'baodautu.vn', topics: ['1', '2', '17'] }, { name: 'tinnhanhchungkhoan.vn', topics: ['1', '2', '17'] }, { name: 'viettimes.vn', topics: ['1', '2', '11', '17'] }, { name: 'voh.com.vn', topics: ['1', '17'] }, { name: 'tapchitaichinh.vn', topics: ['1', '2'] }, { name: 'vietnambiz.vn', topics: ['1', '2'] }, { name: 'suckhoehangngay.vn', topics: ['4', '8'] }, { name: 'ttvn.toquoc.vn', topics: ['1', '11'] }, { name: 'nhipsongviet.toquoc.vn', topics: ['1', '2', '11'] }, { name: 'tinhte.vn', topics: ['1', '3', '16'] }, { name: 'tiin.vn', topics: ['1', '11', '17'] }, { name: 'emdep.vn', topics: ['4'] }, { name: 'vietq.vn', topics: ['2', '7', '17'] }, { name: '1thegioi.vn', topics: ['1'] }, { name: 'phunuonline.com.vn', topics: ['4', '17'] }, { name: 'lamchame.com', topics: ['1', '4', '17'] }, { name: 'hopamviet.vn', topics: ['14'] }, { name: 'giacaphe.com', topics: ['1', '2', '7'] }, { name: 'hoc24.vn', topics: ['6'] }, { name: 'doisongvietnam.vn', topics: ['1', '10', '11'] }, { name: 'vnexpress.net', topics: ['1', '11', '17'] }, { name: 'vietnamplus.vn', topics: ['1', '17'] }, { name: 'bongdaplus.vn', topics: ['1', '9', '11'] }, { name: 'chovinh.com', topics: ['7', '17'] }, { name: 'phunutoday.vn', topics: ['1', '4'] }, { name: 'congan.com.vn', topics: ['1', '17'] }, { name: 'websosanh.vn', topics: ['7', '17'] }, { name: 'techrum.vn', topics: ['3', '17'] }, { name: 'phunuvietnam.vn', topics: ['1', '2', '4', '6', '7', '10', '11'] }, { name: 'phunutre.info', topics: ['4'] }, { name: 'kinhtedothi.vn', topics: ['1', '2', '17'] }, { name: 'quantrimang.com', topics: ['3', '17'] }, { name: 'vnreview.vn', topics: ['2', '3', '17'] }, { name: 'sport5.vn', topics: ['3', '9', '11'] }, { name: 'dulichtoday.vn', topics: ['10'] }, { name: 'dientungaynay.vn', topics: ['1', '3'] }, { name: 'thoimoi.vn', topics: ['1'] }, { name: 'ngaymoionline.com.vn', topics: ['1'] }, { name: 'blogtamsu.vn', topics: ['11'] }, { name: 'thegioidienanh.vn', topics: ['11', '12'] }, { name: '2banh.vn', topics: ['1', '9', '17'] }, { name: 'doanhnhan.baophapluat.vn', topics: ['1', '2'] }, { name: 'batdongsan.com.vn', topics: ['1', '2'] }, { name: 'doanhnghieptiepthi.vn', topics: ['1', '2'] }, { name: 'baoquocte.vn', topics: ['1'] }, { name: 'happynest.vn', topics: ['2', '10'] }, { name: 'otofun.net', topics: ['1', '9', '16'] }, { name: 'luatvietnam.vn', topics: ['1'] }, { name: 'lichngaytot.com', topics: ['1', '10'] }, { name: 'svvn.tienphong.vn', topics: ['11'] }, { name: 'doanhnhanvn.vn', topics: ['2'] }, { name: 'congdankhuyenhoc.vn', topics: ['1', '6'] }, { name: 'nguoiquansat.vn', topics: ['1', '2'] }, { name: 'sgtiepthi.vn', topics: ['1'] }, { name: 'khoahoc.tv', topics: ['3', '17'] }, { name: 'truyenhinhthanhhoa.vn', topics: ['1'] }, { name: 'nhipsongkinhdoanh.vn', topics: ['1', '2'] }, { name: 'luatduonggia.vn', topics: ['1', '3'] }, { name: 'marketingai.vn', topics: ['2', '11'] }, { name: 'thuvienphapluat.vn', topics: ['1'] }, { name: 'vietstock.vn', topics: ['1', '2'] }, { name: 'truyenwikidich.com', topics: ['15'] }, { name: 'baogialai.com.vn', topics: ['1'] }, { name: 'doisongphapluat.com.vn', topics: ['1'] }, { name: 'yeugiadinh.vn', topics: ['4'] }, { name: 'tvphapluat.vn', topics: ['1', '2', '3', '6', '9'] }, { name: 'bieudogiavang.net', topics: ['2'] }, { name: 'news.tuoitre.vn', topics: ['1'] }, { name: 'truyenazz.me', topics: ['15'] }, { name: 'htv.com.vn', topics: ['1', '2', '3', '6', '8', '11'] }, { name: 'dienmayxanh.com', topics: ['1', '7'] }, { name: 'suckhoe.vtv.vn', topics: ['4', '8', '17'] }, { name: 'cafef.vn', topics: ['1', '2', '10'] }, { name: 'autopro.com.vn', topics: ['1', '9'] }, { name: 'afamily.vn', topics: ['1', '4', '6', '7', '8', '10', '11'] }, { name: 'kenh14.vn', topics: ['1', '2', '3', '6', '10', '11'] }, { name: 'gamek.vn', topics: ['3', '11', '13'] }, { name: 'rongbay.com', topics: ['2', '7'] }, { name: '24h.com.vn', topics: ['1', '9', '17'] }, { name: 'motosaigon.vn', topics: ['1', '9', '11', '17'] }, { name: 'yan.vn', topics: ['1', '11', '17'] }];
@@ -321,117 +271,55 @@
                 container.innerHTML = '';
                 const sortedSites = data.sort((a, b) => a.name.localeCompare(b.name));
                 sortedSites.forEach(site => {
-                    const siteItem = document.createElement('div');
-                    siteItem.className = 'site-item';
-                    siteItem.dataset.topicIds = site.topics.join(',');
-
+                    const siteItem = document.createElement('div'); siteItem.className = 'site-item'; siteItem.dataset.topicIds = site.topics.join(',');
                     const label = document.createElement('label');
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.checked = true;
-                    checkbox.dataset.sitename = site.name;
-
-                    label.appendChild(checkbox);
-                    label.appendChild(document.createTextNode(' ' + site.name));
-                    siteItem.appendChild(label);
-                    container.appendChild(siteItem);
+                    const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.checked = true; checkbox.dataset.sitename = site.name;
+                    label.appendChild(checkbox); label.appendChild(document.createTextNode(' ' + site.name));
+                    siteItem.appendChild(label); container.appendChild(siteItem);
                 });
             }
 
             function updateSelectedList() {
                 selectedSitesList.innerHTML = '';
                 const selectedNames = new Set();
-                const allCheckedCheckboxes = sitesContainer.querySelectorAll('.sites-list input[type="checkbox"]:checked');
-
-                allCheckedCheckboxes.forEach(checkbox => {
-                    const parentItem = checkbox.closest('.site-item');
-                    // Chỉ thêm vào danh sách nếu mục đó và wrapper của nó đang hiển thị
-                    if (parentItem && parentItem.style.display !== 'none' && checkbox.closest('.site-list-wrapper').style.display !== 'none') {
-                        selectedNames.add(checkbox.dataset.sitename);
-                    }
-                });
-
-                const sortedNames = Array.from(selectedNames).sort();
-
-                sortedNames.forEach(name => {
-                    const listItem = document.createElement('li');
-                    const link = document.createElement('a');
-                    link.href = `https://${name}`;
-                    link.textContent = name;
-                    link.target = '_blank';
-                    listItem.appendChild(link);
-                    selectedSitesList.appendChild(listItem);
-                });
+                const allChecked = sitesContainer.querySelectorAll('.sites-list input[type="checkbox"]:checked');
+                allChecked.forEach(cb => { const parent = cb.closest('.site-item'); if (parent && parent.style.display !== 'none' && cb.closest('.site-list-wrapper').style.display !== 'none') selectedNames.add(cb.dataset.sitename); });
+                Array.from(selectedNames).sort().forEach(name => { const li = document.createElement('li'); const a = document.createElement('a'); a.href = `https://${name}`; a.textContent = name; a.target = '_blank'; li.appendChild(a); selectedSitesList.appendChild(li); });
             }
 
             function handleTopicSelection() {
-                const selectedTopics = [];
-                let allIsChecked = document.getElementById('topic_all').checked;
-                topicCheckboxes.forEach(cb => {
-                    if (cb.checked) selectedTopics.push(cb.value);
-                });
-
-                const filter = (siteItems) => {
-                    if (allIsChecked || selectedTopics.length === 0) {
-                        siteItems.forEach(item => item.style.display = 'block');
-                        return;
-                    }
-                    siteItems.forEach(item => {
-                        const siteTopics = item.dataset.topicIds.split(',');
-                        const isVisible = siteTopics.some(topic => selectedTopics.includes(topic));
-                        item.style.display = isVisible ? 'block' : 'none';
-                    });
-                };
-
+                const selectedTopics = []; let allIsChecked = document.getElementById('topic_all').checked;
+                topicCheckboxes.forEach(cb => { if (cb.checked) selectedTopics.push(cb.value); });
+                const filter = (siteItems) => { if (allIsChecked || selectedTopics.length === 0) { siteItems.forEach(item => item.style.display = 'block'); return; } siteItems.forEach(item => { const siteTopics = item.dataset.topicIds.split(','); item.style.display = siteTopics.some(t => selectedTopics.includes(t)) ? 'block' : 'none'; }); };
                 filter(document.querySelectorAll('#sites-list-pc .site-item'));
                 filter(document.querySelectorAll('#sites-list-mobile .site-item'));
-
-                // Cập nhật danh sách đã chọn sau khi lọc
                 updateSelectedList();
             }
 
             function toggleListViews() {
-                const showPc = viewToggles.querySelector('input[value="pc"]').checked;
-                const showMobile = viewToggles.querySelector('input[value="mobile"]').checked;
-                pcWrapper.style.display = showPc ? 'block' : 'none';
-                mobileWrapper.style.display = showMobile ? 'block' : 'none';
+                pcWrapper.style.display = viewToggles.querySelector('input[value="pc"]').checked ? 'block' : 'none';
+                mobileWrapper.style.display = viewToggles.querySelector('input[value="mobile"]').checked ? 'block' : 'none';
                 updateSelectedList();
             }
 
             topicsListContainer.addEventListener('change', (e) => {
                 if (e.target.type === 'checkbox') {
-                    const allCheckbox = document.getElementById('topic_all');
-                    if (e.target.value === 'all' && e.target.checked) {
-                        topicCheckboxes.forEach(cb => { if (cb.value !== 'all') cb.checked = false; });
-                    } else if (e.target.value !== 'all' && e.target.checked) {
-                        allCheckbox.checked = false;
-                    }
-                    if (!Array.from(topicCheckboxes).some(cb => cb.checked)) {
-                        allCheckbox.checked = true;
-                    }
+                    const allCb = document.getElementById('topic_all');
+                    if (e.target.value === 'all' && e.target.checked) { topicCheckboxes.forEach(cb => { if (cb.value !== 'all') cb.checked = false; }); }
+                    else if (e.target.value !== 'all' && e.target.checked) { allCb.checked = false; }
+                    if (!Array.from(topicCheckboxes).some(cb => cb.checked)) allCb.checked = true;
                     handleTopicSelection();
                 }
             });
 
-            sitesContainer.addEventListener('change', (e) => {
-                if (e.target.closest('.sites-list') && e.target.type === 'checkbox') {
-                    updateSelectedList();
-                }
-            });
-
+            sitesContainer.addEventListener('change', (e) => { if (e.target.closest('.sites-list') && e.target.type === 'checkbox') updateSelectedList(); });
             viewToggles.addEventListener('change', toggleListViews);
 
-            // --- KHỞI TẠO ---
             renderList(pcSitesData, sitesListPc);
             renderList(mobileSitesData, sitesListMobile);
             handleTopicSelection();
             toggleListViews();
         });
-    </script>
-    <script>
-        const menuToggle = document.getElementById('menuToggle');
-        const navList = document.getElementById('navList');
-        if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
     </script>
 </body>
 

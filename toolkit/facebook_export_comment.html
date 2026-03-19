@@ -2,13 +2,13 @@
 <html lang="vi" data-theme="light">
 
 <head>
+  <script src="/js/tracking.js"></script>
   <meta charset="UTF-8" />
   <title>Công Cụ Lấy Comment Facebook - Nguyễn Văn Hảo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Lấy bình luận Facebook từ bài viết sử dụng Apify API">
   <link rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
-
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -18,32 +18,54 @@
   <link rel="stylesheet" href="/css/style.css?v=1.5">
   <link rel="stylesheet" href="/css/toolkit.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
   <style>
-    /* Inherit site-wide font from main.css */
-
-    #results::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 12px;
     }
 
-    #results::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
+    .data-table th,
+    .data-table td {
+      border: 1px solid var(--color-border);
+      padding: 8px;
+      text-align: left;
     }
 
-    #results::-webkit-scrollbar-thumb {
-      background: #d1d5db;
-      border-radius: 10px;
+    .data-table th {
+      background: var(--color-bg, #f8fafc);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
     }
 
-    #results::-webkit-scrollbar-thumb:hover {
-      background: #9ca3af;
+    .data-table tr:hover {
+      background: rgba(0, 0, 0, .02);
+    }
+
+    .data-table td a {
+      color: var(--color-primary);
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .field-grid label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
     }
   </style>
 </head>
 
-<body class="text-gray-800">
+<body>
   <header class="header">
     <div class="container header-inner">
       <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
@@ -61,31 +83,24 @@
     </div>
   </header>
 
-  <div class="container mx-auto max-w-5xl p-4 sm:p-6 lg:p-8">
-    <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
-    <div class="text-center mb-8">
-      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Công Cụ Lấy Bình Luận Facebook</h1>
-      <p class="mt-2 text-md text-gray-600">
-        1. <b>Chọn Option API còn Credit để sử dụng</b> <br>
-        2. Nhập URL bài viết Facebook <br>
-        3. Cấu hình số lượng, thời gian & chế độ hiển thị <br>
-        4. Nhấn <b>Lấy Dữ Liệu</b> để xem và xuất Excel. <br>
-        <b class="text-red-600">Nếu tất cả các option hết Credit thì báo ngay</b>
-      </p>
-    </div>
+  <section class="calc-page">
+    <div class="container">
+      <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+      <div class="calc-header">
+        <span class="section-badge" style="background:var(--color-lavender);margin-bottom:12px;display:inline-block;">💬
+          Facebook Tool</span>
+        <h1>Công Cụ Lấy Bình Luận Facebook</h1>
+        <p>1. <b>Chọn Option API còn Credit</b> → 2. Nhập URL bài viết → 3. Cấu hình → 4. Nhấn <b>Lấy Dữ Liệu</b></p>
+      </div>
 
-    <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="md:col-span-2">
-          <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-            <label for="tokenSelect" class="block text-sm font-medium text-gray-700 mb-1 text-red-600">
-              <b>Chọn Option</b>
-            </label>
-
-            <select id="tokenSelect" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm 
-                     focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              <option value="" class="text-red-600 font-bold"> -- Chọn Option -- </option>
-
+      <div class="calc-grid">
+        <!-- Token Select -->
+        <div class="calc-card full-width">
+          <h2>🔑 Chọn API Token</h2>
+          <div class="input-group">
+            <label style="color:#dc2626;font-weight:700;">Chọn Option</label>
+            <select id="tokenSelect">
+              <option value="" style="color:red;font-weight:bold;"> -- Chọn Option -- </option>
               <option value="apify_api_4hNHrxA9JKTUEcAf4dsi1GyAeeafA70xiVp3">Option 1</option>
               <option value="apify_api_vEzNRPTPbRwWk5XAt7ZZSBVuhcaYL00MZYPx">Option 2</option>
               <option value="apify_api_vVeWJdL0kjKZO6yga3mYCKDk5qLzar3QMLhw">Option 3</option>
@@ -104,194 +119,114 @@
               <option value="apify_api_dFLcJDqblvw9RODS0XmZpUSwes4rNz34VQ9Q">Option 16</option>
               <option value="apify_api_roGEM1o8Kph9MztX9Pq41zg7RfCfVQ17Equ7">Option 17</option>
               <option value="apify_api_D7qyF2XOfOgDBVghHTRsX0mjp4FFdu2H2QN2">Option 18</option>
-
             </select>
+          </div>
+          <div id="apify-balance" style="font-size:0.85rem;margin-top:8px;color:var(--color-gray);">Đang kiểm tra credit
+            còn lại...</div>
+        </div>
 
-            <div id="apify-balance" class="text-sm text-gray-700 mt-3">
-              Đang kiểm tra credit còn lại...
+        <!-- Config -->
+        <div class="calc-card full-width">
+          <h2>⚙️ Cấu hình</h2>
+          <div class="input-group" style="margin-bottom:12px;">
+            <label>URL Bài Viết</label>
+            <input type="text" id="url" placeholder="https://www.facebook.com/username/posts/1234567890">
+          </div>
+          <div class="input-row cols-2">
+            <div class="input-group"><label>Số lượng bình luận tối đa</label><input id="resultsLimit" type="number"
+                min="1" step="1" value="500"></div>
+            <div class="input-group"><label>Bao gồm trả lời (replies)</label><select id="includeNested">
+                <option value="false" selected>Không</option>
+                <option value="true">Có</option>
+              </select></div>
+          </div>
+          <div class="input-row cols-3">
+            <div class="input-group"><label>Sắp xếp theo</label><select id="sortMode">
+                <option value="RANKED_UNFILTERED" selected>Mặc định (Top)</option>
+                <option value="RECENT_ACTIVITY">Mới nhất</option>
+                <option value="RANKED_THREADED">Liên quan nhất</option>
+              </select></div>
+            <div class="input-group"><label>Từ ngày</label><input id="startDate" type="date"></div>
+            <div class="input-group"><label>Đến ngày</label><input id="endDate" type="date"></div>
+          </div>
+        </div>
+
+        <!-- Field Selection -->
+        <div class="calc-card full-width">
+          <h2>📋 Trường dữ liệu cần xuất</h2>
+          <div class="field-grid">
+            <label><input type="checkbox" value="date" checked> Thời gian bình luận</label>
+            <label><input type="checkbox" value="profileName" checked> Tên người dùng</label>
+            <label><input type="checkbox" value="profileUrl" checked> Link Profile</label>
+            <label><input type="checkbox" value="text" checked> Nội dung</label>
+            <label><input type="checkbox" value="likesCount"> Lượt thích</label>
+            <label><input type="checkbox" value="repliesCount"> Lượt trả lời</label>
+            <label><input type="checkbox" value="commentUrl" checked> Link Comment</label>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="calc-card full-width">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div id="status"
+              style="font-size:0.85rem;color:var(--color-gray);min-height:32px;display:flex;align-items:center;"></div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-export btn-copy" onclick="downloadExcel()" disabled>Xuất Excel</button>
+              <button class="btn-calc" onclick="fetchComments()">Lấy Dữ Liệu</button>
             </div>
           </div>
-
-          <label for="url" class="block text-sm font-medium text-gray-700 mb-1">URL Bài Viết</label>
-          <input type="text" id="url" placeholder="https://www.facebook.com/username/posts/1234567890"
-            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" />
         </div>
 
-        <div>
-          <label for="resultsLimit" class="block text-sm font-medium text-gray-700 mb-1">Số lượng bình luận tối
-            đa</label>
-          <input id="resultsLimit" type="number" min="1" step="1" value="500"
-            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" />
-        </div>
-
-        <div>
-          <label for="includeNested" class="block text-sm font-medium text-gray-700 mb-1">Bao gồm trả lời nằm trong 1
-            comment (replies)</label>
-          <select id="includeNested"
-            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-            <option value="false" selected>Không</option>
-            <option value="true">Có</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="sortMode" class="block text-sm font-medium text-gray-700 mb-1">Sắp xếp theo</label>
-          <select id="sortMode"
-            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-            <option value="RANKED_UNFILTERED" selected>Mặc định (Top comments)</option>
-            <option value="RECENT_ACTIVITY">Mới nhất</option>
-            <option value="RANKED_THREADED">Liên quan nhất</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Lọc từ ngày (để trống nếu lấy tất
-            cả)</label>
-          <input id="startDate" type="date"
-            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" />
-        </div>
-
-        <div>
-          <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">Đến ngày (để trống nếu lấy tất
-            cả)</label>
-          <input id="endDate" type="date"
-            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" />
-        </div>
-      </div>
-
-      <div class="mt-8 border-t border-gray-200 pt-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-3">Chọn các trường dữ liệu cần xuất</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-sm">
-          <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="date" checked>
-            <span>Thời gian bình luận</span></label>
-          <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="profileName" checked>
-            <span>Tên người dùng</span></label>
-          <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="profileUrl" checked>
-            <span>Link Profile</span></label>
-          <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="text" checked>
-            <span>Nội dung</span></label>
-          <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="likesCount">
-            <span>Lượt thích</span></label>
-          <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="repliesCount">
-            <span>Lượt trả lời</span></label>
-          <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="commentUrl" checked>
-            <span>Link Comment</span></label>
-        </div>
-      </div>
-
-      <div
-        class="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-gray-200 pt-6">
-        <div id="status" class="status text-gray-600 text-sm flex items-center min-h-[44px]"></div>
-        <div class="flex items-center gap-3 flex-wrap">
-          <button class="btn-export bg-green-100 text-green-800 hover:bg-green-200 font-semibold py-2 px-4 rounded-lg"
-            onclick="downloadExcel()" disabled>Xuất Excel</button>
-          <button
-            class="bg-blue-600 text-white hover:bg-blue-700 font-bold py-2 px-5 rounded-lg shadow-md flex items-center justify-center min-w-[150px]"
-            onclick="fetchComments()">
-            Lấy Dữ Liệu
-          </button>
+        <!-- Results -->
+        <div class="calc-card full-width hidden" id="results-container">
+          <h2>📊 Kết Quả</h2>
+          <div id="results" style="overflow-x:auto;max-height:600px;"></div>
         </div>
       </div>
     </div>
+  </section>
 
-    <div id="results-container" class="mt-8 bg-white rounded-2xl shadow-lg p-6 sm:p-8 hidden">
-      <h2 class="text-2xl font-bold text-gray-900 mb-4">Kết Quả</h2>
-      <div id="results" class="overflow-x-auto max-h-[600px] relative"></div>
-    </div>
-  </div>
-
+  <script src="/js/main.js?v=1.4"></script>
   <script>
     const APIFY_LIMITS_URL = 'https://api.apify.com/v2/users/me/limits';
-    let commentsData = []; // Biến để lưu trữ dữ liệu bình luận
+    let commentsData = [];
 
-    // ====== Cập nhật credit cho TẤT CẢ option + TỰ ĐỘNG CHỌN option có credit cao nhất ======
     async function updateTokenOptions() {
-      const select = document.getElementById('tokenSelect');
-      if (!select) return;
-
+      const select = document.getElementById('tokenSelect'); if (!select) return;
+      for (let i = 0; i < select.options.length; i++) { const opt = select.options[i]; if (!opt.dataset.baseLabel) opt.dataset.baseLabel = opt.textContent.trim(); }
+      let bestIndex = -1, bestRemain = -Infinity;
       for (let i = 0; i < select.options.length; i++) {
-        const opt = select.options[i];
-        if (!opt.dataset.baseLabel) opt.dataset.baseLabel = opt.textContent.trim();
-      }
-
-      let bestIndex = -1;
-      let bestRemain = -Infinity;
-
-      for (let i = 0; i < select.options.length; i++) {
-        const opt = select.options[i];
-        const token = opt.value;
-        if (!token) continue;
-
+        const opt = select.options[i]; const token = opt.value; if (!token) continue;
         try {
-          const headers = new Headers({ 'Accept': 'application/json', 'Authorization': 'Bearer ' + token });
-          const resp = await fetch(APIFY_LIMITS_URL, { method: 'GET', headers });
+          const resp = await fetch(APIFY_LIMITS_URL, { method: 'GET', headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } });
           if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-          const json = await resp.json();
-          const data = json?.data || {};
-          const max = Number(data?.limits?.maxMonthlyUsageUsd ?? 0);
-          const used = Number(data?.current?.monthlyUsageUsd ?? 0);
-          const remain = max - used;
-
-          opt.classList.remove('text-red-600', 'font-bold', 'text-gray-400');
-
-          if (Number.isFinite(remain) && remain > 0) {
-            opt.textContent = `${opt.dataset.baseLabel} — còn $${remain.toFixed(2)}`;
-            if (remain > bestRemain) { bestRemain = remain; bestIndex = i; }
-            opt.dataset.remain = remain;
-          } else if (Number.isFinite(remain) && remain <= 0) {
-            opt.textContent = `${opt.dataset.baseLabel} — HẾT TIỀN`;
-            opt.classList.add('text-red-600', 'font-bold');
-            opt.dataset.remain = 0;
-          } else {
-            opt.textContent = `${opt.dataset.baseLabel} — không xác định`;
-            opt.classList.add('text-gray-400');
-            opt.dataset.remain = '';
-          }
-        } catch (e) {
-          console.error("Không lấy được credit:", e.message);
-          opt.textContent = `${opt.dataset.baseLabel} — lỗi khi kiểm tra`;
-          opt.classList.add('text-gray-400');
-          opt.dataset.remain = '';
-        }
+          const json = await resp.json(); const data = json?.data || {};
+          const max = Number(data?.limits?.maxMonthlyUsageUsd ?? 0), used = Number(data?.current?.monthlyUsageUsd ?? 0), remain = max - used;
+          if (Number.isFinite(remain) && remain > 0) { opt.textContent = `${opt.dataset.baseLabel} — còn $${remain.toFixed(2)}`; if (remain > bestRemain) { bestRemain = remain; bestIndex = i; } }
+          else if (Number.isFinite(remain) && remain <= 0) { opt.textContent = `${opt.dataset.baseLabel} — HẾT TIỀN`; opt.style.color = '#dc2626'; opt.style.fontWeight = 'bold'; }
+          else { opt.textContent = `${opt.dataset.baseLabel} — không xác định`; opt.style.color = '#9ca3af'; }
+        } catch (e) { opt.textContent = `${opt.dataset.baseLabel} — lỗi`; opt.style.color = '#9ca3af'; }
       }
-
-      if (bestIndex > -1 && bestRemain > 0) {
-        select.selectedIndex = bestIndex;
-      }
+      if (bestIndex > -1 && bestRemain > 0) select.selectedIndex = bestIndex;
     }
 
-    // ====== Hiển thị credit còn lại của option đang chọn (bên dưới dropdown) ======
     async function fetchApifyLimitsAndRender() {
-      const el = document.getElementById('apify-balance');
-      if (!el) return;
+      const el = document.getElementById('apify-balance'); if (!el) return;
       const token = document.getElementById('tokenSelect').value.trim();
       if (!token) { el.textContent = 'Vui lòng chọn Option.'; return; }
-
-      el.textContent = 'Đang kiểm tra credit còn lại...';
+      el.textContent = 'Đang kiểm tra...';
       try {
-        const headers = new Headers({ 'Accept': 'application/json', 'Authorization': 'Bearer ' + token });
-        const resp = await fetch(APIFY_LIMITS_URL, { method: 'GET', headers });
+        const resp = await fetch(APIFY_LIMITS_URL, { method: 'GET', headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token } });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const json = await resp.json();
-        const data = json?.data || {};
-        const max = Number(data?.limits?.maxMonthlyUsageUsd ?? NaN);
-        const used = Number(data?.current?.monthlyUsageUsd ?? NaN);
+        const json = await resp.json(); const data = json?.data || {};
+        const max = Number(data?.limits?.maxMonthlyUsageUsd ?? NaN), used = Number(data?.current?.monthlyUsageUsd ?? NaN);
         const remain = (Number.isFinite(max) && Number.isFinite(used)) ? (max - used) : null;
-        const remainTxt = (typeof remain === 'number') ? `$${remain.toFixed(2)} USD` : '—';
-        el.innerHTML = `<div class="text-green-600 font-bold">Credit còn lại: ${remainTxt}</div>`;
-      } catch (e) {
-        el.innerHTML = `<div class="text-red-600 font-bold">Không lấy được credit: ${e.message}</div>`;
-      }
+        el.innerHTML = `<div style="color:#16a34a;font-weight:700;">Credit còn lại: ${typeof remain === 'number' ? `$${remain.toFixed(2)} USD` : '—'}</div>`;
+      } catch (e) { el.innerHTML = `<div style="color:#dc2626;font-weight:700;">Lỗi: ${e.message}</div>`; }
     }
 
-    // ====== Khởi tạo: cập nhật option + tự chọn option tốt nhất + render credit của option đã chọn ======
-    document.addEventListener('DOMContentLoaded', async () => {
-      await updateTokenOptions();
-      await fetchApifyLimitsAndRender();
-      document.getElementById('tokenSelect')?.addEventListener('change', fetchApifyLimitsAndRender);
-    });
+    document.addEventListener('DOMContentLoaded', async () => { await updateTokenOptions(); await fetchApifyLimitsAndRender(); document.getElementById('tokenSelect')?.addEventListener('change', fetchApifyLimitsAndRender); });
 
-    // ====== Hàm chính để lấy dữ liệu bình luận từ Apify ======
     async function fetchComments() {
       const token = document.getElementById('tokenSelect').value.trim();
       const postUrl = document.getElementById('url').value.trim();
@@ -300,192 +235,73 @@
       const sortMode = document.getElementById('sortMode').value;
       const startDate = document.getElementById('startDate').value;
       const endDate = document.getElementById('endDate').value;
-
       const fetchButton = document.querySelector('button[onclick="fetchComments()"]');
       const statusEl = document.getElementById('status');
       const exportButtons = document.querySelectorAll('.btn-export');
-
-      if (!token) {
-        statusEl.innerHTML = '<span class="text-red-600 font-bold">Vui lòng chọn một Option API.</span>';
-        return;
-      }
-      if (!postUrl) {
-        statusEl.innerHTML = '<span class="text-red-600 font-bold">Vui lòng nhập URL bài viết.</span>';
-        return;
-      }
-
-      fetchButton.disabled = true;
-      fetchButton.innerHTML = `
-      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      Đang lấy dữ liệu...
-    `;
+      if (!token) { statusEl.innerHTML = '<span style="color:#dc2626;font-weight:700;">Vui lòng chọn một Option API.</span>'; return; }
+      if (!postUrl) { statusEl.innerHTML = '<span style="color:#dc2626;font-weight:700;">Vui lòng nhập URL bài viết.</span>'; return; }
+      fetchButton.disabled = true; fetchButton.innerHTML = 'Đang lấy dữ liệu...';
       exportButtons.forEach(btn => btn.disabled = true);
       statusEl.innerHTML = 'Bắt đầu quá trình lấy dữ liệu. Vui lòng chờ...';
       document.getElementById('results-container').classList.add('hidden');
       commentsData = [];
-
-      const input = {
-        "startUrls": [{ "url": postUrl }],
-        "resultsLimit": limit,
-        "includeNested": includeNested,
-        "sortMode": sortMode,
-      };
+      const input = { "startUrls": [{ "url": postUrl }], "resultsLimit": limit, "includeNested": includeNested, "sortMode": sortMode };
       if (startDate) input.from = startDate;
       if (endDate) input.to = endDate;
-
       try {
-        const runResponse = await fetch(`https://api.apify.com/v2/acts/apify~facebook-comments-scraper/runs?token=${token}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(input)
-        });
-        if (!runResponse.ok) throw new Error(`Lỗi khi bắt đầu chạy ${runResponse.statusText}`);
+        const runResponse = await fetch(`https://api.apify.com/v2/acts/apify~facebook-comments-scraper/runs?token=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
+        if (!runResponse.ok) throw new Error(`Lỗi khi bắt đầu ${runResponse.statusText}`);
         const runData = await runResponse.json();
         const { id: runId, defaultDatasetId } = runData.data;
-
         let runResult;
         while (true) {
-          const statusResponse = await fetch(`https://api.apify.com/v2/acts/apify~facebook-comments-scraper/runs/${runId}?token=${token}`);
-          const statusData = await statusResponse.json();
-          runResult = statusData.data;
-          if (runResult.status === 'SUCCEEDED' || runResult.status === 'FAILED') {
-            break;
-          }
-          statusEl.innerHTML = `Đang xử lý... (Trạng thái: ${runResult.status}). Vui lòng không đóng tab.`;
-          await new Promise(resolve => setTimeout(resolve, 5000));
+          const statusResp = await fetch(`https://api.apify.com/v2/acts/apify~facebook-comments-scraper/runs/${runId}?token=${token}`);
+          const statusData = await statusResp.json(); runResult = statusData.data;
+          if (runResult.status === 'SUCCEEDED' || runResult.status === 'FAILED') break;
+          statusEl.innerHTML = `Đang xử lý... (${runResult.status}). Vui lòng không đóng tab.`;
+          await new Promise(r => setTimeout(r, 5000));
         }
-
-        if (runResult.status !== 'SUCCEEDED') {
-          throw new Error('Quá trình lấy dữ liệu thất bại.');
-        }
-
+        if (runResult.status !== 'SUCCEEDED') throw new Error('Quá trình lấy dữ liệu thất bại.');
         statusEl.innerHTML = 'Đang tải xuống kết quả...';
-        const itemsResponse = await fetch(`https://api.apify.com/v2/datasets/${defaultDatasetId}/items?token=${token}&format=json`);
-        commentsData = await itemsResponse.json();
-
+        const itemsResp = await fetch(`https://api.apify.com/v2/datasets/${defaultDatasetId}/items?token=${token}&format=json`);
+        commentsData = await itemsResp.json();
         renderResults(commentsData);
         exportButtons.forEach(btn => btn.disabled = false);
-        statusEl.innerHTML = `<span class="text-green-600 font-bold">Hoàn tất! Tìm thấy ${commentsData.length} bình luận.</span>`;
-
+        statusEl.innerHTML = `<span style="color:#16a34a;font-weight:700;">Hoàn tất! Tìm thấy ${commentsData.length} bình luận.</span>`;
       } catch (error) {
-        console.error('Lỗi:', error);
-        statusEl.innerHTML = `<span class="text-red-600 font-bold">Đã xảy ra lỗi: ${error.message}</span>`;
-      } finally {
-        fetchButton.disabled = false;
-        fetchButton.innerHTML = 'Lấy Dữ Liệu';
-      }
+        statusEl.innerHTML = `<span style="color:#dc2626;font-weight:700;">Lỗi: ${error.message}</span>`;
+      } finally { fetchButton.disabled = false; fetchButton.innerHTML = 'Lấy Dữ Liệu'; }
     }
 
-    // ====== Hàm để hiển thị dữ liệu ra bảng ======
     function renderResults(data) {
       const resultsContainer = document.getElementById('results');
       const resultsWrapper = document.getElementById('results-container');
-
-      if (!data || data.length === 0) {
-        resultsContainer.innerHTML = '<p class="text-center text-gray-500">Không tìm thấy bình luận nào.</p>';
-        resultsWrapper.classList.remove('hidden');
-        return;
-      }
-
-      let tableHTML = `
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">STT</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên Người Dùng</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nội Dung Bình Luận</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời Gian</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-    `;
-
-      data.forEach((item, index) => {
-        tableHTML += `
-        <tr>
-          <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${index + 1}</td>
-          <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-            <a href="${item.profileUrl}" target="_blank" class="text-blue-600 hover:underline">${item.profileName || 'N/A'}</a>
-          </td>
-          <td class="px-4 py-3 text-sm text-gray-700" style="word-break: break-word;">${item.text || ''}</td>
-          <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${formatDateTime(item.date)}</td>
-        </tr>
-      `;
-      });
-
-      tableHTML += '</tbody></table>';
-      resultsContainer.innerHTML = tableHTML;
+      if (!data || data.length === 0) { resultsContainer.innerHTML = '<p style="text-align:center;color:var(--color-gray);padding:24px;">Không tìm thấy bình luận nào.</p>'; resultsWrapper.classList.remove('hidden'); return; }
+      let html = `<table class="data-table"><thead><tr><th>STT</th><th>Tên Người Dùng</th><th>Nội Dung</th><th>Thời Gian</th></tr></thead><tbody>`;
+      data.forEach((item, index) => { html += `<tr><td>${index + 1}</td><td><a href="${item.profileUrl}" target="_blank">${item.profileName || 'N/A'}</a></td><td style="word-break:break-word;">${item.text || ''}</td><td style="white-space:nowrap;">${formatDateTime(item.date)}</td></tr>`; });
+      html += '</tbody></table>';
+      resultsContainer.innerHTML = html;
       resultsWrapper.classList.remove('hidden');
     }
 
-    // ====== Hàm để lấy các trường được chọn để xuất file ======
-    function getSelectedFields() {
-      const selectedFields = [];
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-        selectedFields.push(checkbox.value);
-      });
-      return selectedFields;
-    }
+    function getSelectedFields() { const fields = []; document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => fields.push(cb.value)); return fields; }
 
-    // ====== Hàm để xuất ra file Excel ======
     function downloadExcel() {
-      if (commentsData.length === 0) {
-        alert("Không có dữ liệu để xuất.");
-        return;
-      }
-
+      if (commentsData.length === 0) { alert("Không có dữ liệu để xuất."); return; }
       const selectedFields = getSelectedFields();
-      if (selectedFields.length === 0) {
-        alert("Vui lòng chọn ít nhất một trường dữ liệu để xuất.");
-        return;
-      }
-
-      const filteredData = commentsData.map(item => {
-        let row = {};
-        selectedFields.forEach(field => {
-          row[field] = item[field];
-        });
-        return row;
-      });
-
-      const worksheet = XLSX.utils.json_to_sheet(filteredData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Comments");
-      XLSX.writeFile(workbook, "facebook_comments.xlsx");
+      if (selectedFields.length === 0) { alert("Vui lòng chọn ít nhất một trường dữ liệu."); return; }
+      const filteredData = commentsData.map(item => { let row = {}; selectedFields.forEach(field => { row[field] = item[field]; }); return row; });
+      const ws = XLSX.utils.json_to_sheet(filteredData);
+      const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Comments");
+      XLSX.writeFile(wb, "facebook_comments.xlsx");
     }
 
-    // ====== Hàm định dạng lại thời gian từ ISO string ======
     function formatDateTime(isoString) {
       if (!isoString) return 'N/A';
-      try {
-        const date = new Date(isoString);
-
-        // Lấy các thành phần và thêm số 0 ở đầu nếu cần (ví dụ: 5 -> 05)
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng trong JS bắt đầu từ 0
-        const year = date.getFullYear();
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-
-        // Trả về chuỗi đã định dạng
-        return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
-      } catch (error) {
-        // Trả về chuỗi gốc nếu có lỗi
-        return isoString;
-      }
+      try { const d = new Date(isoString); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')} ${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; }
+      catch (e) { return isoString; }
     }
-
   </script>
-  <script>
-    const menuToggle = document.getElementById('menuToggle');
-    const navList = document.getElementById('navList');
-    if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
-  </script>
-
 </body>
 
 </html>

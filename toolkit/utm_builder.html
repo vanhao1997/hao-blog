@@ -2,6 +2,7 @@
 <html lang="vi" data-theme="light">
 
 <head>
+  <script src="/js/tracking.js"></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>UTM Builder - Nguyễn Văn Hảo</title>
@@ -36,66 +37,91 @@
     </div>
   </header>
 
-  <section class="tool-page">
+  <section class="calc-page">
     <div class="container">
       <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
-      <div class="tool-header">
+      <div class="calc-header">
+        <span class="section-badge" style="background:var(--color-lavender);margin-bottom:12px;display:inline-block;">🔗
+          Link Builder</span>
         <h1>Google Campaign URL Builder</h1>
         <p>Tạo UTM parameters cho link tracking campaigns</p>
       </div>
 
-      <div class="tool-card-wrap">
-        <label for="baseUrl">URL gốc (Base URL) <small>(bắt buộc)</small></label>
-        <input type="text" id="baseUrl" placeholder="https://example.com/page" />
-
-        <label for="utm_source_select">UTM Source (Nguồn chiến dịch) <small>(bắt buộc)</small></label>
-        <select id="utm_source_select">
-          <option value="">-- Chọn nguồn --</option>
-          <option value="Facebook">Facebook</option>
-          <option value="Google">Google</option>
-          <option value="Tiktok">Tiktok</option>
-          <option value="Zalo">Zalo</option>
-          <option value="Admicro">Admicro</option>
-          <option value="Khác">Khác</option>
-        </select>
-        <input type="text" id="utm_source_custom" class="hidden" placeholder="Nhập nguồn khác..." />
-
-        <label for="utm_medium_select">UTM Medium (Hình thức chiến dịch) <small>(bắt buộc)</small></label>
-        <select id="utm_medium_select">
-          <option value="">-- Chọn hình thức --</option>
-          <option value="CPC">CPC</option>
-          <option value="Banner">Banner</option>
-          <option value="Traffic">Traffic</option>
-          <option value="Awareness">Awareness</option>
-          <option value="AppInstall">AppInstall</option>
-          <option value="LandingPageView">LandingPageView</option>
-          <option value="GDNbanner">GDNbanner</option>
-          <option value="SEM">SEM</option>
-          <option value="Khác">Khác</option>
-        </select>
-        <input type="text" id="utm_medium_custom" class="hidden" placeholder="Nhập hình thức khác..." />
-
-        <label for="utm_campaign">UTM Campaign (Chiến dịch) <small>(tùy chọn)</small></label>
-        <input type="text" id="utm_campaign" placeholder="ví dụ: Prelaunch" />
-
-        <label for="utm_term">UTM Term (Từ khoá) <small>(tùy chọn)</small></label>
-        <input type="text" id="utm_term" placeholder="ví dụ: Mobile" />
-
-        <label for="utm_content">UTM Content (Nội dung) <small>(tùy chọn)</small></label>
-        <input type="text" id="utm_content" placeholder="ví dụ: gacha_tam_tien" />
-
-        <div class="tool-actions">
-          <button id="btnBuild" class="tool-btn tool-btn-primary">Build URL</button>
-          <button id="btnReset" class="tool-btn tool-btn-danger">Reset</button>
+      <div class="calc-grid">
+        <!-- Input card -->
+        <div class="calc-card full-width">
+          <h2>📝 Thông tin chiến dịch</h2>
+          <div class="input-group">
+            <label>URL gốc (bắt buộc)</label>
+            <input type="text" id="baseUrl" placeholder="https://example.com/page" />
+          </div>
+          <div class="input-row">
+            <div class="input-group">
+              <label>UTM Source (bắt buộc)</label>
+              <select id="utm_source_select">
+                <option value="">-- Chọn nguồn --</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Google">Google</option>
+                <option value="Tiktok">Tiktok</option>
+                <option value="Zalo">Zalo</option>
+                <option value="Admicro">Admicro</option>
+                <option value="Khác">Khác</option>
+              </select>
+              <input type="text" id="utm_source_custom" class="hidden" placeholder="Nhập nguồn khác..."
+                style="margin-top:8px;" />
+            </div>
+            <div class="input-group">
+              <label>UTM Medium (bắt buộc)</label>
+              <select id="utm_medium_select">
+                <option value="">-- Chọn hình thức --</option>
+                <option value="CPC">CPC</option>
+                <option value="Banner">Banner</option>
+                <option value="Traffic">Traffic</option>
+                <option value="Awareness">Awareness</option>
+                <option value="AppInstall">AppInstall</option>
+                <option value="LandingPageView">LandingPageView</option>
+                <option value="GDNbanner">GDNbanner</option>
+                <option value="SEM">SEM</option>
+                <option value="Khác">Khác</option>
+              </select>
+              <input type="text" id="utm_medium_custom" class="hidden" placeholder="Nhập hình thức khác..."
+                style="margin-top:8px;" />
+            </div>
+          </div>
+          <div class="input-row cols-3">
+            <div class="input-group">
+              <label>UTM Campaign</label>
+              <input type="text" id="utm_campaign" placeholder="ví dụ: Prelaunch" />
+            </div>
+            <div class="input-group">
+              <label>UTM Term</label>
+              <input type="text" id="utm_term" placeholder="ví dụ: Mobile" />
+            </div>
+            <div class="input-group">
+              <label>UTM Content</label>
+              <input type="text" id="utm_content" placeholder="ví dụ: gacha_tam_tien" />
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button id="btnBuild" class="btn-calc" style="flex:1;">Build URL</button>
+            <button id="btnReset" class="btn-copy" style="color:#ef4444;border-color:#ef4444;">Reset</button>
+          </div>
         </div>
 
-        <label for="outputUrl">URL đã build</label>
-        <textarea id="outputUrl" readonly placeholder="Kết quả sẽ hiện ở đây..." style="min-height:80px;"></textarea>
-        <button id="btnCopy" class="tool-btn tool-btn-success" style="margin-top:8px;">Copy URL</button>
+        <!-- Output card -->
+        <div class="calc-card full-width">
+          <h2>✅ Kết quả URL</h2>
+          <div class="input-group">
+            <textarea id="outputUrl" readonly rows="3" placeholder="Kết quả sẽ hiện ở đây..."
+              style="background:var(--color-bg,#f8fafc);"></textarea>
+          </div>
+          <button id="btnCopy" class="btn-calc" style="background:#22C55E;border-color:#22C55E;">Copy URL</button>
+        </div>
       </div>
     </div>
   </section>
 
+  <script src="/js/main.js?v=1.4"></script>
   <script>
     const $ = id => document.getElementById(id);
     const baseUrlInput = $('baseUrl'),
@@ -156,11 +182,6 @@
     btnBuild.addEventListener('click', buildUrl);
     btnReset.addEventListener('click', resetAll);
     btnCopy.addEventListener('click', copyUrl);
-
-    // Mobile menu
-    const menuToggle = document.getElementById('menuToggle');
-    const navList = document.getElementById('navList');
-    if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
   </script>
 </body>
 

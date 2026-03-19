@@ -2,6 +2,7 @@
 <html lang="vi" data-theme="light">
 
 <head>
+  <script src="/js/tracking.js"></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Google Keyword Wrapper - Nguyễn Văn Hảo</title>
@@ -36,47 +37,63 @@
     </div>
   </header>
 
-  <section class="tool-page">
+  <section class="calc-page">
     <div class="container">
       <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
-      <div class="tool-header">
+      <div class="calc-header">
+        <span class="section-badge" style="background:var(--color-lavender);margin-bottom:12px;display:inline-block;">🔑
+          Keyword Tool</span>
         <h1>Google Keyword Wrapper</h1>
         <p>Bọc từ khóa với các match types cho Google Ads</p>
       </div>
 
-      <div class="tool-card-wrap">
-        <div class="form-group">
-          <label for="inputKeywords">Nhập keywords</label>
-          <textarea id="inputKeywords" placeholder="Nhập một từ khoá mỗi dòng hoặc ngăn cách dấu phẩy"></textarea>
+      <div class="calc-grid">
+        <!-- Input card -->
+        <div class="calc-card full-width">
+          <h2><i class="ph-bold ph-text-aa" style="color:var(--color-primary)"></i> Nhập Keywords</h2>
+          <div class="input-group">
+            <label>Danh sách từ khóa (mỗi dòng 1 từ khóa hoặc ngăn cách bằng dấu phẩy)</label>
+            <textarea id="inputKeywords" rows="5"
+              placeholder="Nhập một từ khoá mỗi dòng hoặc ngăn cách dấu phẩy"></textarea>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button id="btnGenerate" class="btn-calc" style="flex:1;min-width:180px;">Generate</button>
+            <button id="btnLowercase" class="btn-copy" style="flex:0;">Chuyển chữ thường</button>
+            <button id="btnReset" class="btn-copy" style="flex:0;color:#ef4444;border-color:#ef4444;">Reset</button>
+          </div>
         </div>
 
-        <div class="tool-actions">
-          <button id="btnGenerate" class="tool-btn tool-btn-primary">Generate</button>
-          <button id="btnLowercase" class="tool-btn tool-btn-outline">Chuyển sang chữ thường</button>
-          <button id="btnReset" class="tool-btn tool-btn-danger">Reset</button>
+        <!-- Output: Phrase match -->
+        <div class="calc-card">
+          <h2>📌 Khớp cụm từ</h2>
+          <div class="input-group">
+            <textarea id="outputPhrase" readonly rows="6" style="background:var(--color-bg,#f8fafc);"></textarea>
+          </div>
+          <button id="copyPhrase" class="btn-copy" style="width:100%;">Sao chép</button>
         </div>
 
-        <div class="tool-grid-3" style="margin-top:24px;">
-          <div class="form-group">
-            <label for="outputPhrase">Khớp cụm từ</label>
-            <textarea id="outputPhrase" readonly></textarea>
-            <button id="copyPhrase" class="tool-btn tool-btn-success" style="width:100%;margin-top:8px;">Copy</button>
+        <!-- Output: Exact match -->
+        <div class="calc-card">
+          <h2>🎯 Khớp chính xác</h2>
+          <div class="input-group">
+            <textarea id="outputExact" readonly rows="6" style="background:var(--color-bg,#f8fafc);"></textarea>
           </div>
-          <div class="form-group">
-            <label for="outputExact">Khớp chính xác</label>
-            <textarea id="outputExact" readonly></textarea>
-            <button id="copyExact" class="tool-btn tool-btn-success" style="width:100%;margin-top:8px;">Copy</button>
+          <button id="copyExact" class="btn-copy" style="width:100%;">Sao chép</button>
+        </div>
+
+        <!-- Output: Negative -->
+        <div class="calc-card full-width">
+          <h2>🚫 Từ khóa phủ định</h2>
+          <div class="input-group">
+            <textarea id="outputNegative" readonly rows="4" style="background:var(--color-bg,#f8fafc);"></textarea>
           </div>
-          <div class="form-group">
-            <label for="outputNegative">Từ khoá phủ định</label>
-            <textarea id="outputNegative" readonly></textarea>
-            <button id="copyNegative" class="tool-btn tool-btn-success" style="width:100%;margin-top:8px;">Copy</button>
-          </div>
+          <button id="copyNegative" class="btn-copy" style="width:100%;">Sao chép</button>
         </div>
       </div>
     </div>
   </section>
 
+  <script src="/js/main.js?v=1.4"></script>
   <script>
     const $ = id => document.getElementById(id);
 
@@ -103,33 +120,17 @@
       navigator.clipboard.writeText(txt).then(() => {
         const btn = $(id.replace('output', 'copy'));
         const orig = btn.textContent;
-        btn.textContent = 'Copied!';
+        btn.textContent = 'Đã chép!';
         setTimeout(() => btn.textContent = orig, 1200);
       });
     }
 
-    function toLowercase() {
-      $('inputKeywords').value = $('inputKeywords').value.toLowerCase();
-    }
-
-    function resetAll() {
-      $('inputKeywords').value = '';
-      $('outputPhrase').value = '';
-      $('outputExact').value = '';
-      $('outputNegative').value = '';
-    }
-
     $('btnGenerate').addEventListener('click', generate);
-    $('btnLowercase').addEventListener('click', toLowercase);
-    $('btnReset').addEventListener('click', resetAll);
+    $('btnLowercase').addEventListener('click', () => { $('inputKeywords').value = $('inputKeywords').value.toLowerCase(); });
+    $('btnReset').addEventListener('click', () => { $('inputKeywords').value = ''; $('outputPhrase').value = ''; $('outputExact').value = ''; $('outputNegative').value = ''; });
     $('copyPhrase').addEventListener('click', () => copyText('outputPhrase'));
     $('copyExact').addEventListener('click', () => copyText('outputExact'));
     $('copyNegative').addEventListener('click', () => copyText('outputNegative'));
-
-    // Mobile menu
-    const menuToggle = document.getElementById('menuToggle');
-    const navList = document.getElementById('navList');
-    if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
   </script>
 </body>
 

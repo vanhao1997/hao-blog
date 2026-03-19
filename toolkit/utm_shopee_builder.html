@@ -2,6 +2,7 @@
 <html lang="vi" data-theme="light">
 
 <head>
+  <script src="/js/tracking.js"></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Shopee Ads Link Generator - Nguyễn Văn Hảo</title>
@@ -18,26 +19,14 @@
   <link rel="stylesheet" href="/css/toolkit.css">
   <style>
     .channel-preview {
-      background: #fff8f7;
-      padding: 16px;
-      border-radius: 12px;
-      border: 2px solid var(--color-border);
-      margin: 16px 0;
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 12px;
+      margin: 16px 0;
     }
 
-    .channel-preview div {
+    .channel-preview .metric {
       text-align: center;
-    }
-
-    .channel-preview b {
-      display: block;
-      color: var(--color-primary);
-      font-size: 1.1rem;
-      margin-top: 4px;
     }
 
     .hint {
@@ -67,101 +56,130 @@
     </div>
   </header>
 
-  <section class="tool-page">
+  <section class="calc-page">
     <div class="container">
       <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
-      <div class="tool-header">
+      <div class="calc-header">
+        <span class="section-badge" style="background:var(--color-lavender);margin-bottom:12px;display:inline-block;">🛒
+          Shopee Ads</span>
         <h1>Shopee Ads Link Generator</h1>
         <p>Tạo UTM chuyên biệt cho Shopee Affiliate</p>
       </div>
 
-      <div class="tool-card-wrap wide">
-        <div class="tool-grid">
-          <div style="grid-column:span 2;">
+      <div class="calc-grid wide">
+        <!-- Input card: Basic info -->
+        <div class="calc-card full-width">
+          <h2>📝 Thông tin cơ bản</h2>
+          <div class="input-group">
             <label>1. Link sản phẩm / Shop (Landing Page URL)</label>
             <input type="text" id="baseUrl" placeholder="https://shopee.vn/ten-san-pham-i.123.456">
           </div>
-          <div class="form-group">
-            <label>2. Thị trường (Country)</label>
-            <select id="country">
-              <option value="VN">Vietnam (VN)</option>
-              <option value="SG">Singapore (SG)</option>
-              <option value="MY">Malaysia (MY)</option>
-              <option value="TH">Thailand (TH)</option>
-              <option value="ID">Indonesia (ID)</option>
-              <option value="PH">Philippines (PH)</option>
-              <option value="TW">Taiwan (TW)</option>
-              <option value="BR">Brazil (BR)</option>
-            </select>
+          <div class="input-row cols-3">
+            <div class="input-group">
+              <label>2. Thị trường (Country)</label>
+              <select id="country">
+                <option value="VN">Vietnam (VN)</option>
+                <option value="SG">Singapore (SG)</option>
+                <option value="MY">Malaysia (MY)</option>
+                <option value="TH">Thailand (TH)</option>
+                <option value="ID">Indonesia (ID)</option>
+                <option value="PH">Philippines (PH)</option>
+                <option value="TW">Taiwan (TW)</option>
+                <option value="BR">Brazil (BR)</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>3. Shop ID</label>
+              <input type="text" id="shopId" placeholder="Nhập mã Shop ID">
+            </div>
+            <div class="input-group">
+              <label>4. Nền tảng (Platform)</label>
+              <select id="platform" onchange="renderFormats()"></select>
+            </div>
           </div>
-          <div class="form-group">
-            <label>3. Shop ID</label>
-            <input type="text" id="shopId" placeholder="Nhập mã Shop ID">
-          </div>
-          <div class="form-group">
-            <label>4. Nền tảng (Ad Platform)</label>
-            <select id="platform" onchange="renderFormats()"></select>
-          </div>
-          <div class="form-group">
+          <div class="input-group">
             <label>5. Định dạng (Ad Format)</label>
             <select id="format" onchange="updateChannelData()"></select>
           </div>
         </div>
 
-        <div class="channel-preview">
-          <div>Mã kênh (Channel Code)<b id="displayCode">-</b></div>
-          <div>Nguồn (Source)<b id="displaySource">-</b></div>
-          <div>Hình thức (Medium)<b id="displayMedium">-</b></div>
-        </div>
-
-        <div class="tool-grid">
-          <div class="form-group">
-            <label>6. Loại chiến dịch (Type)</label>
-            <select id="campType">
-              <option value="SS">Featuring One Shop (SS)</option>
-              <option value="MS">Featuring Multiple Shops (MS)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>7. Mô tả chiến dịch (Description)</label>
-            <input type="text" id="campDesc" placeholder="ví dụ: p2p-smartheart-dec12">
-          </div>
-          <div style="grid-column:span 2;">
-            <label>8. Nội dung quảng cáo (Ad Content / utm_content - Tùy chọn)</label>
-            <input type="text" id="adContent" placeholder="ví dụ: cpc-01">
+        <!-- Channel preview -->
+        <div class="calc-card full-width">
+          <h2>📊 Thông tin kênh</h2>
+          <div class="channel-preview">
+            <div class="metric">
+              <div class="metric-value" id="displayCode">-</div>
+              <div class="metric-label">Mã kênh</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value" id="displaySource">-</div>
+              <div class="metric-label">Nguồn</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value" id="displayMedium">-</div>
+              <div class="metric-label">Hình thức</div>
+            </div>
           </div>
         </div>
 
-        <div class="tool-actions">
-          <button class="tool-btn tool-btn-primary" onclick="generate()">Tạo Link Ngay</button>
-          <button class="tool-btn tool-btn-danger" onclick="resetForm()">Làm mới</button>
+        <!-- Campaign details -->
+        <div class="calc-card full-width">
+          <h2>🎯 Chi tiết chiến dịch</h2>
+          <div class="input-row cols-3">
+            <div class="input-group">
+              <label>6. Loại chiến dịch (Type)</label>
+              <select id="campType">
+                <option value="SS">Featuring One Shop (SS)</option>
+                <option value="MS">Featuring Multiple Shops (MS)</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>7. Mô tả chiến dịch</label>
+              <input type="text" id="campDesc" placeholder="ví dụ: p2p-smartheart-dec12">
+            </div>
+            <div class="input-group">
+              <label>8. Nội dung QC (tùy chọn)</label>
+              <input type="text" id="adContent" placeholder="ví dụ: cpc-01">
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn-calc" style="flex:1;" onclick="generate()">Tạo Link Ngay</button>
+            <button class="btn-copy" style="color:#ef4444;border-color:#ef4444;" onclick="resetForm()">Làm mới</button>
+          </div>
         </div>
 
-        <div id="resultsArea" style="display:none; margin-top:24px;">
-          <div class="form-group">
-            <label>Campaign Name <small>(Dùng đặt tên chiến dịch quảng cáo)</small></label>
-            <textarea id="resCampName" readonly style="min-height:60px;"></textarea>
-            <button class="tool-btn tool-btn-success" onclick="copyText('resCampName')"
-              style="margin-top:8px;">Copy</button>
+        <!-- Results -->
+        <div id="resultsArea" class="calc-card full-width" style="display:none;">
+          <h2>✅ Kết quả</h2>
+          <div class="input-group">
+            <label>Campaign Name <span style="color:var(--color-gray);font-weight:400;">(Dùng đặt tên chiến
+                dịch)</span></label>
+            <textarea id="resCampName" readonly rows="2" style="background:var(--color-bg,#f8fafc);"></textarea>
           </div>
-          <div class="form-group">
-            <label>Web Link <small>(Dùng cho PC/Browser)</small></label>
-            <textarea id="resWebLink" readonly style="min-height:60px;"></textarea>
-            <button class="tool-btn tool-btn-success" onclick="copyText('resWebLink')"
-              style="margin-top:8px;">Copy</button>
+          <button class="btn-copy" style="width:100%;margin-bottom:16px;" onclick="copyText('resCampName')">Copy
+            Campaign Name</button>
+
+          <div class="input-group">
+            <label>Web Link <span style="color:var(--color-gray);font-weight:400;">(PC/Browser)</span></label>
+            <textarea id="resWebLink" readonly rows="2" style="background:var(--color-bg,#f8fafc);"></textarea>
           </div>
-          <div class="form-group">
-            <label>Universal Link <small>(Link mở App - Khuyên dùng)</small></label>
-            <textarea id="resUniLink" readonly style="min-height:60px;"></textarea>
-            <button class="tool-btn tool-btn-success" onclick="copyText('resUniLink')"
-              style="margin-top:8px;">Copy</button>
-            <p class="hint">Tự động chuyển hướng vào App Shopee để tăng tỷ lệ chốt đơn.</p>
+          <button class="btn-copy" style="width:100%;margin-bottom:16px;" onclick="copyText('resWebLink')">Copy Web
+            Link</button>
+
+          <div class="input-group">
+            <label>Universal Link <span style="color:var(--color-gray);font-weight:400;">(Mở App - Khuyên
+                dùng)</span></label>
+            <textarea id="resUniLink" readonly rows="2" style="background:var(--color-bg,#f8fafc);"></textarea>
           </div>
+          <button class="btn-calc" style="background:#22C55E;border-color:#22C55E;"
+            onclick="copyText('resUniLink')">Copy Universal Link</button>
+          <p class="hint">Tự động chuyển hướng vào App Shopee để tăng tỷ lệ chốt đơn.</p>
         </div>
       </div>
     </div>
   </section>
 
+  <script src="/js/main.js?v=1.4"></script>
   <script>
     const channelData = [
       { platform: "Facebook Collaborative Ads - Sales", format: "Any ads type", code: "FBCA", source: "facebook-ca", medium: "seller" },
@@ -265,11 +283,6 @@
     function resetForm() { if (confirm("Xóa toàn bộ dữ liệu đã nhập?")) location.reload(); }
 
     window.onload = init;
-
-    // Mobile menu
-    const menuToggle = document.getElementById('menuToggle');
-    const navList = document.getElementById('navList');
-    if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
   </script>
 </body>
 
