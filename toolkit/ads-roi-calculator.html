@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+
+<head>
+    <script src="/js/tracking.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tính ROAS, CPA, CPM, CTR, CPC nhanh cho chiến dịch quảng cáo">
+    <link rel="canonical" href="https://nguyenvanhao.name.vn/toolkit/ads-roi-calculator.html">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#22C55E">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Crect x='5' y='5' width='90' height='90' rx='15' fill='none' stroke='%231F2937' stroke-width='6'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+    <title>Ads ROI Calculator - Nguyễn Văn Hảo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css?v=1.4">
+    <link rel="stylesheet" href="/css/style.css?v=1.5">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .calc-page {
+            padding: 100px 0 60px;
+            min-height: 100vh;
+        }
+
+        .calc-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .calc-header h1 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .calc-header p {
+            color: var(--color-gray);
+            font-size: 1.05rem;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .calc-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .calc-card {
+            background: var(--color-white);
+            border: 2px solid var(--color-border);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 4px 4px 0 var(--color-border);
+        }
+
+        .calc-card h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-gray);
+            margin-bottom: 4px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+            background: var(--color-bg);
+        }
+
+        .input-group input:focus {
+            border-color: var(--color-primary);
+        }
+
+        .results-card {
+            grid-column: 1 / -1;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .metric {
+            background: var(--color-bg);
+            border: 2px solid var(--color-border);
+            border-radius: 16px;
+            padding: 18px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .metric:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-good {
+            border-color: #22C55E;
+        }
+
+        .metric-good .metric-value {
+            color: #22C55E;
+        }
+
+        .metric-warn {
+            border-color: #F59E0B;
+        }
+
+        .metric-warn .metric-value {
+            color: #F59E0B;
+        }
+
+        .metric-bad {
+            border-color: #EF4444;
+        }
+
+        .metric-bad .metric-value {
+            color: #EF4444;
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--color-black);
+            border-radius: 14px;
+            background: var(--color-primary);
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            box-shadow: 3px 3px 0 var(--color-black);
+            margin-top: 8px;
+        }
+
+        .btn-calc:hover {
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 0 var(--color-black);
+        }
+
+        .btn-calc:active {
+            transform: translateY(0);
+            box-shadow: 1px 1px 0 var(--color-black);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--color-gray);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .back-link:hover {
+            color: var(--color-primary);
+        }
+
+        .insight-box {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px solid #bbf7d0;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 4px;
+        }
+
+        .insight-box h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .insight-box ul {
+            padding-left: 20px;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: #374151;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
+            <nav class="nav">
+                <button class="menu-toggle" id="menuToggle"
+                    aria-label="Menu"><span></span><span></span><span></span></button>
+                <ul class="nav-list" id="navList">
+                    <li><a href="/" class="nav-link">Trang chủ</a></li>
+                    <li><a href="/blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
+                    <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+                </ul>
+                <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="calc-page">
+        <div class="container">
+            <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+            <div class="calc-header">
+                <span class="section-badge"
+                    style="background: var(--color-lavender); margin-bottom: 12px; display: inline-block;">📊
+                    Calculator</span>
+                <h1>Ads ROI Calculator</h1>
+                <p>Tính toán hiệu quả chiến dịch quảng cáo trong vài giây</p>
+            </div>
+
+            <div class="calc-grid">
+                <!-- Input: Chi phí & Doanh thu -->
+                <div class="calc-card">
+                    <h2>💰 Chi phí & Doanh thu</h2>
+                    <div class="input-group">
+                        <label>Chi phí quảng cáo (VNĐ)</label>
+                        <input type="number" id="adSpend" placeholder="5,000,000" oninput="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Doanh thu (VNĐ)</label>
+                        <input type="number" id="revenue" placeholder="15,000,000" oninput="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Lợi nhuận gộp (%) — optional</label>
+                        <input type="number" id="margin" placeholder="30" value="100" oninput="calculate()">
+                    </div>
+                </div>
+
+                <!-- Input: Hiệu suất -->
+                <div class="calc-card">
+                    <h2>📈 Hiệu suất</h2>
+                    <div class="input-group">
+                        <label>Impressions (lượt hiển thị)</label>
+                        <input type="number" id="impressions" placeholder="100,000" oninput="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Clicks (lượt nhấp)</label>
+                        <input type="number" id="clicks" placeholder="2,000" oninput="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Conversions (chuyển đổi)</label>
+                        <input type="number" id="conversions" placeholder="50" oninput="calculate()">
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="calc-card results-card">
+                    <h2>🎯 Kết quả</h2>
+                    <div class="results-grid">
+                        <div class="metric" id="m-roas">
+                            <div class="metric-value" id="v-roas">—</div>
+                            <div class="metric-label">ROAS</div>
+                        </div>
+                        <div class="metric" id="m-roi">
+                            <div class="metric-value" id="v-roi">—</div>
+                            <div class="metric-label">ROI %</div>
+                        </div>
+                        <div class="metric" id="m-cpa">
+                            <div class="metric-value" id="v-cpa">—</div>
+                            <div class="metric-label">CPA</div>
+                        </div>
+                        <div class="metric" id="m-cpc">
+                            <div class="metric-value" id="v-cpc">—</div>
+                            <div class="metric-label">CPC</div>
+                        </div>
+                        <div class="metric" id="m-cpm">
+                            <div class="metric-value" id="v-cpm">—</div>
+                            <div class="metric-label">CPM</div>
+                        </div>
+                        <div class="metric" id="m-ctr">
+                            <div class="metric-value" id="v-ctr">—</div>
+                            <div class="metric-label">CTR %</div>
+                        </div>
+                        <div class="metric" id="m-cvr">
+                            <div class="metric-value" id="v-cvr">—</div>
+                            <div class="metric-label">CVR %</div>
+                        </div>
+                        <div class="metric" id="m-profit">
+                            <div class="metric-value" id="v-profit">—</div>
+                            <div class="metric-label">Lợi nhuận</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights -->
+                <div class="insight-box" id="insightBox" style="display: none;">
+                    <h3>💡 Phân tích nhanh</h3>
+                    <ul id="insightList"></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="/js/main.js?v=1.4"></script>
+    <script>
+        function fmt(n) {
+            if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+            if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+            if (n >= 1e3) return Math.round(n).toLocaleString('vi-VN');
+            return n % 1 === 0 ? n.toString() : n.toFixed(2);
+        }
+
+        function setMetric(id, value, label) {
+            document.getElementById('v-' + id).textContent = value;
+            const el = document.getElementById('m-' + id);
+            el.className = 'metric' + (label ? ' metric-' + label : '');
+        }
+
+        function calculate() {
+            const spend = parseFloat(document.getElementById('adSpend').value) || 0;
+            const revenue = parseFloat(document.getElementById('revenue').value) || 0;
+            const margin = parseFloat(document.getElementById('margin').value) || 100;
+            const impressions = parseFloat(document.getElementById('impressions').value) || 0;
+            const clicks = parseFloat(document.getElementById('clicks').value) || 0;
+            const conversions = parseFloat(document.getElementById('conversions').value) || 0;
+
+            if (spend === 0) {
+                ['roas', 'roi', 'cpa', 'cpc', 'cpm', 'ctr', 'cvr', 'profit'].forEach(k => setMetric(k, '—'));
+                document.getElementById('insightBox').style.display = 'none';
+                return;
+            }
+
+            // Calculations
+            const roas = revenue / spend;
+            const grossProfit = revenue * (margin / 100);
+            const netProfit = grossProfit - spend;
+            const roi = ((grossProfit - spend) / spend) * 100;
+            const cpa = conversions > 0 ? spend / conversions : 0;
+            const cpc = clicks > 0 ? spend / clicks : 0;
+            const cpm = impressions > 0 ? (spend / impressions) * 1000 : 0;
+            const ctr = impressions > 0 ? (clicks / impressions) * 100 : 0;
+            const cvr = clicks > 0 ? (conversions / clicks) * 100 : 0;
+
+            // Display
+            setMetric('roas', roas.toFixed(2) + 'x', roas >= 3 ? 'good' : roas >= 1 ? 'warn' : 'bad');
+            setMetric('roi', fmt(roi) + '%', roi > 50 ? 'good' : roi > 0 ? 'warn' : 'bad');
+            setMetric('cpa', conversions > 0 ? fmt(cpa) + 'đ' : '—');
+            setMetric('cpc', clicks > 0 ? fmt(cpc) + 'đ' : '—');
+            setMetric('cpm', impressions > 0 ? fmt(cpm) + 'đ' : '—');
+            setMetric('ctr', impressions > 0 ? ctr.toFixed(2) + '%' : '—', ctr > 2 ? 'good' : ctr > 0.5 ? 'warn' : 'bad');
+            setMetric('cvr', clicks > 0 ? cvr.toFixed(2) + '%' : '—', cvr > 3 ? 'good' : cvr > 1 ? 'warn' : 'bad');
+            setMetric('profit', fmt(netProfit) + 'đ', netProfit > 0 ? 'good' : 'bad');
+
+            // Insights
+            const insights = [];
+            if (roas >= 3) insights.push('ROAS ' + roas.toFixed(1) + 'x — Chiến dịch đang hoạt động rất hiệu quả! 🎉');
+            else if (roas >= 1) insights.push('ROAS ' + roas.toFixed(1) + 'x — Có lãi nhưng cần tối ưu thêm để scale.');
+            else insights.push('ROAS ' + roas.toFixed(1) + 'x — Đang lỗ! Cần review targetting, creative hoặc landing page.');
+
+            if (ctr > 0 && ctr < 0.5) insights.push('CTR thấp (' + ctr.toFixed(2) + '%) — Cải thiện ad creative, headline, CTA.');
+            if (ctr > 3) insights.push('CTR cao (' + ctr.toFixed(2) + '%) — Ad creative đang thu hút tốt!');
+
+            if (cvr > 0 && cvr < 1) insights.push('CVR thấp (' + cvr.toFixed(2) + '%) — Kiểm tra landing page, form, UX.');
+            if (cvr > 5) insights.push('CVR rất cao (' + cvr.toFixed(2) + '%) — Tuyệt vời! Cân nhắc tăng budget.');
+
+            if (cpc > 0 && spend > 0) {
+                const avgCpcPercent = (cpc / (revenue / Math.max(conversions, 1))) * 100;
+                if (avgCpcPercent > 50) insights.push('CPC chiếm tỉ lệ cao so với giá trị chuyển đổi — tối ưu bidding.');
+            }
+
+            const insightBox = document.getElementById('insightBox');
+            const insightList = document.getElementById('insightList');
+            if (insights.length > 0) {
+                insightList.innerHTML = insights.map(i => '<li>' + i + '</li>').join('');
+                insightBox.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

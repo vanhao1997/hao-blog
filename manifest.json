@@ -1,0 +1,20 @@
+{
+  "name": "Nguyễn Văn Hảo Blog",
+  "short_name": "NVH Blog",
+  "description": "Digital Marketing Blog - Chia sẻ kiến thức về Marketing, Ads, AI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#22C55E",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Crect x='5' y='5' width='90' height='90' rx='15' fill='none' stroke='%231F2937' stroke-width='6'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "business"],
+  "lang": "vi"
+}

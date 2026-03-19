@@ -53,8 +53,6 @@
                     <li><a href="blog.html" class="nav-link">Blog</a></li>
                     <li><a href="about.html" class="nav-link">Giới thiệu</a></li>
                     <li><a href="contact.html" class="nav-link active">Liên hệ</a></li>
-                    <li><a href="https://vibecodingsolution.ovh/" class="nav-link" target="_blank"
-                            rel="noopener">Vibecode</a></li>
                 </ul>
 
                 <a href="#contactForm" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
@@ -181,10 +179,43 @@
                                 placeholder="Nhập nội dung tin nhắn..." required></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary form-submit btn-lg">
+                        <button type="submit" class="btn btn-primary form-submit btn-lg" id="submitBtn">
                             Gửi tin nhắn →
                         </button>
+                        <p id="formStatus" style="margin-top: 12px; font-weight: 600; display: none;"></p>
                     </form>
+
+                    <script>
+                        document.getElementById('contactFormPage').addEventListener('submit', async function (e) {
+                            e.preventDefault();
+                            const btn = document.getElementById('submitBtn');
+                            const status = document.getElementById('formStatus');
+                            btn.disabled = true;
+                            btn.textContent = 'Đang gửi...';
+                            status.style.display = 'none';
+                            try {
+                                const res = await fetch(this.action, {
+                                    method: 'POST',
+                                    body: new FormData(this),
+                                    headers: { 'Accept': 'application/json' }
+                                });
+                                if (res.ok) {
+                                    status.textContent = '✅ Gửi thành công! Mình sẽ phản hồi sớm nhất có thể.';
+                                    status.style.color = '#22C55E';
+                                    status.style.display = 'block';
+                                    this.reset();
+                                } else {
+                                    throw new Error('failed');
+                                }
+                            } catch (err) {
+                                status.textContent = '❌ Có lỗi xảy ra. Vui lòng thử lại hoặc liên hệ qua email.';
+                                status.style.color = '#EF4444';
+                                status.style.display = 'block';
+                            }
+                            btn.disabled = false;
+                            btn.textContent = 'Gửi tin nhắn →';
+                        });
+                    </script>
                 </div>
             </div>
         </div>

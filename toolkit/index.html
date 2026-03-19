@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+
+<head>
+    <script src="/js/tracking.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Bộ công cụ Digital Marketing miễn phí - UTM Builder, Ads Calculator, TikTok Stats, YouTube Stats và nhiều hơn nữa">
+    <meta name="author" content="Nguyễn Văn Hảo">
+    <link rel="canonical" href="https://nguyenvanhao.name.vn/toolkit/">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#22C55E">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Crect x='5' y='5' width='90' height='90' rx='15' fill='none' stroke='%231F2937' stroke-width='6'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+    <title>Toolkit - Nguyễn Văn Hảo Blog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css?v=1.4">
+    <link rel="stylesheet" href="/css/style.css?v=1.5">
+    <link rel="stylesheet" href="/css/animations.css?v=1.4">
+    <style>
+        .toolkit-hero {
+            padding: 100px 0 40px;
+            text-align: center;
+        }
+
+        .toolkit-hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: var(--color-black);
+            margin-bottom: 12px;
+        }
+
+        .toolkit-hero p {
+            font-size: 1.1rem;
+            color: var(--color-gray);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border: 2px solid var(--color-border);
+            border-radius: 16px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: var(--color-white);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--color-primary);
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-gray);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .filter-tab {
+            padding: 8px 20px;
+            border-radius: 100px;
+            border: 2px solid var(--color-border);
+            background: var(--color-white);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .filter-tab:hover,
+        .filter-tab.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding-bottom: 60px;
+        }
+
+        .tool-card {
+            background: var(--color-white);
+            border: 2px solid var(--color-border);
+            border-radius: 20px;
+            padding: 28px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 4px 4px 0 var(--color-border);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 6px 8px 0 var(--color-border);
+            border-color: var(--color-primary);
+        }
+
+        .tool-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid var(--color-black);
+        }
+
+        .tool-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .tool-card p {
+            font-size: 0.9rem;
+            color: var(--color-gray);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .tool-tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 100px;
+            background: var(--color-lavender);
+            color: var(--color-primary);
+            display: inline-block;
+            margin-top: auto;
+            width: fit-content;
+        }
+
+        .tool-card.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">H</span>
+                <span class="hide-mobile">Nguyễn Văn Hảo</span>
+            </a>
+            <nav class="nav">
+                <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <ul class="nav-list" id="navList">
+                    <li><a href="/" class="nav-link">Trang chủ</a></li>
+                    <li><a href="/blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
+                    <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+                </ul>
+                <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="toolkit-hero">
+        <div class="container">
+            <span class="section-badge"
+                style="background: var(--color-lavender); margin-bottom: 16px; display: inline-block;">🛠️
+                Toolkit</span>
+            <h1>Công cụ Digital Marketing</h1>
+            <p>Bộ công cụ miễn phí hỗ trợ Digital Marketer làm việc hiệu quả hơn mỗi ngày.</p>
+            <div class="search-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input type="text" id="searchInput" placeholder="Tìm công cụ...">
+            </div>
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">Tất cả</button>
+                <button class="filter-tab" data-filter="ads">Quảng cáo</button>
+                <button class="filter-tab" data-filter="social">Social Media</button>
+                <button class="filter-tab" data-filter="seo">SEO & Content</button>
+                <button class="filter-tab" data-filter="utility">Tiện ích</button>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="tools-grid" id="toolsGrid">
+
+                <!-- Ads Tools -->
+                <a href="ads-roi-calculator.html" class="tool-card" data-category="ads" data-name="Ads ROI Calculator">
+                    <div class="tool-icon" style="background: #FEF3C7;">📊</div>
+                    <h3>Ads ROI Calculator</h3>
+                    <p>Tính ROAS, CPA, CPM, CTR, CPC nhanh cho chiến dịch quảng cáo</p>
+                    <span class="tool-tag">Quảng cáo</span>
+                </a>
+
+                <a href="utm_builder.html" class="tool-card" data-category="ads" data-name="UTM Builder">
+                    <div class="tool-icon" style="background: #DBEAFE;">🔗</div>
+                    <h3>UTM Builder</h3>
+                    <p>Tạo UTM parameters cho link tracking campaigns</p>
+                    <span class="tool-tag">Quảng cáo</span>
+                </a>
+
+                <a href="utm_shopee_builder.html" class="tool-card" data-category="ads" data-name="UTM Shopee Builder">
+                    <div class="tool-icon" style="background: #FFE4E6;">🛒</div>
+                    <h3>UTM Shopee Builder</h3>
+                    <p>Tạo UTM chuyên biệt cho Shopee Affiliate</p>
+                    <span class="tool-tag">Quảng cáo</span>
+                </a>
+
+                <a href="ads_structure.html" class="tool-card" data-category="ads" data-name="Ads Structure Generator">
+                    <div class="tool-icon" style="background: #E0E7FF;">🏗️</div>
+                    <h3>Ads Structure Generator</h3>
+                    <p>Tạo cấu trúc chiến dịch quảng cáo chuyên nghiệp</p>
+                    <span class="tool-tag">Quảng cáo</span>
+                </a>
+
+                <a href="google_gdn_v3.html" class="tool-card" data-category="ads" data-name="Google GDN Preview">
+                    <div class="tool-icon" style="background: #DCFCE7;">🖼️</div>
+                    <h3>Google GDN Preview</h3>
+                    <p>Xem trước banner quảng cáo Google Display Network</p>
+                    <span class="tool-tag">Quảng cáo</span>
+                </a>
+
+                <a href="SEM_v2.html" class="tool-card" data-category="ads" data-name="SEM Tool">
+                    <div class="tool-icon" style="background: #FEF9C3;">🔍</div>
+                    <h3>SEM Tool</h3>
+                    <p>Công cụ hỗ trợ Search Engine Marketing</p>
+                    <span class="tool-tag">Quảng cáo</span>
+                </a>
+
+                <a href="banner_tool.html" class="tool-card" data-category="ads" data-name="Banner Tool">
+                    <div class="tool-icon" style="background: #FCE7F3;">🎨</div>
+                    <h3>Banner Tool</h3>
+                    <p>Tạo banner quảng cáo nhanh với nhiều kích thước</p>
+                    <span class="tool-tag">Quảng cáo</span>
+                </a>
+
+                <!-- Social Media -->
+                <a href="tiktok-stats_final.html" class="tool-card" data-category="social" data-name="TikTok Stats">
+                    <div class="tool-icon" style="background: #1F2937; color: white;">📱</div>
+                    <h3>TikTok Stats</h3>
+                    <p>Phân tích thống kê tài khoản TikTok</p>
+                    <span class="tool-tag">Social Media</span>
+                </a>
+
+                <a href="tiktok_export_data.html" class="tool-card" data-category="social"
+                    data-name="TikTok Export Data">
+                    <div class="tool-icon" style="background: #F0FDF4;">📤</div>
+                    <h3>TikTok Export Data</h3>
+                    <p>Xuất dữ liệu TikTok ra file</p>
+                    <span class="tool-tag">Social Media</span>
+                </a>
+
+                <a href="youtube-stats_final.html" class="tool-card" data-category="social" data-name="YouTube Stats">
+                    <div class="tool-icon" style="background: #FEE2E2;">▶️</div>
+                    <h3>YouTube Stats</h3>
+                    <p>Phân tích thống kê kênh YouTube</p>
+                    <span class="tool-tag">Social Media</span>
+                </a>
+
+                <a href="facebook_export_comment.html" class="tool-card" data-category="social"
+                    data-name="Facebook Export Comment">
+                    <div class="tool-icon" style="background: #DBEAFE;">💬</div>
+                    <h3>Facebook Export Comment</h3>
+                    <p>Xuất bình luận Facebook ra file dữ liệu</p>
+                    <span class="tool-tag">Social Media</span>
+                </a>
+
+                <!-- SEO -->
+                <a href="keywordwrap.html" class="tool-card" data-category="seo" data-name="Keyword Wrapper">
+                    <div class="tool-icon" style="background: #ECFDF5;">🔑</div>
+                    <h3>Keyword Wrapper</h3>
+                    <p>Bọc từ khóa với các match types cho Google Ads</p>
+                    <span class="tool-tag">SEO & Content</span>
+                </a>
+
+                <a href="check_sitelist.html" class="tool-card" data-category="seo" data-name="Check Sitelist">
+                    <div class="tool-icon" style="background: #F0F9FF;">🌐</div>
+                    <h3>Check Sitelist</h3>
+                    <p>Kiểm tra danh sách website placement</p>
+                    <span class="tool-tag">SEO & Content</span>
+                </a>
+
+                <!-- Utility -->
+                <a href="csv2excel.html" class="tool-card" data-category="utility" data-name="CSV to Excel">
+                    <div class="tool-icon" style="background: #DCFCE7;">📁</div>
+                    <h3>CSV to Excel</h3>
+                    <p>Chuyển đổi file CSV sang Excel nhanh</p>
+                    <span class="tool-tag">Tiện ích</span>
+                </a>
+
+                <a href="ConvertUpperCase.html" class="tool-card" data-category="utility" data-name="Convert UpperCase">
+                    <div class="tool-icon" style="background: #EDE9FE;">Aa</div>
+                    <h3>Convert UpperCase</h3>
+                    <p>Chuyển đổi chữ hoa, chữ thường</p>
+                    <span class="tool-tag">Tiện ích</span>
+                </a>
+
+                <a href="vat_caculator.html" class="tool-card" data-category="utility" data-name="VAT Calculator">
+                    <div class="tool-icon" style="background: #FEF3C7;">🧮</div>
+                    <h3>VAT Calculator</h3>
+                    <p>Tính thuế VAT nhanh, chính xác</p>
+                    <span class="tool-tag">Tiện ích</span>
+                </a>
+
+                <a href="note_online.html" class="tool-card" data-category="utility" data-name="Note Online">
+                    <div class="tool-icon" style="background: #FFF7ED;">📝</div>
+                    <h3>Note Online</h3>
+                    <p>Ghi chú nhanh online, tự động lưu</p>
+                    <span class="tool-tag">Tiện ích</span>
+                </a>
+
+                <a href="2fa-generator.html" class="tool-card" data-category="utility" data-name="2FA Generator">
+                    <div class="tool-icon" style="background: #F0FDF4;">🔐</div>
+                    <h3>2FA Generator</h3>
+                    <p>Tạo mã xác thực 2 lớp (TOTP)</p>
+                    <span class="tool-tag">Tiện ích</span>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p style="text-align: center; color: var(--color-gray); padding: 24px 0;">© 2024 Nguyễn Văn Hảo. All rights
+                reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js?v=1.4"></script>
+    <script>
+        // Search & Filter
+        const searchInput = document.getElementById('searchInput');
+        const cards = document.querySelectorAll('.tool-card');
+        const tabs = document.querySelectorAll('.filter-tab');
+        let activeFilter = 'all';
+
+        searchInput.addEventListener('input', filterTools);
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                activeFilter = tab.dataset.filter;
+                filterTools();
+            });
+        });
+
+        function filterTools() {
+            const q = searchInput.value.toLowerCase();
+            cards.forEach(card => {
+                const name = card.dataset.name.toLowerCase();
+                const cat = card.dataset.category;
+                const matchSearch = !q || name.includes(q);
+                const matchFilter = activeFilter === 'all' || cat === activeFilter;
+                card.classList.toggle('hidden', !(matchSearch && matchFilter));
+            });
+        }
+    </script>
+</body>
+
+</html>

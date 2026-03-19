@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /.git/
+
+Sitemap: https://nguyenvanhao.name.vn/sitemap.xml
