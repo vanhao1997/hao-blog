@@ -451,10 +451,11 @@ Output Format:
                 body: JSON.stringify({
                     model: 'deepseek:deepseek-v3-1-250821',
                     messages: [
-                        { role: 'system', content: 'You are a helpful assistant. You return valid JSON containing HTML for images and videos within markdown.' },
+                        { role: 'system', content: 'You are a helpful assistant. Return ONLY valid JSON. All string values must be properly escaped: use \\n for newlines, \\" for quotes inside strings, and \\\\ for backslashes. Do NOT use unescaped newlines or special characters inside JSON string values.' },
                         { role: 'user', content: prompt }
                     ],
-                    temperature: 0.1
+                    temperature: 0.1,
+                    response_format: { type: 'json_object' }
                 }),
             });
             if (!response.ok) {
@@ -465,9 +466,36 @@ Output Format:
             }
             const data = await response.json();
             const contentString = data.choices[0].message.content.trim();
-            const firstBracket = contentString.indexOf('{');
-            const lastBracket = contentString.lastIndexOf('}');
-            return JSON.parse(contentString.substring(firstBracket, lastBracket + 1));
+
+            // Try direct JSON parse first
+            try {
+                return JSON.parse(contentString);
+            } catch (e1) {
+                console.warn('Direct JSON parse failed, trying bracket extraction...');
+                const firstBracket = contentString.indexOf('{');
+                const lastBracket = contentString.lastIndexOf('}');
+                if (firstBracket !== -1 && lastBracket !== -1) {
+                    try {
+                        return JSON.parse(contentString.substring(firstBracket, lastBracket + 1));
+                    } catch (e2) {
+                        console.warn('Bracket extraction failed, trying regex fallback...');
+                    }
+                }
+                // Regex fallback: extract each field separately
+                const extract = (key) => {
+                    const re = new RegExp(`"${key}"\\s*:\\s*"([\\s\\S]*?)"\\s*[,}]`);
+                    const m = contentString.match(re);
+                    return m ? m[1].replace(/\\n/g, '\n').replace(/\\"/g, '"') : '';
+                };
+                const kwMatch = contentString.match(/"keywords"\s*:\s*\[([\s\S]*?)\]/);
+                const keywords = kwMatch ? kwMatch[1].match(/"([^"]+)"/g)?.map(k => k.replace(/"/g, '')) || [] : [];
+                return {
+                    seo_title: extract('seo_title'),
+                    meta_description: extract('meta_description'),
+                    keywords: keywords,
+                    content_markdown: extract('content_markdown')
+                };
+            }
         }
 
         function renderResult(data) {
