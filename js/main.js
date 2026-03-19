@@ -463,3 +463,70 @@ console.log(`
   'color: #6B7280; font-size: 12px;',
   'color: #6B7280; font-size: 12px;'
 );
+
+// ============================================
+// TEXT SCRAMBLE EFFECT (Hero Title)
+// ============================================
+class TextScramble {
+  constructor(el) {
+    this.el = el;
+    this.chars = 'abcdefghijklmnopqrstuvwxyz!@#$%&*';
+    this.update = this.update.bind(this);
+  }
+  setText(newText) {
+    const oldText = this.el.textContent;
+    const length = Math.max(oldText.length, newText.length);
+    const promise = new Promise(resolve => this.resolve = resolve);
+    this.queue = [];
+    for (let i = 0; i < length; i++) {
+      const from = oldText[i] || '';
+      const to = newText[i] || '';
+      const start = Math.floor(Math.random() * 20);
+      const end = start + Math.floor(Math.random() * 20);
+      this.queue.push({ from, to, start, end });
+    }
+    cancelAnimationFrame(this.frameRequest);
+    this.frame = 0;
+    this.update();
+    return promise;
+  }
+  update() {
+    let output = '';
+    let complete = 0;
+    for (let i = 0, n = this.queue.length; i < n; i++) {
+      let { from, to, start, end, char } = this.queue[i];
+      if (this.frame >= end) {
+        complete++;
+        output += to;
+      } else if (this.frame >= start) {
+        if (!char || Math.random() < 0.28) {
+          char = this.chars[Math.floor(Math.random() * this.chars.length)];
+          this.queue[i].char = char;
+        }
+        output += char;
+      } else {
+        output += from;
+      }
+    }
+    this.el.textContent = output;
+    if (complete === this.queue.length) {
+      this.resolve();
+    } else {
+      this.frameRequest = requestAnimationFrame(this.update);
+      this.frame++;
+    }
+  }
+}
+
+// Initialize hero text scramble
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('heroAccent');
+  if (el) {
+    const scrambler = new TextScramble(el);
+    const finalText = el.textContent;
+    el.textContent = '';
+    setTimeout(() => {
+      scrambler.setText(finalText);
+    }, 800);
+  }
+});
