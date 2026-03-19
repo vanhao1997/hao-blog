@@ -1,192 +1,154 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Google Campaign URL Builder</title>
-  <style>
-    :root { --brand: #2563eb; --bg: #f6f8fa; --text: #1f2937; }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; padding: 0; background: var(--bg); color: var(--text);
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      font-size: 16px; line-height: 1.5;
-    }
-    .wrap {
-      max-width: 800px; margin: 32px auto; padding: 24px;
-      background: #fff; border-radius: 8px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, .1);
-    }
-    .banner {
-      background: var(--brand); color: #fff; text-align: center;
-      padding: 16px; font-size: 28px; font-weight: 700; border-radius: 6px;
-      margin-bottom: 24px;
-    }
-    label { display: block; margin-bottom: 4px; font-weight: 600; }
-    input[type="text"], textarea, select {
-      width: 100%; padding: 10px 12px; margin-bottom: 16px;
-      border: 1px solid #e5e7eb; border-radius: 6px; outline: none;
-      font-size: 14px; background: #fff;
-    }
-    .row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-    .row > button { flex: none; }
-    .btn {
-      padding: 10px 16px; font-size: 14px; border: none; border-radius: 6px;
-      background: var(--brand); color: #fff; cursor: pointer;
-      transition: background .2s;
-    }
-    .btn:hover { background: #1e4bb8; }
-    .btn.reset { background: #ef4444; }
-    .btn.copy { background: #10b981; }
-    .hidden { display: none; }
-  </style>
+  <title>UTM Builder - Nguyễn Văn Hảo</title>
+  <meta name="description" content="Tạo UTM parameters cho link tracking campaigns">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css?v=1.4">
+  <link rel="stylesheet" href="/css/style.css?v=1.5">
+  <link rel="stylesheet" href="/css/toolkit.css">
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="banner">Google Campaign URL Builder</div>
-
-    <label for="baseUrl">URL gốc (Base URL) <small>(bắt buộc)</small></label>
-    <input type="text" id="baseUrl" placeholder="https://example.com/page" />
-
-    <label for="utm_source_select">UTM Source (Nguồn chiến dịch) <small>(bắt buộc)</small></label>
-    <select id="utm_source_select">
-      <option value="">-- Chọn nguồn --</option>
-      <option value="Facebook">Facebook</option>
-      <option value="Google">Google</option>
-      <option value="Tiktok">Tiktok</option>
-      <option value="Zalo">Zalo</option>
-      <option value="Admicro">Admicro</option>
-      <option value="Khác">Khác</option>
-    </select>
-    <input type="text" id="utm_source_custom" class="hidden" placeholder="Nhập nguồn khác..." />
-
-    <label for="utm_medium_select">UTM Medium (Hình thức chiến dịch) <small>(bắt buộc)</small></label>
-    <select id="utm_medium_select">
-      <option value="">-- Chọn hình thức --</option>
-      <option value="CPC">CPC</option>
-      <option value="Banner">Banner</option>
-      <option value="Traffic">Traffic</option>
-      <option value="Awareness">Awareness</option>
-      <option value="AppInstall">AppInstall</option>
-      <option value="LandingPageView">LandingPageView</option>
-      <option value="GDNbanner">GDNbanner</option>
-      <option value="SEM">SEM</option>
-      <option value="Khác">Khác</option>
-    </select>
-    <input type="text" id="utm_medium_custom" class="hidden" placeholder="Nhập hình thức khác..." />
-
-    <label for="utm_campaign">UTM Campaign (Chiến dịch) <small>(tùy chọn)</small></label>
-    <input type="text" id="utm_campaign" placeholder="ví dụ: Prelaunch" />
-
-    <label for="utm_term">UTM Term (Từ khoá) <small>(tùy chọn)</small></label>
-    <input type="text" id="utm_term" placeholder="ví dụ: Mobile" />
-
-    <label for="utm_content">UTM Content (Nội dung) <small>(tùy chọn)</small></label>
-    <input type="text" id="utm_content" placeholder="ví dụ: gacha_tam_tien" />
-
-    <div class="row">
-      <button id="btnBuild" class="btn">Build URL</button>
-      <button id="btnReset" class="btn reset">Reset</button>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
+      <nav class="nav">
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+        <ul class="nav-list" id="navList">
+          <li><a href="/" class="nav-link">Trang chủ</a></li>
+          <li><a href="/blog.html" class="nav-link">Blog</a></li>
+          <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
+          <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+          <li><a href="/toolkit/" class="nav-link">Công cụ</a></li>
+        </ul>
+        <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+      </nav>
     </div>
+  </header>
 
-    <label for="outputUrl">URL đã build</label>
-    <textarea id="outputUrl" readonly placeholder="Kết quả sẽ hiện ở đây..."></textarea>
-    <button id="btnCopy" class="btn copy">Copy URL</button>
-  </div>
+  <section class="tool-page">
+    <div class="container">
+      <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+      <div class="tool-header">
+        <h1>Google Campaign URL Builder</h1>
+        <p>Tạo UTM parameters cho link tracking campaigns</p>
+      </div>
+
+      <div class="tool-card-wrap">
+        <label for="baseUrl">URL gốc (Base URL) <small>(bắt buộc)</small></label>
+        <input type="text" id="baseUrl" placeholder="https://example.com/page" />
+
+        <label for="utm_source_select">UTM Source (Nguồn chiến dịch) <small>(bắt buộc)</small></label>
+        <select id="utm_source_select">
+          <option value="">-- Chọn nguồn --</option>
+          <option value="Facebook">Facebook</option>
+          <option value="Google">Google</option>
+          <option value="Tiktok">Tiktok</option>
+          <option value="Zalo">Zalo</option>
+          <option value="Admicro">Admicro</option>
+          <option value="Khác">Khác</option>
+        </select>
+        <input type="text" id="utm_source_custom" class="hidden" placeholder="Nhập nguồn khác..." />
+
+        <label for="utm_medium_select">UTM Medium (Hình thức chiến dịch) <small>(bắt buộc)</small></label>
+        <select id="utm_medium_select">
+          <option value="">-- Chọn hình thức --</option>
+          <option value="CPC">CPC</option>
+          <option value="Banner">Banner</option>
+          <option value="Traffic">Traffic</option>
+          <option value="Awareness">Awareness</option>
+          <option value="AppInstall">AppInstall</option>
+          <option value="LandingPageView">LandingPageView</option>
+          <option value="GDNbanner">GDNbanner</option>
+          <option value="SEM">SEM</option>
+          <option value="Khác">Khác</option>
+        </select>
+        <input type="text" id="utm_medium_custom" class="hidden" placeholder="Nhập hình thức khác..." />
+
+        <label for="utm_campaign">UTM Campaign (Chiến dịch) <small>(tùy chọn)</small></label>
+        <input type="text" id="utm_campaign" placeholder="ví dụ: Prelaunch" />
+
+        <label for="utm_term">UTM Term (Từ khoá) <small>(tùy chọn)</small></label>
+        <input type="text" id="utm_term" placeholder="ví dụ: Mobile" />
+
+        <label for="utm_content">UTM Content (Nội dung) <small>(tùy chọn)</small></label>
+        <input type="text" id="utm_content" placeholder="ví dụ: gacha_tam_tien" />
+
+        <div class="tool-actions">
+          <button id="btnBuild" class="tool-btn tool-btn-primary">Build URL</button>
+          <button id="btnReset" class="tool-btn tool-btn-danger">Reset</button>
+        </div>
+
+        <label for="outputUrl">URL đã build</label>
+        <textarea id="outputUrl" readonly placeholder="Kết quả sẽ hiện ở đây..." style="min-height:80px;"></textarea>
+        <button id="btnCopy" class="tool-btn tool-btn-success" style="margin-top:8px;">Copy URL</button>
+      </div>
+    </div>
+  </section>
 
   <script>
     const $ = id => document.getElementById(id);
     const baseUrlInput = $('baseUrl'),
-          utmSourceSelect = $('utm_source_select'),
-          utmSourceCustom = $('utm_source_custom'),
-          utmMediumSelect = $('utm_medium_select'),
-          utmMediumCustom = $('utm_medium_custom'),
-          utmCampaignInput = $('utm_campaign'),
-          utmTermInput = $('utm_term'),
-          utmContentInput = $('utm_content'),
-          outputUrl = $('outputUrl'),
-          btnBuild = $('btnBuild'),
-          btnReset = $('btnReset'),
-          btnCopy = $('btnCopy');
+      utmSourceSelect = $('utm_source_select'),
+      utmSourceCustom = $('utm_source_custom'),
+      utmMediumSelect = $('utm_medium_select'),
+      utmMediumCustom = $('utm_medium_custom'),
+      utmCampaignInput = $('utm_campaign'),
+      utmTermInput = $('utm_term'),
+      utmContentInput = $('utm_content'),
+      outputUrl = $('outputUrl'),
+      btnBuild = $('btnBuild'),
+      btnReset = $('btnReset'),
+      btnCopy = $('btnCopy');
 
-    // Show custom input when 'Khác' selected
     utmSourceSelect.addEventListener('change', () => {
-      if (utmSourceSelect.value === 'Khác') {
-        utmSourceCustom.classList.remove('hidden');
-        utmSourceCustom.focus();
-      } else {
-        utmSourceCustom.classList.add('hidden');
-        utmSourceCustom.value = '';
-      }
+      if (utmSourceSelect.value === 'Khác') { utmSourceCustom.classList.remove('hidden'); utmSourceCustom.focus(); }
+      else { utmSourceCustom.classList.add('hidden'); utmSourceCustom.value = ''; }
     });
     utmMediumSelect.addEventListener('change', () => {
-      if (utmMediumSelect.value === 'Khác') {
-        utmMediumCustom.classList.remove('hidden');
-        utmMediumCustom.focus();
-      } else {
-        utmMediumCustom.classList.add('hidden');
-        utmMediumCustom.value = '';
-      }
+      if (utmMediumSelect.value === 'Khác') { utmMediumCustom.classList.remove('hidden'); utmMediumCustom.focus(); }
+      else { utmMediumCustom.classList.add('hidden'); utmMediumCustom.value = ''; }
     });
 
     function buildUrl() {
       const base = baseUrlInput.value.trim();
       if (!base) { alert('Vui lòng nhập URL gốc'); baseUrlInput.focus(); return; }
-
-      // UTM Source (Bắt buộc)
       let src = utmSourceSelect.value;
       if (!src) { alert('Vui lòng chọn hoặc nhập UTM Source'); utmSourceSelect.focus(); return; }
-      if (src === 'Khác') {
-        src = utmSourceCustom.value.trim();
-        if (!src) { alert('Vui lòng nhập nguồn khác cho UTM Source'); utmSourceCustom.focus(); return; }
-      }
-      
-      // UTM Medium (Bắt buộc)
+      if (src === 'Khác') { src = utmSourceCustom.value.trim(); if (!src) { alert('Vui lòng nhập nguồn khác cho UTM Source'); utmSourceCustom.focus(); return; } }
       let med = utmMediumSelect.value;
       if (!med) { alert('Vui lòng chọn hoặc nhập UTM Medium'); utmMediumSelect.focus(); return; }
-      if (med === 'Khác') {
-        med = utmMediumCustom.value.trim();
-        if (!med) { alert('Vui lòng nhập hình thức khác cho UTM Medium'); utmMediumCustom.focus(); return; }
-      }
-
+      if (med === 'Khác') { med = utmMediumCustom.value.trim(); if (!med) { alert('Vui lòng nhập hình thức khác cho UTM Medium'); utmMediumCustom.focus(); return; } }
       const params = [];
       params.push('utm_source=' + encodeURIComponent(src));
       params.push('utm_medium=' + encodeURIComponent(med));
-
-      // Các trường tùy chọn
-      const cmp = utmCampaignInput.value.trim(); 
-      if (cmp) params.push('utm_campaign=' + encodeURIComponent(cmp));
-
-      const term = utmTermInput.value.trim(); 
-      if (term) params.push('utm_term=' + encodeURIComponent(term));
-      
-      const cnt = utmContentInput.value.trim(); 
-      if (cnt) params.push('utm_content=' + encodeURIComponent(cnt));
-
+      const cmp = utmCampaignInput.value.trim(); if (cmp) params.push('utm_campaign=' + encodeURIComponent(cmp));
+      const term = utmTermInput.value.trim(); if (term) params.push('utm_term=' + encodeURIComponent(term));
+      const cnt = utmContentInput.value.trim(); if (cnt) params.push('utm_content=' + encodeURIComponent(cnt));
       const sep = base.includes('?') ? '&' : '?';
       outputUrl.value = base + sep + params.join('&');
     }
 
     function resetAll() {
-      baseUrlInput.value = '';
-      utmSourceSelect.value = '';
-      utmSourceCustom.value = '';
-      utmSourceCustom.classList.add('hidden');
-      utmMediumSelect.value = '';
-      utmMediumCustom.value = '';
-      utmMediumCustom.classList.add('hidden');
-      utmCampaignInput.value = '';
-      utmTermInput.value = '';
-      utmContentInput.value = '';
-      outputUrl.value = '';
+      baseUrlInput.value = ''; utmSourceSelect.value = ''; utmSourceCustom.value = ''; utmSourceCustom.classList.add('hidden');
+      utmMediumSelect.value = ''; utmMediumCustom.value = ''; utmMediumCustom.classList.add('hidden');
+      utmCampaignInput.value = ''; utmTermInput.value = ''; utmContentInput.value = ''; outputUrl.value = '';
     }
 
     function copyUrl() {
-      const txt = outputUrl.value;
-      if (!txt) return;
+      const txt = outputUrl.value; if (!txt) return;
       navigator.clipboard.writeText(txt).then(() => {
-        const orig = btnCopy.textContent;
-        btnCopy.textContent = 'Copied!';
+        const orig = btnCopy.textContent; btnCopy.textContent = 'Copied!';
         setTimeout(() => btnCopy.textContent = orig, 1200);
       });
     }
@@ -194,6 +156,12 @@
     btnBuild.addEventListener('click', buildUrl);
     btnReset.addEventListener('click', resetAll);
     btnCopy.addEventListener('click', copyUrl);
+
+    // Mobile menu
+    const menuToggle = document.getElementById('menuToggle');
+    const navList = document.getElementById('navList');
+    if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
   </script>
 </body>
+
 </html>

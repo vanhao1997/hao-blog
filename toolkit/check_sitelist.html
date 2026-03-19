@@ -1,12 +1,20 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trình chọn Website theo Chủ đề - Hoàn thiện</title>
+    <title>Bộ lọc Danh sách Trang web - Nguyễn Văn Hảo</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css?v=1.4">
+    <link rel="stylesheet" href="/css/style.css?v=1.5">
+    <link rel="stylesheet" href="/css/toolkit.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         :root {
@@ -31,7 +39,7 @@
             margin: 0 auto;
             background-color: var(--background-color);
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -47,7 +55,7 @@
             font-size: 24px;
             font-weight: 700;
         }
-        
+
         header p {
             margin: 5px 0 0;
             opacity: 0.9;
@@ -58,7 +66,8 @@
             flex-wrap: nowrap;
         }
 
-        aside, section {
+        aside,
+        section {
             padding: 20px;
             height: calc(88vh - 40px);
             overflow-y: auto;
@@ -83,7 +92,9 @@
             background-color: #fdfdfd;
         }
 
-        #topics-container h2, #sites-container h2, #selected-sites-container h2 {
+        #topics-container h2,
+        #sites-container h2,
+        #selected-sites-container h2 {
             margin-top: 0;
             font-size: 18px;
             font-weight: 700;
@@ -98,7 +109,7 @@
         #sites-container h2 {
             background: var(--background-color);
         }
-        
+
         .site-list-wrapper h3 {
             font-size: 17px;
             font-weight: 500;
@@ -107,7 +118,7 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 8px;
         }
-        
+
         .site-list-wrapper h3 .fa-solid {
             margin-right: 8px;
             color: var(--primary-color);
@@ -131,12 +142,12 @@
         .topic-item input[type="checkbox"] {
             display: none;
         }
-        
+
         .topic-item label:hover {
-             background-color: #e2e6ea;
+            background-color: #e2e6ea;
         }
 
-        .topic-item input[type="checkbox"]:checked + label {
+        .topic-item input[type="checkbox"]:checked+label {
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
@@ -156,9 +167,9 @@
             border-radius: 5px;
             transition: box-shadow 0.2s;
         }
-        
+
         .site-item:hover {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
 
         .site-item label {
@@ -173,24 +184,24 @@
             width: 18px;
             height: 18px;
         }
-        
+
         #selected-sites-list {
             list-style-type: none;
             padding: 0;
         }
-        
+
         #selected-sites-list li {
             padding: 5px 0;
             border-bottom: 1px solid #eee;
             font-size: 14px;
         }
-        
+
         #selected-sites-list li a {
             text-decoration: none;
             color: var(--primary-color);
             transition: opacity 0.2s;
         }
-        
+
         #selected-sites-list li a:hover {
             opacity: 0.8;
             text-decoration: underline;
@@ -218,60 +229,84 @@
         }
     </style>
 </head>
-<body>
 
-    <div class="container">
-        <header>
-            <h1>Bộ lọc Danh sách Trang web</h1>
-            <p>Chọn chủ đề để lọc và chọn nền tảng (PC/Mobile) để hiển thị.</p>
-        </header>
-        <main>
-            <aside id="topics-container">
-                <h2>Chủ đề</h2>
-                <div id="topics-list">
-                    <div class="topic-item">
-                        <input type="checkbox" id="topic_all" value="all" checked>
-                        <label for="topic_all">Tất cả chủ đề</label>
-                    </div>
-                    <div class="topic-item"><input type="checkbox" id="topic_1" value="1"><label for="topic_1">Tin tức tổng hợp</label></div>
-                    <div class="topic-item"><input type="checkbox" id="topic_2" value="2"><label for="topic_2">Kinh tế tài chính</label></div>
-                    <div class="topic-item"><input type="checkbox" id="topic_3" value="3"><label for="topic_3">Công nghệ - khoa học</label></div>
-                    <div class="topic-item"><input type="checkbox" id="topic_4" value="4"><label for="topic_4">Gia đình phụ nữ</label></div>
-                    <div class="topic-item"><input type="checkbox" id="topic_6" value="6"><label for="topic_6">Giáo dục</label></div>
-                    <div class="topic-item"><input type="checkbox" id="topic_7" value="7"><label for="topic_7">Mua sắm - tiêu dùng</label></div>
-                    <div class="topic-item"><input type="checkbox" id="topic_8" value="8"><label for="topic_8">Sức khỏe</label></div>
-                    <div class="topic-item"><input type="checkbox" id="topic_9" value="9"><label for="topic_9">Thể Thao và xe cộ</label></div>
-                    <div class="topic-item"><input type="checkbox" id="topic_10" value="10"><label for="topic_10">Phong cách sống và du lịch</label></div>
-                    <div class="topic-item"><input type="checkbox" id="topic_18" value="18"><label for="topic_18">App - Ứng dụng</label></div>
-                    <div class="topic-item"><input type="checkbox" id="topic_17" value="17"><label for="topic_17">Các site khác</label></div>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
+            <nav class="nav">
+                <button class="menu-toggle" id="menuToggle"
+                    aria-label="Menu"><span></span><span></span><span></span></button>
+                <ul class="nav-list" id="navList">
+                    <li><a href="/" class="nav-link">Trang chủ</a></li>
+                    <li><a href="/blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
+                    <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+                    <li><a href="/toolkit/" class="nav-link">Công cụ</a></li>
+                </ul>
+                <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+            </nav>
+        </div>
+    </header>
+    <div style="padding:16px 24px;"><a href="/toolkit/" class="back-link">← Quay lại Toolkit</a></div>
+    <main>
+        <aside id="topics-container">
+            <h2>Chủ đề</h2>
+            <div id="topics-list">
+                <div class="topic-item">
+                    <input type="checkbox" id="topic_all" value="all" checked>
+                    <label for="topic_all">Tất cả chủ đề</label>
                 </div>
-            </aside>
-            <section id="sites-container">
-                <h2>Danh sách Website</h2>
-                <div id="view-toggle-container">
-                    <label><input type="checkbox" name="view-toggle" value="pc" checked> PC</label>
-                    <label><input type="checkbox" name="view-toggle" value="mobile" checked> Mobile</label>
-                </div>
-                <div class="site-list-wrapper" id="pc-wrapper">
-                    <h3><i class="fa-solid fa-desktop"></i> Website PC</h3>
-                    <div id="sites-list-pc" class="sites-list"></div>
-                </div>
-                <div class="site-list-wrapper" id="mobile-wrapper">
-                    <h3><i class="fa-solid fa-mobile-screen-button"></i> Website Mobile</h3>
-                    <div id="sites-list-mobile" class="sites-list"></div>
-                </div>
-            </section>
-             <aside id="selected-sites-container">
-                <h2>Website đã chọn</h2>
-                <ul id="selected-sites-list"></ul>
-            </aside>
-        </main>
+                <div class="topic-item"><input type="checkbox" id="topic_1" value="1"><label for="topic_1">Tin tức tổng
+                        hợp</label></div>
+                <div class="topic-item"><input type="checkbox" id="topic_2" value="2"><label for="topic_2">Kinh tế tài
+                        chính</label></div>
+                <div class="topic-item"><input type="checkbox" id="topic_3" value="3"><label for="topic_3">Công nghệ -
+                        khoa học</label></div>
+                <div class="topic-item"><input type="checkbox" id="topic_4" value="4"><label for="topic_4">Gia đình phụ
+                        nữ</label></div>
+                <div class="topic-item"><input type="checkbox" id="topic_6" value="6"><label for="topic_6">Giáo
+                        dục</label></div>
+                <div class="topic-item"><input type="checkbox" id="topic_7" value="7"><label for="topic_7">Mua sắm -
+                        tiêu dùng</label></div>
+                <div class="topic-item"><input type="checkbox" id="topic_8" value="8"><label for="topic_8">Sức
+                        khỏe</label></div>
+                <div class="topic-item"><input type="checkbox" id="topic_9" value="9"><label for="topic_9">Thể Thao và
+                        xe cộ</label></div>
+                <div class="topic-item"><input type="checkbox" id="topic_10" value="10"><label for="topic_10">Phong cách
+                        sống và du lịch</label></div>
+                <div class="topic-item"><input type="checkbox" id="topic_18" value="18"><label for="topic_18">App - Ứng
+                        dụng</label></div>
+                <div class="topic-item"><input type="checkbox" id="topic_17" value="17"><label for="topic_17">Các site
+                        khác</label></div>
+            </div>
+        </aside>
+        <section id="sites-container">
+            <h2>Danh sách Website</h2>
+            <div id="view-toggle-container">
+                <label><input type="checkbox" name="view-toggle" value="pc" checked> PC</label>
+                <label><input type="checkbox" name="view-toggle" value="mobile" checked> Mobile</label>
+            </div>
+            <div class="site-list-wrapper" id="pc-wrapper">
+                <h3><i class="fa-solid fa-desktop"></i> Website PC</h3>
+                <div id="sites-list-pc" class="sites-list"></div>
+            </div>
+            <div class="site-list-wrapper" id="mobile-wrapper">
+                <h3><i class="fa-solid fa-mobile-screen-button"></i> Website Mobile</h3>
+                <div id="sites-list-mobile" class="sites-list"></div>
+            </div>
+        </section>
+        <aside id="selected-sites-container">
+            <h2>Website đã chọn</h2>
+            <ul id="selected-sites-list"></ul>
+        </aside>
+    </main>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const pcSitesData = [ { name: 'dantri.com.vn', topics: ['1', '2'] }, { name: 'soha.vn', topics: ['1', '2', '3', '4', '8', '9', '10'] }, { name: 'nld.com.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'giadinh.suckhoedoisong.vn', topics: ['1', '2', '3', '4', '8', '10', '11'] }, { name: 'cafebiz.vn', topics: ['1', '2', '3'] }, { name: 'docbao.vn', topics: ['1', '4', '11'] }, { name: 'thanhnien.vn', topics: ['1', '2', '3', '4', '6', '7', '8', '9', '10', '11', '16'] }, { name: 'laodong.vn', topics: ['1', '2', '4', '6', '8', '9', '10'] }, { name: 'enbac.com', topics: ['7'] }, { name: 'genk.vn', topics: ['1', '3', '7'] }, { name: 'f319.com', topics: ['1', '2'] }, { name: 'thethaovanhoa.vn', topics: ['1', '9', '11', '17'] }, { name: 'thethao247.vn', topics: ['1', '9'] }, { name: 'vietbao.vn', topics: ['1', '11', '17'] }, { name: 'thongtintuyensinh.vn', topics: ['6'] }, { name: 'kienthuc.net.vn', topics: ['1', '6', '17'] }, { name: 'petrotimes.vn', topics: ['1', '2'] }, { name: 'phunuvagiadinh.vn', topics: ['1', '4', '17'] }, { name: 'saostar.vn', topics: ['1', '11', '17'] }, { name: 'vov.vn', topics: ['1'] }, { name: 'baophapluat.vn', topics: ['1'] }, { name: 'webthethao.vn', topics: ['9', '11'] }, { name: 'vietnamfinance.vn', topics: ['2'] }, { name: 'baodautu.vn', topics: ['1', '2', '17'] }, { name: 'tinnhanhchungkhoan.vn', topics: ['1', '2', '17'] }, { name: 'viettimes.vn', topics: ['1', '2', '11', '17'] }, { name: 'voh.com.vn', topics: ['1', '17'] }, { name: 'tapchitaichinh.vn', topics: ['1', '2'] }, { name: 'vietnambiz.vn', topics: ['1', '2'] }, { name: 'suckhoehangngay.vn', topics: ['4', '8'] }, { name: 'ttvn.toquoc.vn', topics: ['1', '11'] }, { name: 'nhipsongviet.toquoc.vn', topics: ['1', '2', '11'] }, { name: 'tinhte.vn', topics: ['1', '3', '16'] }, { name: 'tiin.vn', topics: ['1', '11', '17'] }, { name: 'emdep.vn', topics: ['4'] }, { name: 'vietq.vn', topics: ['2', '7', '17'] }, { name: '1thegioi.vn', topics: ['1'] }, { name: 'phunuonline.com.vn', topics: ['4', '17'] }, { name: 'lamchame.com', topics: ['1', '4', '17'] }, { name: 'hopamviet.vn', topics: ['14'] }, { name: 'giacaphe.com', topics: ['1', '2', '7'] }, { name: 'hoc24.vn', topics: ['6'] }, { name: 'doisongvietnam.vn', topics: ['1', '10', '11'] }, { name: 'vnexpress.net', topics: ['1', '11', '17'] }, { name: 'vietnamplus.vn', topics: ['1', '17'] }, { name: 'bongdaplus.vn', topics: ['1', '9', '11'] }, { name: 'chovinh.com', topics: ['7', '17'] }, { name: 'phunutoday.vn', topics: ['1', '4'] }, { name: 'congan.com.vn', topics: ['1', '17'] }, { name: 'websosanh.vn', topics: ['7', '17'] }, { name: 'techrum.vn', topics: ['3', '17'] }, { name: 'phunuvietnam.vn', topics: ['1', '2', '4', '6', '7', '10', '11'] }, { name: 'phunutre.info', topics: ['4'] }, { name: 'kinhtedothi.vn', topics: ['1', '2', '17'] }, { name: 'quantrimang.com', topics: ['3', '17'] }, { name: 'vnreview.vn', topics: ['2', '3', '17'] }, { name: 'sport5.vn', topics: ['3', '9', '11'] }, { name: 'dulichtoday.vn', topics: ['10'] }, { name: 'dientungaynay.vn', topics: ['1', '3'] }, { name: 'thoimoi.vn', topics: ['1'] }, { name: 'ngaymoionline.com.vn', topics: ['1'] }, { name: 'blogtamsu.vn', topics: ['11'] }, { name: 'thegioidienanh.vn', topics: ['11', '12'] }, { name: '2banh.vn', topics: ['1', '9', '17'] }, { name: 'doanhnhan.baophapluat.vn', topics: ['1', '2'] }, { name: 'batdongsan.com.vn', topics: ['1', '2'] }, { name: 'doanhnghieptiepthi.vn', topics: ['1', '2'] }, { name: 'baoquocte.vn', topics: ['1'] }, { name: 'happynest.vn', topics: ['2', '10'] }, { name: 'otofun.net', topics: ['1', '9', '16'] }, { name: 'luatvietnam.vn', topics: ['1'] }, { name: 'lichngaytot.com', topics: ['1', '10'] }, { name: 'svvn.tienphong.vn', topics: ['11'] }, { name: 'doanhnhanvn.vn', topics: ['2'] }, { name: 'congdankhuyenhoc.vn', topics: ['1', '6'] }, { name: 'nguoiquansat.vn', topics: ['1', '2'] }, { name: 'sgtiepthi.vn', topics: ['1'] }, { name: 'khoahoc.tv', topics: ['3', '17'] }, { name: 'truyenhinhthanhhoa.vn', topics: ['1'] }, { name: 'nhipsongkinhdoanh.vn', topics: ['1', '2'] }, { name: 'luatduonggia.vn', topics: ['1', '3'] }, { name: 'marketingai.vn', topics: ['2', '11'] }, { name: 'thuvienphapluat.vn', topics: ['1'] }, { name: 'vietstock.vn', topics: ['1', '2'] }, { name: 'truyenwikidich.com', topics: ['15'] }, { name: 'baogialai.com.vn', topics: ['1'] }, { name: 'doisongphapluat.com.vn', topics: ['1'] }, { name: 'yeugiadinh.vn', topics: ['4'] }, { name: 'tvphapluat.vn', topics: ['1', '2', '3', '6', '9'] }, { name: 'bieudogiavang.net', topics: ['2'] }, { name: 'news.tuoitre.vn', topics: ['1'] }, { name: 'truyenazz.me', topics: ['15'] }, { name: 'htv.com.vn', topics: ['1', '2', '3', '6', '8', '11'] }, { name: 'dienmayxanh.com', topics: ['1', '7'] }, { name: 'suckhoe.vtv.vn', topics: ['4', '8', '17'] }, { name: 'cafef.vn', topics: ['1', '2', '10'] }, { name: 'autopro.com.vn', topics: ['1', '9'] }, { name: 'afamily.vn', topics: ['1', '4', '6', '7', '8', '10', '11'] }, { name: 'kenh14.vn', topics: ['1', '2', '3', '6', '10', '11'] }, { name: 'gamek.vn', topics: ['3', '11', '13'] }, { name: 'rongbay.com', topics: ['2', '7'] }, { name: '24h.com.vn', topics: ['1', '9', '17'] }, { name: 'motosaigon.vn', topics: ['1', '9', '11', '17'] }, { name: 'yan.vn', topics: ['1', '11', '17'] } ];
-            const mobileSitesData = [ { name: 'dantri.com.vn', topics: ['1'] }, { name: 'm.suckhoedoisong.vn', topics: ['1', '8'] }, { name: 'm.giadinh.net.vn/giadinh.suckhoedoisong.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'm.afamily.vn', topics: ['1', '4', '6', '7', '8', '11', '18'] }, { name: 'm.kenh14.vn', topics: ['1', '2', '3', '6', '8', '10', '11', '13', '18'] }, { name: 'm.gamek.vn', topics: ['11', '13', '18'] }, { name: 'm.genk.vn', topics: ['1', '3', '13', '18'] }, { name: 'm.cafef.vn', topics: ['1', '2', '10', '18'] }, { name: 'm.cafebiz.vn', topics: ['1', '2', '3', '18'] }, { name: 'm.autopro.com.vn', topics: ['1', '9', '18'] }, { name: 'm.nld.com.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'm.soha.vn', topics: ['1', '2', '3', '4', '8', '9', '10', '11', '18'] }, { name: 'm.vtv.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'm.infonet.vietnamnet.vn', topics: ['1'] }, { name: 'm.anninhthudo.vn', topics: ['1'] }, { name: 'blogtamsu.vn', topics: ['11'] }, { name: 'vietbao.vn', topics: ['1'] }, { name: 'm.nguoiduatin.vn', topics: ['1', '2', '3', '4', '6', '8'] }, { name: 'xaluannews.com', topics: ['1'] }, { name: 'm.saostar.vn', topics: ['4', '11'] }, { name: 'doanhnghiepvn.vn', topics: ['1', '2'] }, { name: 'bongda24h.vn', topics: ['9', '11'] }, { name: 'm.danviet.vn', topics: ['1'] }, { name: 'baonghean.vn', topics: ['1'] }, { name: 'm.thanhnien.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11', '13'] }, { name: 'tuoitre.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'phapluatplus.vn', topics: ['1'] }, { name: 'thitruong.nld.com.vn', topics: ['1', '2', '10', '11'] }, { name: 'vtc.vn', topics: ['1'] }, { name: 'tienphong.vn', topics: ['1'] }, { name: 'm.tiin.vn', topics: ['1', '11'] }, { name: 'm.kienthuc.net.vn', topics: ['1', '8'] }, { name: 'm.sggp.org.vn', topics: ['1'] }, { name: 'm.saigondautu.com.vn', topics: ['1', '2'] }, { name: 'laodong.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11', '16'] }, { name: 'm.techz.vn', topics: ['3'] }, { name: 'm.thethao247.vn', topics: ['1', '9', '11'] }, { name: 'baotintuc.vn', topics: ['1'] }, { name: 'cungcau.vn', topics: ['1', '2'] }, { name: 'm.tapchitaichinh.vn', topics: ['1', '2'] }, { name: 'vietnammoi.vn', topics: ['1', '2'] }, { name: 'vietnambiz.vn', topics: ['1', '2', '7'] }, { name: 'congan.com.vn', topics: ['1'] }, { name: 'm.plo.vn', topics: ['1'] }, { name: 'm.suckhoegiadinh.com.vn', topics: ['1', '4', '8'] }, { name: 'm.viettimes.vn', topics: ['1', '2', '11'] }, { name: 'f319.com', topics: ['1', '2'] }, { name: '1thegioi.vn', topics: ['1', '11'] }, { name: 'tinhte.vn', topics: ['1', '3'] }, { name: 'nhattao.com', topics: ['7'] }, { name: 'yan.vn', topics: ['11'] }, { name: 'game.thanhnien.vn', topics: ['13'] }, { name: 'm.tintucvietnam.vn', topics: ['1'] }, { name: 'webthethao.vn', topics: ['9'] }, { name: 'thesaigontimes.vn', topics: ['1', '2'] }, { name: 'lamchame.com', topics: ['4'] }, { name: 'bongdaplus.vn', topics: ['9', '11'] }, { name: 'm.vov.vn', topics: ['1'] }, { name: 'm.ngoisao.vn', topics: ['1', '4', '11'] }, { name: 'nhaccuatui.com', topics: ['14'] }, { name: 'm.moitruongvadothi.vn', topics: ['1'] }, { name: 'm.cand.com.vn', topics: ['1'] }, { name: 'm.websosanh.vn', topics: ['4', '7'] }, { name: 'm.bongdapro.vn', topics: ['9', '11'] }, { name: 'm.tinnhanhchungkhoan.vn', topics: ['1', '2'] }, { name: 'phunuvietnam.vn', topics: ['2', '4', '6', '7'] }, { name: 'sport5.vn', topics: ['3', '9', '11'] }, { name: 'phunuonline.com.vn', topics: ['4'] }, { name: 'voh.com.vn', topics: ['1'] }, { name: 'doanhnhan.baophapluat.vn', topics: ['1', '2'] }, { name: 'm.toquoc.vn', topics: ['1'] }, { name: 'm.baophapluat.vn', topics: ['1'] }, { name: 'zingnews.vn', topics: ['1', '11'] }, { name: 'luatminhkhue.vn', topics: ['1', '3'] }, { name: 'kinhtedothi.vn', topics: ['1', '2'] }, { name: 'vtc.gov.vn', topics: ['1', '11'] }, { name: 'cungphuot.info', topics: ['10', '11'] }, { name: 'dulichtoday.vn', topics: ['10', '11'] }, { name: 'vietjack.com', topics: ['6'] }, { name: 'phunuvagiadinh.vn', topics: ['1', '4'] }, { name: 'phunusuckhoe.vn', topics: ['1', '4', '8'] }, { name: 'm.hoc247.net', topics: ['6'] }, { name: 'm.vietnamnet.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'dientungaynay.vn', topics: ['3'] }, { name: 'pose.vn', topics: ['4', '11'] }, { name: 'healthplus.vn', topics: ['8'] }, { name: 'thoimoi.vn', topics: ['1'] }, { name: 'dautuvietnam.com.vn', topics: ['1', '2'] }, { name: 'ngaymoionline.com.vn', topics: ['1', '11'] }, { name: 'congngheviet.com', topics: ['3'] }, { name: 'billboardvn.vn', topics: ['11'] }, { name: 'tintucnamdinh.vn', topics: ['1'] }, { name: 'ttvn.toquoc.vn', topics: ['1'] }, { name: 'saoteen.vn', topics: ['11'] }, { name: 'm.batdongsan.com.vn', topics: ['2', '7'] }, { name: 'doanhnghieptiepthi.vn', topics: ['1', '2'] }, { name: 'bnews.vn', topics: ['2'] }, { name: 'game8.vn', topics: ['13'] }, { name: 'emdep.vn', topics: ['4', '11'] }, { name: 'webtretho.com', topics: ['4'] }, { name: 'happynest.vn', topics: ['4', '10'] }, { name: 'truyenhinhvov.vn', topics: ['1', '11'] }, { name: 'm.baoquocte.vn', topics: ['1'] }, { name: 'yeah1.com', topics: ['1', '11'] }, { name: 'tintuconline.com.vn', topics: ['1'] }, { name: 'phunutoday.vn', topics: ['1', '4'] }, { name: 'otofun.net', topics: ['9', '16'] }, { name: 'kienthuckinhte.vn', topics: ['2'] }, { name: 'pega.vn', topics: ['1'] }, { name: '2sao.vn', topics: ['11'] }, { name: 'luatvietnam.vn', topics: ['1'] }, { name: 'cuoi.tuoitre.vn', topics: ['11'] }, { name: 'lichngaytot.com', topics: ['1', '10'] }, { name: 'food.com.vn', topics: ['1', '4', '11'] }, { name: 'svvn.tienphong.vn', topics: ['11'] }, { name: 'baodongkhoi.vn', topics: ['1'] }, { name: 'hoc24.vn', topics: ['6'] }, { name: 'doanhnhanvn.vn', topics: ['1', '2'] }, { name: 'tapchinuoc.vn', topics: ['1'] }, { name: 'kenhvtc9.vn', topics: ['1', '11'] }, { name: 'ofnews.vn', topics: ['9'] }, { name: 'thegioidienanh.vn', topics: ['11', '12'] }, { name: 'nguoiquansat.vn', topics: ['1', '2'] }, { name: 'app.vtv.vn', topics: ['1', '11', '18'] }, { name: 'news.timviec.com.vn', topics: ['1', '6'] }, { name: 'video.mocha.com.vn', topics: ['11'] }, { name: 'thichdoctruyen.vip', topics: ['15'] }, { name: 'm.toploigiai.vn', topics: ['6'] }, { name: 'luatduonggia.vn', topics: ['1', '3'] }, { name: 'm.phapluatxahoi.kinhtedothi.vn', topics: ['1', '2'] }, { name: 'm.marketingai.vn', topics: ['11'] }, { name: 'm.docnhanh.vn', topics: ['1', '4', '11'] }, { name: 'm.thuvienphapluat.vn', topics: ['1'] }, { name: 'm.maivang.nld.com.vn', topics: ['1', '11'] }, { name: 'vtcnews.vn', topics: ['1', '11'] }, { name: 'truyenwikidich.com', topics: ['15'] }, { name: 'hanoionline.vn', topics: ['1', '11'] }, { name: 'm.baogialai.com.vn', topics: ['1'] }, { name: 'chogia.vn', topics: ['2', '7'] }, { name: 'vnexpress.net', topics: ['1', '11'] }, { name: 'doisongphapluat.com.vn', topics: ['1'] }, { name: 'yeugiadinh.vn', topics: ['4'] }, { name: 'phunumoi.net.vn', topics: ['4'] }, { name: 'tvphapluat.vn', topics: ['1', '2', '3', '6', '9'] }, { name: 'truyenfull.vision', topics: ['15'] }, { name: 'bieudogiavang.net', topics: ['2'] }, { name: 'baoxaydung.vn', topics: ['1'] }, { name: 'news.tuoitre.vn', topics: ['1'] }, { name: 'metruyenhot.me', topics: ['15'] }, { name: 'truyenazz.me', topics: ['15'] }, { name: 'money.vtv.vn', topics: ['1', '2', '3'] }, { name: 'htv.com.vn', topics: ['1', '2', '3', '6', '8', '11', '17'] }, { name: 'thegioididong.com', topics: ['1', '7'] }, { name: 'dienmayxanh.com', topics: ['1', '7'] }, { name: 'Gocnhinphaply.nguoiduatin.vn', topics: ['1', '2', '3'] }, { name: 'suckhoe.vtv.vn', topics: ['4', '8', '17'] }, { name: 'app.kgo.life', topics: ['3', '18'] }, { name: 'app.docbao24h', topics: ['1', '18'] }, { name: 'app.tinhte.vn', topics: ['3', '18'] } ];
+        document.addEventListener('DOMContentLoaded', function () {
+            const pcSitesData = [{ name: 'dantri.com.vn', topics: ['1', '2'] }, { name: 'soha.vn', topics: ['1', '2', '3', '4', '8', '9', '10'] }, { name: 'nld.com.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'giadinh.suckhoedoisong.vn', topics: ['1', '2', '3', '4', '8', '10', '11'] }, { name: 'cafebiz.vn', topics: ['1', '2', '3'] }, { name: 'docbao.vn', topics: ['1', '4', '11'] }, { name: 'thanhnien.vn', topics: ['1', '2', '3', '4', '6', '7', '8', '9', '10', '11', '16'] }, { name: 'laodong.vn', topics: ['1', '2', '4', '6', '8', '9', '10'] }, { name: 'enbac.com', topics: ['7'] }, { name: 'genk.vn', topics: ['1', '3', '7'] }, { name: 'f319.com', topics: ['1', '2'] }, { name: 'thethaovanhoa.vn', topics: ['1', '9', '11', '17'] }, { name: 'thethao247.vn', topics: ['1', '9'] }, { name: 'vietbao.vn', topics: ['1', '11', '17'] }, { name: 'thongtintuyensinh.vn', topics: ['6'] }, { name: 'kienthuc.net.vn', topics: ['1', '6', '17'] }, { name: 'petrotimes.vn', topics: ['1', '2'] }, { name: 'phunuvagiadinh.vn', topics: ['1', '4', '17'] }, { name: 'saostar.vn', topics: ['1', '11', '17'] }, { name: 'vov.vn', topics: ['1'] }, { name: 'baophapluat.vn', topics: ['1'] }, { name: 'webthethao.vn', topics: ['9', '11'] }, { name: 'vietnamfinance.vn', topics: ['2'] }, { name: 'baodautu.vn', topics: ['1', '2', '17'] }, { name: 'tinnhanhchungkhoan.vn', topics: ['1', '2', '17'] }, { name: 'viettimes.vn', topics: ['1', '2', '11', '17'] }, { name: 'voh.com.vn', topics: ['1', '17'] }, { name: 'tapchitaichinh.vn', topics: ['1', '2'] }, { name: 'vietnambiz.vn', topics: ['1', '2'] }, { name: 'suckhoehangngay.vn', topics: ['4', '8'] }, { name: 'ttvn.toquoc.vn', topics: ['1', '11'] }, { name: 'nhipsongviet.toquoc.vn', topics: ['1', '2', '11'] }, { name: 'tinhte.vn', topics: ['1', '3', '16'] }, { name: 'tiin.vn', topics: ['1', '11', '17'] }, { name: 'emdep.vn', topics: ['4'] }, { name: 'vietq.vn', topics: ['2', '7', '17'] }, { name: '1thegioi.vn', topics: ['1'] }, { name: 'phunuonline.com.vn', topics: ['4', '17'] }, { name: 'lamchame.com', topics: ['1', '4', '17'] }, { name: 'hopamviet.vn', topics: ['14'] }, { name: 'giacaphe.com', topics: ['1', '2', '7'] }, { name: 'hoc24.vn', topics: ['6'] }, { name: 'doisongvietnam.vn', topics: ['1', '10', '11'] }, { name: 'vnexpress.net', topics: ['1', '11', '17'] }, { name: 'vietnamplus.vn', topics: ['1', '17'] }, { name: 'bongdaplus.vn', topics: ['1', '9', '11'] }, { name: 'chovinh.com', topics: ['7', '17'] }, { name: 'phunutoday.vn', topics: ['1', '4'] }, { name: 'congan.com.vn', topics: ['1', '17'] }, { name: 'websosanh.vn', topics: ['7', '17'] }, { name: 'techrum.vn', topics: ['3', '17'] }, { name: 'phunuvietnam.vn', topics: ['1', '2', '4', '6', '7', '10', '11'] }, { name: 'phunutre.info', topics: ['4'] }, { name: 'kinhtedothi.vn', topics: ['1', '2', '17'] }, { name: 'quantrimang.com', topics: ['3', '17'] }, { name: 'vnreview.vn', topics: ['2', '3', '17'] }, { name: 'sport5.vn', topics: ['3', '9', '11'] }, { name: 'dulichtoday.vn', topics: ['10'] }, { name: 'dientungaynay.vn', topics: ['1', '3'] }, { name: 'thoimoi.vn', topics: ['1'] }, { name: 'ngaymoionline.com.vn', topics: ['1'] }, { name: 'blogtamsu.vn', topics: ['11'] }, { name: 'thegioidienanh.vn', topics: ['11', '12'] }, { name: '2banh.vn', topics: ['1', '9', '17'] }, { name: 'doanhnhan.baophapluat.vn', topics: ['1', '2'] }, { name: 'batdongsan.com.vn', topics: ['1', '2'] }, { name: 'doanhnghieptiepthi.vn', topics: ['1', '2'] }, { name: 'baoquocte.vn', topics: ['1'] }, { name: 'happynest.vn', topics: ['2', '10'] }, { name: 'otofun.net', topics: ['1', '9', '16'] }, { name: 'luatvietnam.vn', topics: ['1'] }, { name: 'lichngaytot.com', topics: ['1', '10'] }, { name: 'svvn.tienphong.vn', topics: ['11'] }, { name: 'doanhnhanvn.vn', topics: ['2'] }, { name: 'congdankhuyenhoc.vn', topics: ['1', '6'] }, { name: 'nguoiquansat.vn', topics: ['1', '2'] }, { name: 'sgtiepthi.vn', topics: ['1'] }, { name: 'khoahoc.tv', topics: ['3', '17'] }, { name: 'truyenhinhthanhhoa.vn', topics: ['1'] }, { name: 'nhipsongkinhdoanh.vn', topics: ['1', '2'] }, { name: 'luatduonggia.vn', topics: ['1', '3'] }, { name: 'marketingai.vn', topics: ['2', '11'] }, { name: 'thuvienphapluat.vn', topics: ['1'] }, { name: 'vietstock.vn', topics: ['1', '2'] }, { name: 'truyenwikidich.com', topics: ['15'] }, { name: 'baogialai.com.vn', topics: ['1'] }, { name: 'doisongphapluat.com.vn', topics: ['1'] }, { name: 'yeugiadinh.vn', topics: ['4'] }, { name: 'tvphapluat.vn', topics: ['1', '2', '3', '6', '9'] }, { name: 'bieudogiavang.net', topics: ['2'] }, { name: 'news.tuoitre.vn', topics: ['1'] }, { name: 'truyenazz.me', topics: ['15'] }, { name: 'htv.com.vn', topics: ['1', '2', '3', '6', '8', '11'] }, { name: 'dienmayxanh.com', topics: ['1', '7'] }, { name: 'suckhoe.vtv.vn', topics: ['4', '8', '17'] }, { name: 'cafef.vn', topics: ['1', '2', '10'] }, { name: 'autopro.com.vn', topics: ['1', '9'] }, { name: 'afamily.vn', topics: ['1', '4', '6', '7', '8', '10', '11'] }, { name: 'kenh14.vn', topics: ['1', '2', '3', '6', '10', '11'] }, { name: 'gamek.vn', topics: ['3', '11', '13'] }, { name: 'rongbay.com', topics: ['2', '7'] }, { name: '24h.com.vn', topics: ['1', '9', '17'] }, { name: 'motosaigon.vn', topics: ['1', '9', '11', '17'] }, { name: 'yan.vn', topics: ['1', '11', '17'] }];
+            const mobileSitesData = [{ name: 'dantri.com.vn', topics: ['1'] }, { name: 'm.suckhoedoisong.vn', topics: ['1', '8'] }, { name: 'm.giadinh.net.vn/giadinh.suckhoedoisong.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'm.afamily.vn', topics: ['1', '4', '6', '7', '8', '11', '18'] }, { name: 'm.kenh14.vn', topics: ['1', '2', '3', '6', '8', '10', '11', '13', '18'] }, { name: 'm.gamek.vn', topics: ['11', '13', '18'] }, { name: 'm.genk.vn', topics: ['1', '3', '13', '18'] }, { name: 'm.cafef.vn', topics: ['1', '2', '10', '18'] }, { name: 'm.cafebiz.vn', topics: ['1', '2', '3', '18'] }, { name: 'm.autopro.com.vn', topics: ['1', '9', '18'] }, { name: 'm.nld.com.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'm.soha.vn', topics: ['1', '2', '3', '4', '8', '9', '10', '11', '18'] }, { name: 'm.vtv.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'm.infonet.vietnamnet.vn', topics: ['1'] }, { name: 'm.anninhthudo.vn', topics: ['1'] }, { name: 'blogtamsu.vn', topics: ['11'] }, { name: 'vietbao.vn', topics: ['1'] }, { name: 'm.nguoiduatin.vn', topics: ['1', '2', '3', '4', '6', '8'] }, { name: 'xaluannews.com', topics: ['1'] }, { name: 'm.saostar.vn', topics: ['4', '11'] }, { name: 'doanhnghiepvn.vn', topics: ['1', '2'] }, { name: 'bongda24h.vn', topics: ['9', '11'] }, { name: 'm.danviet.vn', topics: ['1'] }, { name: 'baonghean.vn', topics: ['1'] }, { name: 'm.thanhnien.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11', '13'] }, { name: 'tuoitre.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'phapluatplus.vn', topics: ['1'] }, { name: 'thitruong.nld.com.vn', topics: ['1', '2', '10', '11'] }, { name: 'vtc.vn', topics: ['1'] }, { name: 'tienphong.vn', topics: ['1'] }, { name: 'm.tiin.vn', topics: ['1', '11'] }, { name: 'm.kienthuc.net.vn', topics: ['1', '8'] }, { name: 'm.sggp.org.vn', topics: ['1'] }, { name: 'm.saigondautu.com.vn', topics: ['1', '2'] }, { name: 'laodong.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11', '16'] }, { name: 'm.techz.vn', topics: ['3'] }, { name: 'm.thethao247.vn', topics: ['1', '9', '11'] }, { name: 'baotintuc.vn', topics: ['1'] }, { name: 'cungcau.vn', topics: ['1', '2'] }, { name: 'm.tapchitaichinh.vn', topics: ['1', '2'] }, { name: 'vietnammoi.vn', topics: ['1', '2'] }, { name: 'vietnambiz.vn', topics: ['1', '2', '7'] }, { name: 'congan.com.vn', topics: ['1'] }, { name: 'm.plo.vn', topics: ['1'] }, { name: 'm.suckhoegiadinh.com.vn', topics: ['1', '4', '8'] }, { name: 'm.viettimes.vn', topics: ['1', '2', '11'] }, { name: 'f319.com', topics: ['1', '2'] }, { name: '1thegioi.vn', topics: ['1', '11'] }, { name: 'tinhte.vn', topics: ['1', '3'] }, { name: 'nhattao.com', topics: ['7'] }, { name: 'yan.vn', topics: ['11'] }, { name: 'game.thanhnien.vn', topics: ['13'] }, { name: 'm.tintucvietnam.vn', topics: ['1'] }, { name: 'webthethao.vn', topics: ['9'] }, { name: 'thesaigontimes.vn', topics: ['1', '2'] }, { name: 'lamchame.com', topics: ['4'] }, { name: 'bongdaplus.vn', topics: ['9', '11'] }, { name: 'm.vov.vn', topics: ['1'] }, { name: 'm.ngoisao.vn', topics: ['1', '4', '11'] }, { name: 'nhaccuatui.com', topics: ['14'] }, { name: 'm.moitruongvadothi.vn', topics: ['1'] }, { name: 'm.cand.com.vn', topics: ['1'] }, { name: 'm.websosanh.vn', topics: ['4', '7'] }, { name: 'm.bongdapro.vn', topics: ['9', '11'] }, { name: 'm.tinnhanhchungkhoan.vn', topics: ['1', '2'] }, { name: 'phunuvietnam.vn', topics: ['2', '4', '6', '7'] }, { name: 'sport5.vn', topics: ['3', '9', '11'] }, { name: 'phunuonline.com.vn', topics: ['4'] }, { name: 'voh.com.vn', topics: ['1'] }, { name: 'doanhnhan.baophapluat.vn', topics: ['1', '2'] }, { name: 'm.toquoc.vn', topics: ['1'] }, { name: 'm.baophapluat.vn', topics: ['1'] }, { name: 'zingnews.vn', topics: ['1', '11'] }, { name: 'luatminhkhue.vn', topics: ['1', '3'] }, { name: 'kinhtedothi.vn', topics: ['1', '2'] }, { name: 'vtc.gov.vn', topics: ['1', '11'] }, { name: 'cungphuot.info', topics: ['10', '11'] }, { name: 'dulichtoday.vn', topics: ['10', '11'] }, { name: 'vietjack.com', topics: ['6'] }, { name: 'phunuvagiadinh.vn', topics: ['1', '4'] }, { name: 'phunusuckhoe.vn', topics: ['1', '4', '8'] }, { name: 'm.hoc247.net', topics: ['6'] }, { name: 'm.vietnamnet.vn', topics: ['1', '2', '3', '4', '6', '8', '9', '10', '11'] }, { name: 'dientungaynay.vn', topics: ['3'] }, { name: 'pose.vn', topics: ['4', '11'] }, { name: 'healthplus.vn', topics: ['8'] }, { name: 'thoimoi.vn', topics: ['1'] }, { name: 'dautuvietnam.com.vn', topics: ['1', '2'] }, { name: 'ngaymoionline.com.vn', topics: ['1', '11'] }, { name: 'congngheviet.com', topics: ['3'] }, { name: 'billboardvn.vn', topics: ['11'] }, { name: 'tintucnamdinh.vn', topics: ['1'] }, { name: 'ttvn.toquoc.vn', topics: ['1'] }, { name: 'saoteen.vn', topics: ['11'] }, { name: 'm.batdongsan.com.vn', topics: ['2', '7'] }, { name: 'doanhnghieptiepthi.vn', topics: ['1', '2'] }, { name: 'bnews.vn', topics: ['2'] }, { name: 'game8.vn', topics: ['13'] }, { name: 'emdep.vn', topics: ['4', '11'] }, { name: 'webtretho.com', topics: ['4'] }, { name: 'happynest.vn', topics: ['4', '10'] }, { name: 'truyenhinhvov.vn', topics: ['1', '11'] }, { name: 'm.baoquocte.vn', topics: ['1'] }, { name: 'yeah1.com', topics: ['1', '11'] }, { name: 'tintuconline.com.vn', topics: ['1'] }, { name: 'phunutoday.vn', topics: ['1', '4'] }, { name: 'otofun.net', topics: ['9', '16'] }, { name: 'kienthuckinhte.vn', topics: ['2'] }, { name: 'pega.vn', topics: ['1'] }, { name: '2sao.vn', topics: ['11'] }, { name: 'luatvietnam.vn', topics: ['1'] }, { name: 'cuoi.tuoitre.vn', topics: ['11'] }, { name: 'lichngaytot.com', topics: ['1', '10'] }, { name: 'food.com.vn', topics: ['1', '4', '11'] }, { name: 'svvn.tienphong.vn', topics: ['11'] }, { name: 'baodongkhoi.vn', topics: ['1'] }, { name: 'hoc24.vn', topics: ['6'] }, { name: 'doanhnhanvn.vn', topics: ['1', '2'] }, { name: 'tapchinuoc.vn', topics: ['1'] }, { name: 'kenhvtc9.vn', topics: ['1', '11'] }, { name: 'ofnews.vn', topics: ['9'] }, { name: 'thegioidienanh.vn', topics: ['11', '12'] }, { name: 'nguoiquansat.vn', topics: ['1', '2'] }, { name: 'app.vtv.vn', topics: ['1', '11', '18'] }, { name: 'news.timviec.com.vn', topics: ['1', '6'] }, { name: 'video.mocha.com.vn', topics: ['11'] }, { name: 'thichdoctruyen.vip', topics: ['15'] }, { name: 'm.toploigiai.vn', topics: ['6'] }, { name: 'luatduonggia.vn', topics: ['1', '3'] }, { name: 'm.phapluatxahoi.kinhtedothi.vn', topics: ['1', '2'] }, { name: 'm.marketingai.vn', topics: ['11'] }, { name: 'm.docnhanh.vn', topics: ['1', '4', '11'] }, { name: 'm.thuvienphapluat.vn', topics: ['1'] }, { name: 'm.maivang.nld.com.vn', topics: ['1', '11'] }, { name: 'vtcnews.vn', topics: ['1', '11'] }, { name: 'truyenwikidich.com', topics: ['15'] }, { name: 'hanoionline.vn', topics: ['1', '11'] }, { name: 'm.baogialai.com.vn', topics: ['1'] }, { name: 'chogia.vn', topics: ['2', '7'] }, { name: 'vnexpress.net', topics: ['1', '11'] }, { name: 'doisongphapluat.com.vn', topics: ['1'] }, { name: 'yeugiadinh.vn', topics: ['4'] }, { name: 'phunumoi.net.vn', topics: ['4'] }, { name: 'tvphapluat.vn', topics: ['1', '2', '3', '6', '9'] }, { name: 'truyenfull.vision', topics: ['15'] }, { name: 'bieudogiavang.net', topics: ['2'] }, { name: 'baoxaydung.vn', topics: ['1'] }, { name: 'news.tuoitre.vn', topics: ['1'] }, { name: 'metruyenhot.me', topics: ['15'] }, { name: 'truyenazz.me', topics: ['15'] }, { name: 'money.vtv.vn', topics: ['1', '2', '3'] }, { name: 'htv.com.vn', topics: ['1', '2', '3', '6', '8', '11', '17'] }, { name: 'thegioididong.com', topics: ['1', '7'] }, { name: 'dienmayxanh.com', topics: ['1', '7'] }, { name: 'Gocnhinphaply.nguoiduatin.vn', topics: ['1', '2', '3'] }, { name: 'suckhoe.vtv.vn', topics: ['4', '8', '17'] }, { name: 'app.kgo.life', topics: ['3', '18'] }, { name: 'app.docbao24h', topics: ['1', '18'] }, { name: 'app.tinhte.vn', topics: ['3', '18'] }];
 
             const sitesContainer = document.getElementById('sites-container');
             const sitesListPc = document.getElementById('sites-list-pc');
@@ -290,13 +325,13 @@
                     const siteItem = document.createElement('div');
                     siteItem.className = 'site-item';
                     siteItem.dataset.topicIds = site.topics.join(',');
-                    
+
                     const label = document.createElement('label');
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     checkbox.checked = true;
                     checkbox.dataset.sitename = site.name;
-                    
+
                     label.appendChild(checkbox);
                     label.appendChild(document.createTextNode(' ' + site.name));
                     siteItem.appendChild(label);
@@ -316,7 +351,7 @@
                         selectedNames.add(checkbox.dataset.sitename);
                     }
                 });
-                
+
                 const sortedNames = Array.from(selectedNames).sort();
 
                 sortedNames.forEach(name => {
@@ -336,9 +371,9 @@
                 topicCheckboxes.forEach(cb => {
                     if (cb.checked) selectedTopics.push(cb.value);
                 });
-                
+
                 const filter = (siteItems) => {
-                     if (allIsChecked || selectedTopics.length === 0) {
+                    if (allIsChecked || selectedTopics.length === 0) {
                         siteItems.forEach(item => item.style.display = 'block');
                         return;
                     }
@@ -348,14 +383,14 @@
                         item.style.display = isVisible ? 'block' : 'none';
                     });
                 };
-                
+
                 filter(document.querySelectorAll('#sites-list-pc .site-item'));
                 filter(document.querySelectorAll('#sites-list-mobile .site-item'));
-                
+
                 // Cập nhật danh sách đã chọn sau khi lọc
                 updateSelectedList();
             }
-            
+
             function toggleListViews() {
                 const showPc = viewToggles.querySelector('input[value="pc"]').checked;
                 const showMobile = viewToggles.querySelector('input[value="mobile"]').checked;
@@ -365,10 +400,10 @@
             }
 
             topicsListContainer.addEventListener('change', (e) => {
-                if(e.target.type === 'checkbox') {
+                if (e.target.type === 'checkbox') {
                     const allCheckbox = document.getElementById('topic_all');
                     if (e.target.value === 'all' && e.target.checked) {
-                        topicCheckboxes.forEach(cb => { if(cb.value !== 'all') cb.checked = false; });
+                        topicCheckboxes.forEach(cb => { if (cb.value !== 'all') cb.checked = false; });
                     } else if (e.target.value !== 'all' && e.target.checked) {
                         allCheckbox.checked = false;
                     }
@@ -378,9 +413,9 @@
                     handleTopicSelection();
                 }
             });
-            
+
             sitesContainer.addEventListener('change', (e) => {
-                 if(e.target.closest('.sites-list') && e.target.type === 'checkbox') {
+                if (e.target.closest('.sites-list') && e.target.type === 'checkbox') {
                     updateSelectedList();
                 }
             });
@@ -394,5 +429,11 @@
             toggleListViews();
         });
     </script>
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navList = document.getElementById('navList');
+        if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
+    </script>
 </body>
+
 </html>

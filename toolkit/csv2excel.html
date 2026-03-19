@@ -1,349 +1,393 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CSV → Excel (Client-side)</title>
+  <title>CSV → Excel - Nguyễn Văn Hảo</title>
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css?v=1.4">
+  <link rel="stylesheet" href="/css/style.css?v=1.5">
+  <link rel="stylesheet" href="/css/toolkit.css">
 
   <!-- Thư viện: SheetJS & Papa Parse -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
-  <style>
-    :root { --brand:#2563eb; --bg:#f6f8fa; --text:#1f2937; }
-    * { box-sizing: border-box }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:var(--text); }
-    .wrap { max-width: 920px; margin: 32px auto; padding: 24px; background:#fff; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.06); }
-    h1 { margin:0 0 8px; font-size: 22px }
-    p.lead { margin:0 0 16px; color:#6b7280 }
-    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin:16px 0 }
-    .ctrl { display:flex; flex-direction:column; gap:8px }
-    label { font-size: 13px; color:#374151 }
-    select, input[type="text"], input[type="number"] {
-      width:100%; padding:10px 12px; border:1px solid #e5e7eb; border-radius:8px; outline:none;
-    }
-    .row { display:flex; gap:12px; align-items:center; flex-wrap: wrap }
-    .btn { appearance:none; border:1px solid var(--brand); background:#fff; color:var(--brand);
-           padding:10px 16px; border-radius:10px; cursor:pointer; font-weight:600 }
-    .btn.primary { background:var(--brand); color:#fff }
-    .btn:disabled { opacity:.5; cursor:not-allowed }
-    .dz {
-      border:2px dashed #cbd5e1; border-radius:12px; padding:20px; text-align:center; color:#64748b; background:#fafafa
-    }
-    .dz.drag { border-color: var(--brand); color: var(--brand); background:#f0f6ff }
-    .meta { font-size: 13px; color:#6b7280; margin-top:8px }
-    .status { margin-top:12px; font-size:14px }
-    .progress { height:10px; background:#eef2f7; border-radius:999px; overflow:hidden; margin-top:8px }
-    .bar { height:100%; width:0%; background:var(--brand); transition: width .2s }
-    table { width:100%; border-collapse: collapse; margin-top:16px; font-size: 13px }
-    th, td { border:1px solid #e5e7eb; padding:6px 8px; white-space: nowrap; max-width: 240px; overflow: hidden; text-overflow: ellipsis }
-    th { background:#f8fafc; text-align:left }
-    .hint { font-size:12px; color:#6b7280 }
-    .footer { margin-top:20px; font-size:12px; color:#9ca3af }
+  :root { --brand:#2563eb; --bg:#f6f8fa; --text:#1f2937; }
+  * { box-sizing: border-box }
+  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg);
+  color:var(--text); }
+  .wrap { max-width: 920px; margin: 32px auto; padding: 24px; background:#fff; border-radius:12px; box-shadow:0 8px 24px
+  rgba(0,0,0,.06); }
+  h1 { margin:0 0 8px; font-size: 22px }
+  p.lead { margin:0 0 16px; color:#6b7280 }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin:16px 0 }
+  .ctrl { display:flex; flex-direction:column; gap:8px }
+  label { font-size: 13px; color:#374151 }
+  select, input[type="text"], input[type="number"] {
+  width:100%; padding:10px 12px; border:1px solid #e5e7eb; border-radius:8px; outline:none;
+  }
+  .row { display:flex; gap:12px; align-items:center; flex-wrap: wrap }
+  .btn { appearance:none; border:1px solid var(--brand); background:#fff; color:var(--brand);
+  padding:10px 16px; border-radius:10px; cursor:pointer; font-weight:600 }
+  .btn.primary { background:var(--brand); color:#fff }
+  .btn:disabled { opacity:.5; cursor:not-allowed }
+  .dz {
+  border:2px dashed #cbd5e1; border-radius:12px; padding:20px; text-align:center; color:#64748b; background:#fafafa
+  }
+  .dz.drag { border-color: var(--brand); color: var(--brand); background:#f0f6ff }
+  .meta { font-size: 13px; color:#6b7280; margin-top:8px }
+  .status { margin-top:12px; font-size:14px }
+  .progress { height:10px; background:#eef2f7; border-radius:999px; overflow:hidden; margin-top:8px }
+  .bar { height:100%; width:0%; background:var(--brand); transition: width .2s }
+  table { width:100%; border-collapse: collapse; margin-top:16px; font-size: 13px }
+  th, td { border:1px solid #e5e7eb; padding:6px 8px; white-space: nowrap; max-width: 240px; overflow: hidden;
+  text-overflow: ellipsis }
+  th { background:#f8fafc; text-align:left }
+  .hint { font-size:12px; color:#6b7280 }
+  .footer { margin-top:20px; font-size:12px; color:#9ca3af }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>CSV → Excel (Client-side)</h1>
-    <p class="lead">Chọn tệp CSV để chuyển sang Excel (.xlsx hoặc .xls). Không tải file lên server.</p>
-
-    <div id="dropzone" class="dz">
-      <strong>Kéo & thả</strong> tệp CSV vào đây hoặc
-      <label for="file-input" class="btn">Chọn tệp CSV</label>
-      <input id="file-input" type="file" accept=".csv,text/csv" hidden />
-      <div id="file-meta" class="meta">Chưa có tệp nào.</div>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
+      <nav class="nav">
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+        <ul class="nav-list" id="navList">
+          <li><a href="/" class="nav-link">Trang chủ</a></li>
+          <li><a href="/blog.html" class="nav-link">Blog</a></li>
+          <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
+          <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+          <li><a href="/toolkit/" class="nav-link">Công cụ</a></li>
+        </ul>
+        <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+      </nav>
     </div>
+  </header>
+  <section class="tool-page">
+    <div class="container">
+      <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+      <div class="wrap">
+        <h1>CSV → Excel (Client-side)</h1>
+        <p class="lead">Chọn tệp CSV để chuyển sang Excel (.xlsx hoặc .xls). Không tải file lên server.</p>
 
-    <div class="grid">
-      <div class="ctrl">
-        <label for="encoding">Encoding</label>
-        <select id="encoding">
-          <option value="auto" selected>Tự động (UTF‑8/BOM)</option>
-          <option value="utf-8">UTF‑8</option>
-          <option value="windows-1258">Windows‑1258 (Tiếng Việt)</option>
-          <option value="utf-16le">UTF‑16LE</option>
-          <option value="iso-8859-1">ISO‑8859‑1</option>
-        </select>
-      </div>
-
-      <div class="ctrl">
-        <label for="delimiter">Delimiter</label>
-        <div class="row" style="gap:8px">
-          <select id="delimiter" style="flex:1">
-            <option value="auto" selected>Tự động</option>
-            <option value=",">Dấu phẩy (,)</option>
-            <option value=";">Chấm phẩy (;)</option>
-            <option value="\t">Tab</option>
-            <option value="|">Dấu |</option>
-            <option value="custom">Tùy chọn</option>
-          </select>
-          <input id="delimiter-custom" type="text" placeholder="Ký tự phân tách" maxlength="1" style="width:120px" disabled />
+        <div id="dropzone" class="dz">
+          <strong>Kéo & thả</strong> tệp CSV vào đây hoặc
+          <label for="file-input" class="btn">Chọn tệp CSV</label>
+          <input id="file-input" type="file" accept=".csv,text/csv" hidden />
+          <div id="file-meta" class="meta">Chưa có tệp nào.</div>
         </div>
-        <span class="hint">Nếu dữ liệu dùng “;” hoặc tab, hãy chọn đúng để tránh lệch cột.</span>
+
+        <div class="grid">
+          <div class="ctrl">
+            <label for="encoding">Encoding</label>
+            <select id="encoding">
+              <option value="auto" selected>Tự động (UTF‑8/BOM)</option>
+              <option value="utf-8">UTF‑8</option>
+              <option value="windows-1258">Windows‑1258 (Tiếng Việt)</option>
+              <option value="utf-16le">UTF‑16LE</option>
+              <option value="iso-8859-1">ISO‑8859‑1</option>
+            </select>
+          </div>
+
+          <div class="ctrl">
+            <label for="delimiter">Delimiter</label>
+            <div class="row" style="gap:8px">
+              <select id="delimiter" style="flex:1">
+                <option value="auto" selected>Tự động</option>
+                <option value=",">Dấu phẩy (,)</option>
+                <option value=";">Chấm phẩy (;)</option>
+                <option value="\t">Tab</option>
+                <option value="|">Dấu |</option>
+                <option value="custom">Tùy chọn</option>
+              </select>
+              <input id="delimiter-custom" type="text" placeholder="Ký tự phân tách" maxlength="1" style="width:120px"
+                disabled />
+            </div>
+            <span class="hint">Nếu dữ liệu dùng “;” hoặc tab, hãy chọn đúng để tránh lệch cột.</span>
+          </div>
+
+          <div class="ctrl">
+            <label for="output-type">Định dạng xuất</label>
+            <select id="output-type">
+              <option value="xlsx" selected>.xlsx (khuyến nghị)</option>
+              <option value="xls">.xls (cũ)</option>
+            </select>
+          </div>
+
+          <div class="ctrl">
+            <label for="rows-per-sheet">Số dòng mỗi sheet (tuỳ chọn)</label>
+            <input id="rows-per-sheet" type="number" min="1" placeholder="Để trống = theo giới hạn Excel" />
+            <span class="hint">Excel giới hạn ~1,048,576 dòng/Sheet. Hệ thống sẽ tự chia sheet nếu vượt.</span>
+          </div>
+
+          <div class="ctrl">
+            <label><input type="checkbox" id="as-text" /> Giữ nguyên tất cả giá trị dạng text</label>
+            <span class="hint">Bỏ chọn để tự nhận dạng số/ngày (dynamic typing).</span>
+          </div>
+
+          <div class="ctrl">
+            <label><input type="checkbox" id="preview-toggle" checked /> Xem trước 50 dòng đầu</label>
+            <span class="hint">Hữu ích để kiểm tra delimiter và encoding.</span>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:8px">
+          <button id="btn-convert" class="btn primary" disabled>Chuyển đổi sang Excel</button>
+          <button id="btn-clear" class="btn">Xoá lựa chọn</button>
+        </div>
+
+        <div id="status" class="status"></div>
+        <div class="progress">
+          <div id="bar" class="bar"></div>
+        </div>
+
+        <div id="preview"></div>
+
+        <div class="footer">Client-side only. Không upload dữ liệu lên server.</div>
       </div>
 
-      <div class="ctrl">
-        <label for="output-type">Định dạng xuất</label>
-        <select id="output-type">
-          <option value="xlsx" selected>.xlsx (khuyến nghị)</option>
-          <option value="xls">.xls (cũ)</option>
-        </select>
-      </div>
+      <script>
+        (() => {
+          const els = {
+            dz: document.getElementById('dropzone'),
+            fileInput: document.getElementById('file-input'),
+            meta: document.getElementById('file-meta'),
+            btnConvert: document.getElementById('btn-convert'),
+            btnClear: document.getElementById('btn-clear'),
+            status: document.getElementById('status'),
+            bar: document.getElementById('bar'),
+            preview: document.getElementById('preview'),
+            delimiter: document.getElementById('delimiter'),
+            delimiterCustom: document.getElementById('delimiter-custom'),
+            encoding: document.getElementById('encoding'),
+            outputType: document.getElementById('output-type'),
+            rowsPerSheet: document.getElementById('rows-per-sheet'),
+            asText: document.getElementById('as-text'),
+            previewToggle: document.getElementById('preview-toggle')
+          };
 
-      <div class="ctrl">
-        <label for="rows-per-sheet">Số dòng mỗi sheet (tuỳ chọn)</label>
-        <input id="rows-per-sheet" type="number" min="1" placeholder="Để trống = theo giới hạn Excel" />
-        <span class="hint">Excel giới hạn ~1,048,576 dòng/Sheet. Hệ thống sẽ tự chia sheet nếu vượt.</span>
-      </div>
+          let currentFile = null;
 
-      <div class="ctrl">
-        <label><input type="checkbox" id="as-text" /> Giữ nguyên tất cả giá trị dạng text</label>
-        <span class="hint">Bỏ chọn để tự nhận dạng số/ngày (dynamic typing).</span>
-      </div>
+          // --- Helpers ---
+          const fmtBytes = (n) => {
+            if (!n && n !== 0) return '';
+            const u = ['B', 'KB', 'MB', 'GB', 'TB']; let i = 0;
+            while (n >= 1024 && i < u.length - 1) { n /= 1024; i++; }
+            return `${n.toFixed(n >= 100 || i === 0 ? 0 : 1)} ${u[i]}`;
+          };
 
-      <div class="ctrl">
-        <label><input type="checkbox" id="preview-toggle" checked /> Xem trước 50 dòng đầu</label>
-        <span class="hint">Hữu ích để kiểm tra delimiter và encoding.</span>
-      </div>
+          const setStatus = (msg, type = 'info') => {
+            const colors = { info: '#374151', ok: '#065f46', warn: '#92400e', err: '#991b1b' };
+            els.status.style.color = colors[type] || colors.info;
+            els.status.textContent = msg || '';
+          };
+
+          const setProgress = (p, label = '') => {
+            const pct = Math.max(0, Math.min(100, Math.round(p || 0)));
+            els.bar.style.width = pct + '%';
+            if (label) setStatus(label);
+          };
+
+          const basename = (name) => name.replace(/\.[^.]+$/, '');
+          const safeSheetName = (name) => {
+            const n = (name || 'Sheet').slice(0, 31).replace(/[\[\]\*\?\/\\:]/g, ' ');
+            return n.trim() || 'Sheet';
+          };
+
+          const resetUI = () => {
+            currentFile = null;
+            els.fileInput.value = '';
+            els.meta.textContent = 'Chưa có tệp nào.';
+            els.btnConvert.disabled = true;
+            setStatus('');
+            setProgress(0);
+            els.preview.innerHTML = '';
+          };
+
+          const enableCustomDelimiter = () => {
+            const isCustom = els.delimiter.value === 'custom';
+            els.delimiterCustom.disabled = !isCustom;
+            if (isCustom) els.delimiterCustom.focus();
+          };
+
+          // --- Drag & Drop ---
+          ['dragenter', 'dragover'].forEach(ev => {
+            els.dz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); els.dz.classList.add('drag'); });
+          });
+          ['dragleave', 'drop'].forEach(ev => {
+            els.dz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); els.dz.classList.remove('drag'); });
+          });
+          els.dz.addEventListener('drop', e => {
+            const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+            if (f) setFile(f);
+          });
+
+          // --- File input ---
+          els.fileInput.addEventListener('change', e => {
+            const f = e.target.files && e.target.files[0];
+            if (f) setFile(f);
+          });
+
+          function setFile(file) {
+            if (!file) return;
+
+            // Basic validation
+            const okName = /\.csv$/i.test(file.name);
+            const okType = (file.type || '').includes('csv') || (file.type || '').includes('excel') || file.type === 'text/plain';
+            if (!okName && !okType) {
+              setStatus('Vui lòng chọn tệp .csv hợp lệ.', 'warn');
+              return;
+            }
+
+            currentFile = file;
+            els.meta.textContent = `Đã chọn: ${file.name} • ${fmtBytes(file.size)}`;
+            els.btnConvert.disabled = false;
+
+            // Auto preview (first 50 rows)
+            if (els.previewToggle.checked) {
+              previewCSV(file);
+            } else {
+              els.preview.innerHTML = '';
+            }
+          }
+
+          function renderPreview(aoa) {
+            const rows = aoa.slice(0, 50);
+            if (!rows.length) { els.preview.innerHTML = ''; return; }
+            const thead = `<thead><tr>${rows[0].map((_, i) => `<th>C${i + 1}</th>`).join('')}</tr></thead>`;
+            const tbody = '<tbody>' + rows.map(r => `<tr>${r.map(v => `<td title="${String(v ?? '')}">${String(v ?? '')}</td>`).join('')}</tr>`).join('') + '</tbody>';
+            els.preview.innerHTML = `<h3>Xem trước (50 dòng đầu)</h3><div class="hint">Kiểm tra cột/dấu phân tách trước khi chuyển đổi.</div><table>${thead}${tbody}</table>`;
+          }
+
+          function previewCSV(file) {
+            setStatus('Đang đọc mẫu xem trước…');
+            Papa.parse(file, {
+              worker: true,
+              preview: 50,
+              header: false,
+              skipEmptyLines: 'greedy',
+              encoding: els.encoding.value === 'auto' ? undefined : els.encoding.value,
+              delimiter: getDelimiter(),
+              complete: (res) => { renderPreview(res.data || []); setStatus('Sẵn sàng chuyển đổi.'); setProgress(0); },
+              error: (err) => { setStatus('Không thể đọc tệp để xem trước.', 'err'); console.error(err); }
+            });
+          }
+
+          function getDelimiter() {
+            const d = els.delimiter.value;
+            if (d === 'auto') return undefined;
+            if (d === 'custom') {
+              const c = els.delimiterCustom.value || '';
+              return c.length ? c : undefined;
+            }
+            return d === '\\t' ? '\t' : d;
+          }
+
+          function buildWorkbookFromAOA(aoa, rowsPerSheet, baseName) {
+            const MAX_ROWS = 1048576, MAX_COLS = 16384;
+            const wb = XLSX.utils.book_new();
+            const limit = rowsPerSheet && rowsPerSheet > 0 ? rowsPerSheet : MAX_ROWS;
+
+            // Cảnh báo nếu quá nhiều cột
+            const cols = aoa.reduce((m, r) => Math.max(m, r.length || 0), 0);
+            if (cols > MAX_COLS) console.warn('Số cột vượt quá giới hạn Excel');
+
+            let sheetIndex = 0;
+            for (let start = 0; start < aoa.length; start += limit) {
+              const chunk = aoa.slice(start, start + limit);
+              const ws = XLSX.utils.aoa_to_sheet(chunk, { dense: true });
+              XLSX.utils.book_append_sheet(wb, ws, safeSheetName(`${baseName}-${++sheetIndex}`));
+            }
+            wb.Props = { Title: 'CSV to Excel (Client-side)', Author: 'CSV2Excel', CreatedDate: new Date() };
+            return wb;
+          }
+
+          // --- Convert handler ---
+          els.btnConvert.addEventListener('click', () => {
+            if (!currentFile) return;
+            convert(currentFile);
+          });
+
+          function convert(file) {
+            const enc = els.encoding.value === 'auto' ? undefined : els.encoding.value;
+            const delimiter = getDelimiter();
+            const asText = els.asText.checked;
+            const outType = els.outputType.value === 'xls' ? 'xls' : 'xlsx';
+            const rowsPerSheet = Number(els.rowsPerSheet.value) || null;
+
+            setStatus('Bắt đầu chuyển đổi…');
+            setProgress(1);
+
+            let aoa = [];
+            let lastPct = 1;
+
+            Papa.parse(file, {
+              worker: true,
+              header: false,
+              skipEmptyLines: 'greedy',
+              dynamicTyping: !asText,
+              encoding: enc,
+              delimiter: delimiter,
+              chunkSize: 1024 * 1024, // 1MB
+              chunk: (results, parser) => {
+                aoa.push(...results.data);
+                if (file.size && results && results.meta && typeof results.meta.cursor === 'number') {
+                  const pct = Math.min(99, Math.round(results.meta.cursor / file.size * 100));
+                  if (pct !== lastPct) { setProgress(pct, `Đang đọc CSV… ${pct}%`); lastPct = pct; }
+                }
+              },
+              complete: () => {
+                setProgress(99, 'Đang tạo file Excel…');
+                try {
+                  const base = basename(file.name);
+                  const wb = buildWorkbookFromAOA(aoa, rowsPerSheet, safeSheetName(base));
+                  XLSX.writeFile(wb, `${base}.${outType}`, { bookType: outType, compression: true });
+                  setProgress(100, 'Hoàn tất! Tệp Excel đã được tải xuống.');
+                  if (els.previewToggle.checked) renderPreview(aoa);
+                } catch (e) {
+                  console.error(e);
+                  setStatus('Có lỗi khi tạo file Excel.', 'err');
+                  setProgress(0);
+                } finally {
+                  aoa = null;
+                }
+              },
+              error: (err) => {
+                console.error(err);
+                setStatus('Không thể đọc CSV. Vui lòng kiểm tra encoding/delimiter.', 'err');
+                setProgress(0);
+              }
+            });
+          }
+
+          // --- Clear ---
+          els.btnClear.addEventListener('click', resetUI);
+
+          // --- Delimiter custom enable/disable ---
+          els.delimiter.addEventListener('change', enableCustomDelimiter);
+          enableCustomDelimiter();
+
+          // Init
+          resetUI();
+        })();
+      </script>
     </div>
-
-    <div class="row" style="margin-top:8px">
-      <button id="btn-convert" class="btn primary" disabled>Chuyển đổi sang Excel</button>
-      <button id="btn-clear" class="btn">Xoá lựa chọn</button>
     </div>
-
-    <div id="status" class="status"></div>
-    <div class="progress"><div id="bar" class="bar"></div></div>
-
-    <div id="preview"></div>
-
-    <div class="footer">Client-side only. Không upload dữ liệu lên server.</div>
-  </div>
-
-<script>
-(() => {
-  const els = {
-    dz: document.getElementById('dropzone'),
-    fileInput: document.getElementById('file-input'),
-    meta: document.getElementById('file-meta'),
-    btnConvert: document.getElementById('btn-convert'),
-    btnClear: document.getElementById('btn-clear'),
-    status: document.getElementById('status'),
-    bar: document.getElementById('bar'),
-    preview: document.getElementById('preview'),
-    delimiter: document.getElementById('delimiter'),
-    delimiterCustom: document.getElementById('delimiter-custom'),
-    encoding: document.getElementById('encoding'),
-    outputType: document.getElementById('output-type'),
-    rowsPerSheet: document.getElementById('rows-per-sheet'),
-    asText: document.getElementById('as-text'),
-    previewToggle: document.getElementById('preview-toggle')
-  };
-
-  let currentFile = null;
-
-  // --- Helpers ---
-  const fmtBytes = (n) => {
-    if (!n && n !== 0) return '';
-    const u = ['B','KB','MB','GB','TB']; let i = 0;
-    while (n >= 1024 && i < u.length-1) { n /= 1024; i++; }
-    return `${n.toFixed(n>=100||i===0?0:1)} ${u[i]}`;
-  };
-
-  const setStatus = (msg, type='info') => {
-    const colors = { info:'#374151', ok:'#065f46', warn:'#92400e', err:'#991b1b' };
-    els.status.style.color = colors[type] || colors.info;
-    els.status.textContent = msg || '';
-  };
-
-  const setProgress = (p, label='') => {
-    const pct = Math.max(0, Math.min(100, Math.round(p||0)));
-    els.bar.style.width = pct + '%';
-    if (label) setStatus(label);
-  };
-
-  const basename = (name) => name.replace(/\.[^.]+$/,'');
-  const safeSheetName = (name) => {
-    const n = (name || 'Sheet').slice(0,31).replace(/[\[\]\*\?\/\\:]/g,' ');
-    return n.trim() || 'Sheet';
-  };
-
-  const resetUI = () => {
-    currentFile = null;
-    els.fileInput.value = '';
-    els.meta.textContent = 'Chưa có tệp nào.';
-    els.btnConvert.disabled = true;
-    setStatus('');
-    setProgress(0);
-    els.preview.innerHTML = '';
-  };
-
-  const enableCustomDelimiter = () => {
-    const isCustom = els.delimiter.value === 'custom';
-    els.delimiterCustom.disabled = !isCustom;
-    if (isCustom) els.delimiterCustom.focus();
-  };
-
-  // --- Drag & Drop ---
-  ['dragenter','dragover'].forEach(ev => {
-    els.dz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); els.dz.classList.add('drag'); });
-  });
-  ['dragleave','drop'].forEach(ev => {
-    els.dz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); els.dz.classList.remove('drag'); });
-  });
-  els.dz.addEventListener('drop', e => {
-    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-    if (f) setFile(f);
-  });
-
-  // --- File input ---
-  els.fileInput.addEventListener('change', e => {
-    const f = e.target.files && e.target.files[0];
-    if (f) setFile(f);
-  });
-
-  function setFile(file) {
-    if (!file) return;
-
-    // Basic validation
-    const okName = /\.csv$/i.test(file.name);
-    const okType = (file.type || '').includes('csv') || (file.type || '').includes('excel') || file.type === 'text/plain';
-    if (!okName && !okType) {
-      setStatus('Vui lòng chọn tệp .csv hợp lệ.', 'warn');
-      return;
-    }
-
-    currentFile = file;
-    els.meta.textContent = `Đã chọn: ${file.name} • ${fmtBytes(file.size)}`;
-    els.btnConvert.disabled = false;
-
-    // Auto preview (first 50 rows)
-    if (els.previewToggle.checked) {
-      previewCSV(file);
-    } else {
-      els.preview.innerHTML = '';
-    }
-  }
-
-  function renderPreview(aoa) {
-    const rows = aoa.slice(0, 50);
-    if (!rows.length) { els.preview.innerHTML = ''; return; }
-    const thead = `<thead><tr>${rows[0].map((_,i)=>`<th>C${i+1}</th>`).join('')}</tr></thead>`;
-    const tbody = '<tbody>' + rows.map(r=>`<tr>${r.map(v=>`<td title="${String(v ?? '')}">${String(v ?? '')}</td>`).join('')}</tr>`).join('') + '</tbody>';
-    els.preview.innerHTML = `<h3>Xem trước (50 dòng đầu)</h3><div class="hint">Kiểm tra cột/dấu phân tách trước khi chuyển đổi.</div><table>${thead}${tbody}</table>`;
-  }
-
-  function previewCSV(file) {
-    setStatus('Đang đọc mẫu xem trước…');
-    Papa.parse(file, {
-      worker: true,
-      preview: 50,
-      header: false,
-      skipEmptyLines: 'greedy',
-      encoding: els.encoding.value === 'auto' ? undefined : els.encoding.value,
-      delimiter: getDelimiter(),
-      complete: (res) => { renderPreview(res.data || []); setStatus('Sẵn sàng chuyển đổi.'); setProgress(0); },
-      error: (err) => { setStatus('Không thể đọc tệp để xem trước.', 'err'); console.error(err); }
-    });
-  }
-
-  function getDelimiter() {
-    const d = els.delimiter.value;
-    if (d === 'auto') return undefined;
-    if (d === 'custom') {
-      const c = els.delimiterCustom.value || '';
-      return c.length ? c : undefined;
-    }
-    return d === '\\t' ? '\t' : d;
-  }
-
-  function buildWorkbookFromAOA(aoa, rowsPerSheet, baseName) {
-    const MAX_ROWS = 1048576, MAX_COLS = 16384;
-    const wb = XLSX.utils.book_new();
-    const limit = rowsPerSheet && rowsPerSheet > 0 ? rowsPerSheet : MAX_ROWS;
-
-    // Cảnh báo nếu quá nhiều cột
-    const cols = aoa.reduce((m,r)=>Math.max(m, r.length||0), 0);
-    if (cols > MAX_COLS) console.warn('Số cột vượt quá giới hạn Excel');
-
-    let sheetIndex = 0;
-    for (let start = 0; start < aoa.length; start += limit) {
-      const chunk = aoa.slice(start, start + limit);
-      const ws = XLSX.utils.aoa_to_sheet(chunk, { dense: true });
-      XLSX.utils.book_append_sheet(wb, ws, safeSheetName(`${baseName}-${++sheetIndex}`));
-    }
-    wb.Props = { Title: 'CSV to Excel (Client-side)', Author: 'CSV2Excel', CreatedDate: new Date() };
-    return wb;
-  }
-
-  // --- Convert handler ---
-  els.btnConvert.addEventListener('click', () => {
-    if (!currentFile) return;
-    convert(currentFile);
-  });
-
-  function convert(file) {
-    const enc = els.encoding.value === 'auto' ? undefined : els.encoding.value;
-    const delimiter = getDelimiter();
-    const asText = els.asText.checked;
-    const outType = els.outputType.value === 'xls' ? 'xls' : 'xlsx';
-    const rowsPerSheet = Number(els.rowsPerSheet.value) || null;
-
-    setStatus('Bắt đầu chuyển đổi…');
-    setProgress(1);
-
-    let aoa = [];
-    let lastPct = 1;
-
-    Papa.parse(file, {
-      worker: true,
-      header: false,
-      skipEmptyLines: 'greedy',
-      dynamicTyping: !asText,
-      encoding: enc,
-      delimiter: delimiter,
-      chunkSize: 1024 * 1024, // 1MB
-      chunk: (results, parser) => {
-        aoa.push(...results.data);
-        if (file.size && results && results.meta && typeof results.meta.cursor === 'number') {
-          const pct = Math.min(99, Math.round(results.meta.cursor / file.size * 100));
-          if (pct !== lastPct) { setProgress(pct, `Đang đọc CSV… ${pct}%`); lastPct = pct; }
-        }
-      },
-      complete: () => {
-        setProgress(99, 'Đang tạo file Excel…');
-        try {
-          const base = basename(file.name);
-          const wb = buildWorkbookFromAOA(aoa, rowsPerSheet, safeSheetName(base));
-          XLSX.writeFile(wb, `${base}.${outType}`, { bookType: outType, compression: true });
-          setProgress(100, 'Hoàn tất! Tệp Excel đã được tải xuống.');
-          if (els.previewToggle.checked) renderPreview(aoa);
-        } catch (e) {
-          console.error(e);
-          setStatus('Có lỗi khi tạo file Excel.', 'err');
-          setProgress(0);
-        } finally {
-          aoa = null;
-        }
-      },
-      error: (err) => {
-        console.error(err);
-        setStatus('Không thể đọc CSV. Vui lòng kiểm tra encoding/delimiter.', 'err');
-        setProgress(0);
-      }
-    });
-  }
-
-  // --- Clear ---
-  els.btnClear.addEventListener('click', resetUI);
-
-  // --- Delimiter custom enable/disable ---
-  els.delimiter.addEventListener('change', enableCustomDelimiter);
-  enableCustomDelimiter();
-
-  // Init
-  resetUI();
-})();
-</script>
+  </section>
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const navList = document.getElementById('navList');
+    if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
+  </script>
 </body>
+
 </html>

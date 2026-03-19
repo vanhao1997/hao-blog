@@ -1,110 +1,98 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Google Keyword Wrapper</title>
-  <style>
-    :root { --brand:#2563eb; --bg:#f6f8fa; --text:#1f2937; }
-    * { box-sizing:border-box; }
-    body {
-      margin:0; padding:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-      background:var(--bg); color:var(--text);
-    }
-    .wrap {
-      max-width:800px; margin:32px auto; padding:24px;
-      background:#fff; border-radius:8px;
-      box-shadow:0 4px 16px rgba(0,0,0,.1);
-    }
-    .banner {
-      background:var(--brand); color:#fff; text-align:center;
-      padding:16px; font-size:28px; font-weight:700; border-radius:6px;
-      margin-bottom:24px;
-    }
-    h1 {
-      margin:0 0 16px; font-size:24px; color:var(--brand);
-      text-align:center;
-    }
-    textarea {
-      width:100%; min-height:120px; padding:12px;
-      border:1px solid #e5e7eb; border-radius:6px;
-      resize:vertical; font-size:14px;
-    }
-    .row {
-      display:flex; gap:12px; align-items:center; margin-top:16px;
-    }
-    .btn {
-      padding:8px 16px; font-size:14px; border:none; border-radius:6px;
-      background:var(--brand); color:#fff; cursor:pointer;
-      transition:background .2s;
-    }
-    .btn:hover { background:#1e4bb8; }
-    .controls {
-      display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:24px;
-    }
-    .out-group { display:flex; flex-direction:column; gap:8px; }
-    .title { font-weight:600; font-size:16px; }
-    .copy-btn { background:#10b981; margin-top:4px; }
-    .reset-btn { background:#ef4444; margin-top:4px; }
-  </style>
+  <title>Google Keyword Wrapper - Nguyễn Văn Hảo</title>
+  <meta name="description" content="Bọc từ khóa với các match types cho Google Ads">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css?v=1.4">
+  <link rel="stylesheet" href="/css/style.css?v=1.5">
+  <link rel="stylesheet" href="/css/toolkit.css">
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="banner">Google Keyword Wrapper</div>
-    <div class="out-group">
-      <label for="inputKeywords" class="title">Nhập keywords</label>
-      <textarea id="inputKeywords" placeholder="Nhập một từ khoá mỗi dòng hoặc ngăn cách dấu phẩy"></textarea>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
+      <nav class="nav">
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+        <ul class="nav-list" id="navList">
+          <li><a href="/" class="nav-link">Trang chủ</a></li>
+          <li><a href="/blog.html" class="nav-link">Blog</a></li>
+          <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
+          <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+          <li><a href="/toolkit/" class="nav-link">Công cụ</a></li>
+        </ul>
+        <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="row">
-      <button id="btnGenerate" class="btn">Generate</button>
-      <button id="btnLowercase" class="btn">Chuyển sang chữ thường</button>
-      <button id="btnReset" class="btn reset-btn">Reset</button>
-    </div>
+  <section class="tool-page">
+    <div class="container">
+      <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+      <div class="tool-header">
+        <h1>Google Keyword Wrapper</h1>
+        <p>Bọc từ khóa với các match types cho Google Ads</p>
+      </div>
 
-    <div class="controls">
-      <div class="out-group">
-        <label for="outputPhrase" class="title">Khớp cụm từ</label>
-        <textarea id="outputPhrase" readonly></textarea>
-        <button id="copyPhrase" class="btn copy-btn">Copy</button>
-      </div>
-      <div class="out-group">
-        <label for="outputExact" class="title">Khớp chính xác</label>
-        <textarea id="outputExact" readonly></textarea>
-        <button id="copyExact" class="btn copy-btn">Copy</button>
-      </div>
-      <div class="out-group">
-        <label for="outputNegative" class="title">Từ khoá phủ định</label>
-        <textarea id="outputNegative" readonly></textarea>
-        <button id="copyNegative" class="btn copy-btn">Copy</button>
+      <div class="tool-card-wrap">
+        <div class="form-group">
+          <label for="inputKeywords">Nhập keywords</label>
+          <textarea id="inputKeywords" placeholder="Nhập một từ khoá mỗi dòng hoặc ngăn cách dấu phẩy"></textarea>
+        </div>
+
+        <div class="tool-actions">
+          <button id="btnGenerate" class="tool-btn tool-btn-primary">Generate</button>
+          <button id="btnLowercase" class="tool-btn tool-btn-outline">Chuyển sang chữ thường</button>
+          <button id="btnReset" class="tool-btn tool-btn-danger">Reset</button>
+        </div>
+
+        <div class="tool-grid-3" style="margin-top:24px;">
+          <div class="form-group">
+            <label for="outputPhrase">Khớp cụm từ</label>
+            <textarea id="outputPhrase" readonly></textarea>
+            <button id="copyPhrase" class="tool-btn tool-btn-success" style="width:100%;margin-top:8px;">Copy</button>
+          </div>
+          <div class="form-group">
+            <label for="outputExact">Khớp chính xác</label>
+            <textarea id="outputExact" readonly></textarea>
+            <button id="copyExact" class="tool-btn tool-btn-success" style="width:100%;margin-top:8px;">Copy</button>
+          </div>
+          <div class="form-group">
+            <label for="outputNegative">Từ khoá phủ định</label>
+            <textarea id="outputNegative" readonly></textarea>
+            <button id="copyNegative" class="tool-btn tool-btn-success" style="width:100%;margin-top:8px;">Copy</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <script>
     const $ = id => document.getElementById(id);
 
     function parseInput(txt) {
-      return txt
-        .split(/[\r\n,]+/)  
-        .map(s => s.trim())
-        .filter(Boolean);
+      return txt.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
     }
 
     function generate() {
       const raw = $('inputKeywords').value;
       const kws = parseInput(raw);
-
-      const phrase = [];
-      const exact = [];
-      const negative = [];
-
+      const phrase = [], exact = [], negative = [];
       kws.forEach(kw => {
         phrase.push(`"${kw}"`);
         exact.push(`[${kw}]`);
         negative.push(`-${kw}`);
       });
-
       $('outputPhrase').value = phrase.join('\n');
       $('outputExact').value = exact.join('\n');
       $('outputNegative').value = negative.join('\n');
@@ -120,13 +108,10 @@
       });
     }
 
-    // Lowercase transformation
     function toLowercase() {
-      const area = $('inputKeywords');
-      area.value = area.value.toLowerCase();
+      $('inputKeywords').value = $('inputKeywords').value.toLowerCase();
     }
 
-    // Reset all fields
     function resetAll() {
       $('inputKeywords').value = '';
       $('outputPhrase').value = '';
@@ -134,13 +119,18 @@
       $('outputNegative').value = '';
     }
 
-    // Event listeners
     $('btnGenerate').addEventListener('click', generate);
     $('btnLowercase').addEventListener('click', toLowercase);
     $('btnReset').addEventListener('click', resetAll);
     $('copyPhrase').addEventListener('click', () => copyText('outputPhrase'));
     $('copyExact').addEventListener('click', () => copyText('outputExact'));
     $('copyNegative').addEventListener('click', () => copyText('outputNegative'));
+
+    // Mobile menu
+    const menuToggle = document.getElementById('menuToggle');
+    const navList = document.getElementById('navList');
+    if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
   </script>
 </body>
+
 </html>

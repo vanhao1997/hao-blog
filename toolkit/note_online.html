@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOTE ONLINE</title>
+    <title>Note Online - Nguyễn Văn Hảo</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css?v=1.4">
+    <link rel="stylesheet" href="/css/style.css?v=1.5">
+    <link rel="stylesheet" href="/css/toolkit.css">
     <!-- Tải Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -36,8 +46,26 @@
 </head>
 
 <body class="bg-indigo-50 text-gray-800">
+    <header class="header">
+        <div class="container header-inner">
+            <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
+            <nav class="nav">
+                <button class="menu-toggle" id="menuToggle"
+                    aria-label="Menu"><span></span><span></span><span></span></button>
+                <ul class="nav-list" id="navList">
+                    <li><a href="/" class="nav-link">Trang chủ</a></li>
+                    <li><a href="/blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
+                    <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+                    <li><a href="/toolkit/" class="nav-link">Công cụ</a></li>
+                </ul>
+                <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+            </nav>
+        </div>
+    </header>
 
     <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
 
         <!-- Tiêu đề -->
         <header class="text-center mb-8">
@@ -186,6 +214,11 @@
             // Hiển thị ghi chú khi tải trang
             renderNotes();
         });
+    </script>
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navList = document.getElementById('navList');
+        if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
     </script>
 </body>
 

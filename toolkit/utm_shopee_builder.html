@@ -1,296 +1,276 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Shopee Mass URL Generator - Full Channel List</title>
+  <title>Shopee Ads Link Generator - Nguyễn Văn Hảo</title>
+  <meta name="description" content="Tạo UTM chuyên biệt cho Shopee Affiliate">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css?v=1.4">
+  <link rel="stylesheet" href="/css/style.css?v=1.5">
+  <link rel="stylesheet" href="/css/toolkit.css">
   <style>
-    :root { --shopee-orange: #ee4d2d; --bg: #f4f4f4; --text: #333; }
-    * { box-sizing: border-box; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
-    body { background: var(--bg); padding: 20px; color: var(--text); }
-    .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-    .header { border-bottom: 2px solid var(--shopee-orange); margin-bottom: 30px; padding-bottom: 15px; text-align: center; }
-    .header h1 { color: var(--shopee-orange); margin: 0; font-size: 26px; }
-    
-    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    .full-width { grid-column: span 2; }
-    
-    .input-group { margin-bottom: 5px; }
-    label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 13px; color: #555; }
-    input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; transition: border 0.2s; }
-    input:focus, select:focus { border-color: var(--shopee-orange); box-shadow: 0 0 5px rgba(238, 77, 45, 0.2); }
-    
-    .channel-preview { background: #fff8f7; padding: 15px; border-radius: 6px; border: 1px solid #fbdad4; margin-top: 10px; display: flex; justify-content: space-around; }
-    .channel-preview div { text-align: center; }
-    .channel-preview b { display: block; color: var(--shopee-orange); font-size: 16px; margin-top: 4px; }
+    .channel-preview {
+      background: #fff8f7;
+      padding: 16px;
+      border-radius: 12px;
+      border: 2px solid var(--color-border);
+      margin: 16px 0;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
 
-    .btn-group { margin-top: 30px; display: flex; gap: 15px; }
-    .btn { padding: 14px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; transition: all 0.2s; text-transform: uppercase; }
-    .btn-build { background: var(--shopee-orange); color: #fff; flex: 2; }
-    .btn-build:hover { background: #d73211; transform: translateY(-1px); }
-    .btn-reset { background: #f0f0f0; color: #555; flex: 1; }
-    
-    .results { margin-top: 40px; border-top: 2px solid #eee; padding-top: 30px; }
-    .result-box { margin-bottom: 20px; position: relative; }
-    .result-box label { color: var(--shopee-orange); font-weight: bold; display: flex; align-items: center; justify-content: space-between; }
-    .result-box textarea { height: 80px; background: #fafafa; border-color: #ddd; font-family: "Courier New", Courier, monospace; font-size: 13px; resize: none; padding-right: 60px; margin-top: 8px; }
-    
-    .copy-btn { position: absolute; right: 10px; top: 40px; background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-    .copy-btn:hover { background: #0056b3; }
+    .channel-preview div {
+      text-align: center;
+    }
 
-    .hint { font-size: 11px; color: #888; margin-top: 5px; font-style: italic; }
+    .channel-preview b {
+      display: block;
+      color: var(--color-primary);
+      font-size: 1.1rem;
+      margin-top: 4px;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: var(--color-gray);
+      margin-top: 6px;
+      font-style: italic;
+    }
   </style>
 </head>
+
 <body>
-
-<div class="container">
-  <div class="header">
-    <h1>Shopee Ads Link Generator</h1>
-  </div>
-
-  <div class="grid">
-    <div class="full-width">
-      <label>1. Link sản phẩm / Shop (Landing Page URL)</label>
-      <input type="text" id="baseUrl" placeholder="https://shopee.vn/ten-san-pham-i.123.456">
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
+      <nav class="nav">
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+        <ul class="nav-list" id="navList">
+          <li><a href="/" class="nav-link">Trang chủ</a></li>
+          <li><a href="/blog.html" class="nav-link">Blog</a></li>
+          <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
+          <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+          <li><a href="/toolkit/" class="nav-link">Công cụ</a></li>
+        </ul>
+        <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="input-group">
-      <label>2. Thị trường (Country)</label>
-      <select id="country">
-        <option value="VN">Vietnam (VN)</option>
-        <option value="SG">Singapore (SG)</option>
-        <option value="MY">Malaysia (MY)</option>
-        <option value="TH">Thailand (TH)</option>
-        <option value="ID">Indonesia (ID)</option>
-        <option value="PH">Philippines (PH)</option>
-        <option value="TW">Taiwan (TW)</option>
-        <option value="BR">Brazil (BR)</option>
-      </select>
+  <section class="tool-page">
+    <div class="container">
+      <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+      <div class="tool-header">
+        <h1>Shopee Ads Link Generator</h1>
+        <p>Tạo UTM chuyên biệt cho Shopee Affiliate</p>
+      </div>
+
+      <div class="tool-card-wrap wide">
+        <div class="tool-grid">
+          <div style="grid-column:span 2;">
+            <label>1. Link sản phẩm / Shop (Landing Page URL)</label>
+            <input type="text" id="baseUrl" placeholder="https://shopee.vn/ten-san-pham-i.123.456">
+          </div>
+          <div class="form-group">
+            <label>2. Thị trường (Country)</label>
+            <select id="country">
+              <option value="VN">Vietnam (VN)</option>
+              <option value="SG">Singapore (SG)</option>
+              <option value="MY">Malaysia (MY)</option>
+              <option value="TH">Thailand (TH)</option>
+              <option value="ID">Indonesia (ID)</option>
+              <option value="PH">Philippines (PH)</option>
+              <option value="TW">Taiwan (TW)</option>
+              <option value="BR">Brazil (BR)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>3. Shop ID</label>
+            <input type="text" id="shopId" placeholder="Nhập mã Shop ID">
+          </div>
+          <div class="form-group">
+            <label>4. Nền tảng (Ad Platform)</label>
+            <select id="platform" onchange="renderFormats()"></select>
+          </div>
+          <div class="form-group">
+            <label>5. Định dạng (Ad Format)</label>
+            <select id="format" onchange="updateChannelData()"></select>
+          </div>
+        </div>
+
+        <div class="channel-preview">
+          <div>Mã kênh (Channel Code)<b id="displayCode">-</b></div>
+          <div>Nguồn (Source)<b id="displaySource">-</b></div>
+          <div>Hình thức (Medium)<b id="displayMedium">-</b></div>
+        </div>
+
+        <div class="tool-grid">
+          <div class="form-group">
+            <label>6. Loại chiến dịch (Type)</label>
+            <select id="campType">
+              <option value="SS">Featuring One Shop (SS)</option>
+              <option value="MS">Featuring Multiple Shops (MS)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>7. Mô tả chiến dịch (Description)</label>
+            <input type="text" id="campDesc" placeholder="ví dụ: p2p-smartheart-dec12">
+          </div>
+          <div style="grid-column:span 2;">
+            <label>8. Nội dung quảng cáo (Ad Content / utm_content - Tùy chọn)</label>
+            <input type="text" id="adContent" placeholder="ví dụ: cpc-01">
+          </div>
+        </div>
+
+        <div class="tool-actions">
+          <button class="tool-btn tool-btn-primary" onclick="generate()">Tạo Link Ngay</button>
+          <button class="tool-btn tool-btn-danger" onclick="resetForm()">Làm mới</button>
+        </div>
+
+        <div id="resultsArea" style="display:none; margin-top:24px;">
+          <div class="form-group">
+            <label>Campaign Name <small>(Dùng đặt tên chiến dịch quảng cáo)</small></label>
+            <textarea id="resCampName" readonly style="min-height:60px;"></textarea>
+            <button class="tool-btn tool-btn-success" onclick="copyText('resCampName')"
+              style="margin-top:8px;">Copy</button>
+          </div>
+          <div class="form-group">
+            <label>Web Link <small>(Dùng cho PC/Browser)</small></label>
+            <textarea id="resWebLink" readonly style="min-height:60px;"></textarea>
+            <button class="tool-btn tool-btn-success" onclick="copyText('resWebLink')"
+              style="margin-top:8px;">Copy</button>
+          </div>
+          <div class="form-group">
+            <label>Universal Link <small>(Link mở App - Khuyên dùng)</small></label>
+            <textarea id="resUniLink" readonly style="min-height:60px;"></textarea>
+            <button class="tool-btn tool-btn-success" onclick="copyText('resUniLink')"
+              style="margin-top:8px;">Copy</button>
+            <p class="hint">Tự động chuyển hướng vào App Shopee để tăng tỷ lệ chốt đơn.</p>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div class="input-group">
-      <label>3. Shop ID</label>
-      <input type="text" id="shopId" placeholder="Nhập mã Shop ID">
-    </div>
+  <script>
+    const channelData = [
+      { platform: "Facebook Collaborative Ads - Sales", format: "Any ads type", code: "FBCA", source: "facebook-ca", medium: "seller" },
+      { platform: "Facebook Collaborative Ads - Sales", format: "Carousel Ads", code: "FBC1", source: "facebook-ca", medium: "seller" },
+      { platform: "Facebook Collaborative Ads - Sales", format: "Collection Ads", code: "FBC2", source: "facebook-ca", medium: "seller" },
+      { platform: "Facebook Collaborative Ads - Traffic", format: "Any ads type", code: "FBTA", source: "facebook-ca", medium: "seller" },
+      { platform: "Facebook Collaborative Ads - Traffic", format: "Carousel Ads", code: "FBT1", source: "facebook-ca", medium: "seller" },
+      { platform: "Facebook Collaborative Ads - Traffic", format: "Collection Ads", code: "FBT2", source: "facebook-ca", medium: "seller" },
+      { platform: "Facebook Collaborative Ads - Awareness", format: "Any ads type", code: "FBAA", source: "facebook-ca", medium: "seller" },
+      { platform: "Facebook Collaborative Ads - Awareness", format: "Carousel Ads", code: "FBA1", source: "facebook-ca", medium: "seller" },
+      { platform: "Facebook Collaborative Ads - Awareness", format: "Collection Ads", code: "FBA2", source: "facebook-ca", medium: "seller" },
+      { platform: "Google Search", format: "Search Ads", code: "GSEM", source: "google", medium: "seller" },
+      { platform: "Google Search", format: "Shopping Ads", code: "GSHP", source: "google", medium: "seller" },
+      { platform: "Google Search", format: "Performance Max", code: "GMAX", source: "google", medium: "seller" },
+      { platform: "Google Non-Search", format: "Display", code: "GDDI", source: "google", medium: "seller" },
+      { platform: "Google Non-Search", format: "Instream Video", code: "GINS", source: "google", medium: "seller" },
+      { platform: "Google Non-Search", format: "Bumper Video", code: "GBUM", source: "google", medium: "seller" },
+      { platform: "Google Non-Search", format: "Discovery", code: "GDIS", source: "google", medium: "seller" },
+      { platform: "Google Non-Search", format: "YouTube", code: "GYTS", source: "google", medium: "seller" },
+      { platform: "Google Non-Search", format: "Demand Generation", code: "GDEM", source: "google", medium: "seller" },
+      { platform: "Instagram Collaborative Ads", format: "Any ads type", code: "IGCA", source: "instagram-ca", medium: "seller" },
+      { platform: "Instagram Collaborative Ads", format: "Carousel Ads", code: "IGC1", source: "instagram-ca", medium: "seller" },
+      { platform: "Instagram Collaborative Ads", format: "Collection Ads", code: "IGC2", source: "instagram-ca", medium: "seller" },
+      { platform: "Instagram Ads", format: "Any ads type", code: "IG00", source: "instagram", medium: "seller" },
+      { platform: "Instagram Ads", format: "Photo Ads", code: "IG01", source: "instagram", medium: "seller" },
+      { platform: "Instagram Ads", format: "Video Ads", code: "IG02", source: "instagram", medium: "seller" },
+      { platform: "Instagram Ads", format: "Carousel Ads", code: "IG03", source: "instagram", medium: "seller" },
+      { platform: "Instagram Ads", format: "Story Ads", code: "IG04", source: "instagram", medium: "seller" },
+      { platform: "Facebook Ads", format: "Any ads type", code: "FB00", source: "facebook", medium: "seller" },
+      { platform: "Facebook Ads", format: "Photo Ads", code: "FB01", source: "facebook", medium: "seller" },
+      { platform: "Facebook Ads", format: "Video Ads", code: "FB02", source: "facebook", medium: "seller" },
+      { platform: "Facebook Ads", format: "Carousel Ads", code: "FB03", source: "facebook", medium: "seller" },
+      { platform: "TikTok Ads", format: "In-Feed", code: "TT01", source: "tiktok", medium: "seller" },
+      { platform: "TikTok Ads", format: "Topview", code: "TT02", source: "tiktok", medium: "seller" },
+      { platform: "TikTok Ads", format: "Shopping Ads", code: "TT03", source: "tiktok", medium: "seller" }
+    ];
 
-    <div class="input-group">
-      <label>4. Nền tảng (Ad Platform)</label>
-      <select id="platform" onchange="renderFormats()">
-        <!-- JS populate -->
-      </select>
-    </div>
-
-    <div class="input-group">
-      <label>5. Định dạng (Ad Format)</label>
-      <select id="format" onchange="updateChannelData()">
-        <!-- JS populate -->
-      </select>
-    </div>
-
-    <div class="full-width channel-preview">
-      <div>Mã kênh (Channel Code)<b id="displayCode">-</b></div>
-      <div>Nguồn (Source)<b id="displaySource">-</b></div>
-      <div>Hình thức (Medium)<b id="displayMedium">-</b></div>
-    </div>
-
-    <div class="input-group">
-      <label>6. Loại chiến dịch (Type)</label>
-      <select id="campType">
-        <option value="SS">Featuring One Shop (SS)</option>
-        <option value="MS">Featuring Multiple Shops (MS)</option>
-      </select>
-    </div>
-
-    <div class="input-group">
-      <label>7. Mô tả chiến dịch (Description)</label>
-      <input type="text" id="campDesc" placeholder="ví dụ: p2p-smartheart-dec12">
-    </div>
-
-    <div class="full-width">
-      <label>8. Nội dung quảng cáo (Ad Content / utm_content - Tùy chọn)</label>
-      <input type="text" id="adContent" placeholder="ví dụ: cpc-01">
-    </div>
-  </div>
-
-  <div class="btn-group">
-    <button class="btn btn-build" onclick="generate()">Tạo Link Ngay</button>
-    <button class="btn btn-reset" onclick="resetForm()">Làm mới</button>
-  </div>
-
-  <div id="resultsArea" class="results" style="display:none;">
-    <div class="result-box">
-      <label>Campaign Name <span>(Dùng đặt tên chiến dịch quảng cáo)</span></label>
-      <button class="copy-btn" onclick="copyText('resCampName')">Copy</button>
-      <textarea id="resCampName" readonly></textarea>
-    </div>
-    
-    <div class="result-box">
-      <label>Web Link <span>(Dùng cho PC/Browser)</span></label>
-      <button class="copy-btn" onclick="copyText('resWebLink')">Copy</button>
-      <textarea id="resWebLink" readonly></textarea>
-    </div>
-
-    <div class="result-box">
-      <label>Universal Link <span>(Link mở App - Khuyên dùng)</span></label>
-      <button class="copy-btn" onclick="copyText('resUniLink')">Copy</button>
-      <textarea id="resUniLink" readonly></textarea>
-      <div class="hint">Tự động chuyển hướng vào App Shopee để tăng tỷ lệ chốt đơn.</div>
-    </div>
-  </div>
-</div>
-
-<script>
-  // Dữ liệu chi tiết từ hình ảnh "Channel List"
-  const channelData = [
-    // Facebook Collaborative Ads - Sales
-    { platform: "Facebook Collaborative Ads - Sales", format: "Any ads type", code: "FBCA", source: "facebook-ca", medium: "seller" },
-    { platform: "Facebook Collaborative Ads - Sales", format: "Carousel Ads", code: "FBC1", source: "facebook-ca", medium: "seller" },
-    { platform: "Facebook Collaborative Ads - Sales", format: "Collection Ads", code: "FBC2", source: "facebook-ca", medium: "seller" },
-    
-    // Facebook Collaborative Ads - Traffic
-    { platform: "Facebook Collaborative Ads - Traffic", format: "Any ads type", code: "FBTA", source: "facebook-ca", medium: "seller" },
-    { platform: "Facebook Collaborative Ads - Traffic", format: "Carousel Ads", code: "FBT1", source: "facebook-ca", medium: "seller" },
-    { platform: "Facebook Collaborative Ads - Traffic", format: "Collection Ads", code: "FBT2", source: "facebook-ca", medium: "seller" },
-    
-    // Facebook Collaborative Ads - Awareness
-    { platform: "Facebook Collaborative Ads - Awareness", format: "Any ads type", code: "FBAA", source: "facebook-ca", medium: "seller" },
-    { platform: "Facebook Collaborative Ads - Awareness", format: "Carousel Ads", code: "FBA1", source: "facebook-ca", medium: "seller" },
-    { platform: "Facebook Collaborative Ads - Awareness", format: "Collection Ads", code: "FBA2", source: "facebook-ca", medium: "seller" },
-
-    // Google Search
-    { platform: "Google Search", format: "Search Ads", code: "GSEM", source: "google", medium: "seller" },
-    { platform: "Google Search", format: "Shopping Ads", code: "GSHP", source: "google", medium: "seller" },
-    { platform: "Google Search", format: "Performance Max", code: "GMAX", source: "google", medium: "seller" },
-
-    // Google Non-Search
-    { platform: "Google Non-Search", format: "Display", code: "GDDI", source: "google", medium: "seller" },
-    { platform: "Google Non-Search", format: "Instream Video", code: "GINS", source: "google", medium: "seller" },
-    { platform: "Google Non-Search", format: "Bumper Video", code: "GBUM", source: "google", medium: "seller" },
-    { platform: "Google Non-Search", format: "Discovery", code: "GDIS", source: "google", medium: "seller" },
-    { platform: "Google Non-Search", format: "YouTube", code: "GYTS", source: "google", medium: "seller" },
-    { platform: "Google Non-Search", format: "Demand Generation", code: "GDEM", source: "google", medium: "seller" },
-
-    // Instagram Collaborative Ads
-    { platform: "Instagram Collaborative Ads", format: "Any ads type", code: "IGCA", source: "instagram-ca", medium: "seller" },
-    { platform: "Instagram Collaborative Ads", format: "Carousel Ads", code: "IGC1", source: "instagram-ca", medium: "seller" },
-    { platform: "Instagram Collaborative Ads", format: "Collection Ads", code: "IGC2", source: "instagram-ca", medium: "seller" },
-
-    // Instagram Ads
-    { platform: "Instagram Ads", format: "Any ads type", code: "IG00", source: "instagram", medium: "seller" },
-    { platform: "Instagram Ads", format: "Photo Ads", code: "IG01", source: "instagram", medium: "seller" },
-    { platform: "Instagram Ads", format: "Video Ads", code: "IG02", source: "instagram", medium: "seller" },
-    { platform: "Instagram Ads", format: "Carousel Ads", code: "IG03", source: "instagram", medium: "seller" },
-    { platform: "Instagram Ads", format: "Story Ads", code: "IG04", source: "instagram", medium: "seller" },
-
-    // Facebook Ads
-    { platform: "Facebook Ads", format: "Any ads type", code: "FB00", source: "facebook", medium: "seller" },
-    { platform: "Facebook Ads", format: "Photo Ads", code: "FB01", source: "facebook", medium: "seller" },
-    { platform: "Facebook Ads", format: "Video Ads", code: "FB02", source: "facebook", medium: "seller" },
-    { platform: "Facebook Ads", format: "Carousel Ads", code: "FB03", source: "facebook", medium: "seller" },
-
-    // TikTok Ads
-    { platform: "TikTok Ads", format: "In-Feed", code: "TT01", source: "tiktok", medium: "seller" },
-    { platform: "TikTok Ads", format: "Topview", code: "TT02", source: "tiktok", medium: "seller" },
-    { platform: "TikTok Ads", format: "Shopping Ads", code: "TT03", source: "tiktok", medium: "seller" }
-  ];
-
-  function init() {
-    const platformSelect = document.getElementById('platform');
-    const platforms = [...new Set(channelData.map(item => item.platform))];
-    platforms.forEach(p => {
-      let opt = new Option(p, p);
-      platformSelect.add(opt);
-    });
-    renderFormats();
-  }
-
-  function renderFormats() {
-    const platform = document.getElementById('platform').value;
-    const formatSelect = document.getElementById('format');
-    formatSelect.innerHTML = "";
-    
-    channelData.filter(item => item.platform === platform).forEach(f => {
-      let opt = new Option(f.format, f.format);
-      formatSelect.add(opt);
-    });
-    updateChannelData();
-  }
-
-  function updateChannelData() {
-    const p = document.getElementById('platform').value;
-    const f = document.getElementById('format').value;
-    const match = channelData.find(item => item.platform === p && item.format === f);
-    
-    document.getElementById('displayCode').innerText = match.code;
-    document.getElementById('displaySource').innerText = match.source;
-    document.getElementById('displayMedium').innerText = match.medium;
-  }
-
-  function generate() {
-    const base = document.getElementById('baseUrl').value.trim();
-    const shopId = document.getElementById('shopId').value.trim();
-    const country = document.getElementById('country').value;
-    const type = document.getElementById('campType').value;
-    const desc = document.getElementById('campDesc').value.trim().toLowerCase().replace(/\s+/g, '-');
-    const adContent = document.getElementById('adContent').value.trim();
-
-    if (!base || !shopId || !desc) {
-      alert("Vui lòng điền đủ các thông tin bắt buộc!");
-      return;
+    function init() {
+      const platformSelect = document.getElementById('platform');
+      const platforms = [...new Set(channelData.map(item => item.platform))];
+      platforms.forEach(p => { let opt = new Option(p, p); platformSelect.add(opt); });
+      renderFormats();
     }
 
-    const p = document.getElementById('platform').value;
-    const f = document.getElementById('format').value;
-    const channel = channelData.find(item => item.platform === p && item.format === f);
-
-    // 1. Tạo Campaign Name theo chuẩn: s[shopid]_[type]_[country]_[code]_[desc]
-    const campaignName = `s${shopId}_${type}_${country}_${channel.code}_${desc}`;
-    
-    // 2. Build Query Params
-    const urlParams = new URLSearchParams();
-    urlParams.append('utm_source', channel.source);
-    urlParams.append('utm_medium', channel.medium);
-    urlParams.append('utm_campaign', campaignName);
-    if (adContent) urlParams.append('utm_content', adContent);
-    urlParams.append('is_seller', 'true');
-
-    // 3. Web Link
-    const connector = base.includes('?') ? '&' : '?';
-    const webLink = base + connector + urlParams.toString();
-
-    // 4. Universal Link
-    let uniLink = "";
-    try {
-      const urlObj = new URL(base);
-      const uniParams = new URLSearchParams(urlParams);
-      uniParams.append('smtt', '9');
-      uniParams.append('deep_and_web', '1');
-      uniLink = `${urlObj.origin}/universal-link${urlObj.pathname}${urlObj.search ? urlObj.search + '&' : '?'}${uniParams.toString()}`;
-    } catch (e) {
-      uniLink = "URL không hợp lệ";
+    function renderFormats() {
+      const platform = document.getElementById('platform').value;
+      const formatSelect = document.getElementById('format');
+      formatSelect.innerHTML = "";
+      channelData.filter(item => item.platform === platform).forEach(f => { let opt = new Option(f.format, f.format); formatSelect.add(opt); });
+      updateChannelData();
     }
 
-    // Hiển thị
-    document.getElementById('resCampName').value = campaignName;
-    document.getElementById('resWebLink').value = webLink;
-    document.getElementById('resUniLink').value = uniLink;
-    document.getElementById('resultsArea').style.display = "block";
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  }
+    function updateChannelData() {
+      const p = document.getElementById('platform').value;
+      const f = document.getElementById('format').value;
+      const match = channelData.find(item => item.platform === p && item.format === f);
+      document.getElementById('displayCode').innerText = match.code;
+      document.getElementById('displaySource').innerText = match.source;
+      document.getElementById('displayMedium').innerText = match.medium;
+    }
 
-  function copyText(id) {
-    const el = document.getElementById(id);
-    el.select();
-    document.execCommand('copy');
-    alert("Đã copy!");
-  }
+    function generate() {
+      const base = document.getElementById('baseUrl').value.trim();
+      const shopId = document.getElementById('shopId').value.trim();
+      const country = document.getElementById('country').value;
+      const type = document.getElementById('campType').value;
+      const desc = document.getElementById('campDesc').value.trim().toLowerCase().replace(/\s+/g, '-');
+      const adContent = document.getElementById('adContent').value.trim();
+      if (!base || !shopId || !desc) { alert("Vui lòng điền đủ các thông tin bắt buộc!"); return; }
+      const p = document.getElementById('platform').value;
+      const f = document.getElementById('format').value;
+      const channel = channelData.find(item => item.platform === p && item.format === f);
+      const campaignName = `s${shopId}_${type}_${country}_${channel.code}_${desc}`;
+      const urlParams = new URLSearchParams();
+      urlParams.append('utm_source', channel.source);
+      urlParams.append('utm_medium', channel.medium);
+      urlParams.append('utm_campaign', campaignName);
+      if (adContent) urlParams.append('utm_content', adContent);
+      urlParams.append('is_seller', 'true');
+      const connector = base.includes('?') ? '&' : '?';
+      const webLink = base + connector + urlParams.toString();
+      let uniLink = "";
+      try {
+        const urlObj = new URL(base);
+        const uniParams = new URLSearchParams(urlParams);
+        uniParams.append('smtt', '9'); uniParams.append('deep_and_web', '1');
+        uniLink = `${urlObj.origin}/universal-link${urlObj.pathname}${urlObj.search ? urlObj.search + '&' : '?'}${uniParams.toString()}`;
+      } catch (e) { uniLink = "URL không hợp lệ"; }
+      document.getElementById('resCampName').value = campaignName;
+      document.getElementById('resWebLink').value = webLink;
+      document.getElementById('resUniLink').value = uniLink;
+      document.getElementById('resultsArea').style.display = "block";
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
 
-  function resetForm() {
-    if(confirm("Xóa toàn bộ dữ liệu đã nhập?")) location.reload();
-  }
+    function copyText(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.value).then(() => { alert("Đã copy!"); });
+    }
 
-  window.onload = init;
-</script>
+    function resetForm() { if (confirm("Xóa toàn bộ dữ liệu đã nhập?")) location.reload(); }
 
+    window.onload = init;
+
+    // Mobile menu
+    const menuToggle = document.getElementById('menuToggle');
+    const navList = document.getElementById('navList');
+    if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
+  </script>
 </body>
+
 </html>

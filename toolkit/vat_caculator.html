@@ -1,111 +1,59 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công cụ tính thuế VAT ngược</title>
+    <title>Tính Thuế VAT Ngược - Nguyễn Văn Hảo</title>
+    <meta name="description" content="Tính thuế VAT ngược nhanh chóng">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css?v=1.4">
+    <link rel="stylesheet" href="/css/style.css?v=1.5">
+    <link rel="stylesheet" href="/css/toolkit.css">
     <style>
-        :root {
-            --primary: #2563eb;
-            --bg: #f6f8fa;
-            --card: #ffffff;
-            --text: #1f2937;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+        .tax-options {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            background: var(--card);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 450px;
-        }
-
-        h2 {
-            text-align: center;
-            color: var(--primary);
-            margin-bottom: 25px;
-        }
-
-        .form-group { margin-bottom: 10px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 20px;
-            box-sizing: border-box;
-            outline: none;
-            text-align: right;
-            font-weight: 700;
-        }
-
-        .quick-select {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 12px;
             margin-bottom: 20px;
         }
 
-        .btn-chip {
-            padding: 6px 12px;
-            background: #fff;
-            border: 1px solid #d1d5db;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
+        .tax-option {
+            flex: 1;
         }
 
-        .btn-chip:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+        .tax-option input {
+            display: none;
         }
 
-        .tax-options {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .tax-option { flex: 1; }
-        .tax-option input { display: none; }
         .tax-option label {
             display: block;
             text-align: center;
-            padding: 10px;
-            background: #f3f4f6;
-            border-radius: 8px;
+            padding: 12px;
+            background: var(--color-white);
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 700;
-            border: 2px solid transparent;
+            transition: all 0.2s;
         }
 
-        .tax-option input:checked + label {
+        .tax-option input:checked+label {
             background: #eff6ff;
-            border-color: var(--primary);
-            color: var(--primary);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
         }
 
         .result-box {
             background: #f9fafb;
             padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            border: 2px solid var(--color-border);
         }
 
         .result-item {
@@ -114,148 +62,139 @@
             margin-bottom: 10px;
         }
 
-        .val { font-weight: 700; }
-        .val-total { font-size: 22px; color: #dc2626; }
-
-        .btn-copy {
-            width: 100%;
-            margin-top: 15px;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
+        .val {
             font-weight: 700;
-            cursor: pointer;
-            font-size: 16px;
         }
 
-        .btn-copy:active { opacity: 0.8; }
-        .hint { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+        .val-total {
+            font-size: 1.4rem;
+            color: #dc2626;
+        }
+
+        .tool-card-wrap input[type="text"] {
+            font-size: 1.3rem;
+            text-align: right;
+            font-weight: 700;
+        }
     </style>
 </head>
+
 <body>
-
-<div class="container">
-    <h2>Tính Thuế VAT Ngược</h2>
-
-    <div class="form-group">
-        <label>Số tiền sau thuế</label>
-        <input type="text" id="postTaxInput" placeholder="0" autocomplete="off">
-        <div class="hint">Chọn nhanh:</div>
-    </div>
-
-    <div class="quick-select">
-        <button class="btn-chip" onclick="setQuickValue(10000000)">10tr</button>
-        <button class="btn-chip" onclick="setQuickValue(15000000)">15tr</button>
-        <button class="btn-chip" onclick="setQuickValue(20000000)">20tr</button>
-        <button class="btn-chip" onclick="setQuickValue(25000000)">25tr</button>
-        <button class="btn-chip" onclick="setQuickValue(30000000)">30tr</button>
-    </div>
-
-    <label>Mức thuế</label>
-    <div class="tax-options">
-        <div class="tax-option">
-            <input type="radio" name="taxRate" id="rate8" value="0.08" checked>
-            <label for="rate8">8%</label>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
+            <nav class="nav">
+                <button class="menu-toggle" id="menuToggle"
+                    aria-label="Menu"><span></span><span></span><span></span></button>
+                <ul class="nav-list" id="navList">
+                    <li><a href="/" class="nav-link">Trang chủ</a></li>
+                    <li><a href="/blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
+                    <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+                    <li><a href="/toolkit/" class="nav-link">Công cụ</a></li>
+                </ul>
+                <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+            </nav>
         </div>
-        <div class="tax-option">
-            <input type="radio" name="taxRate" id="rate10" value="0.10">
-            <label for="rate10">10%</label>
+    </header>
+
+    <section class="tool-page">
+        <div class="container">
+            <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+            <div class="tool-header">
+                <h1>Tính Thuế VAT Ngược</h1>
+                <p>Tính nhanh giá gốc trước thuế từ giá sau thuế</p>
+            </div>
+
+            <div class="tool-card-wrap" style="max-width:500px;">
+                <div class="form-group">
+                    <label>Số tiền sau thuế</label>
+                    <input type="text" id="postTaxInput" placeholder="0" autocomplete="off">
+                </div>
+
+                <div class="chip-row">
+                    <button class="chip" onclick="setQuickValue(10000000)">10tr</button>
+                    <button class="chip" onclick="setQuickValue(15000000)">15tr</button>
+                    <button class="chip" onclick="setQuickValue(20000000)">20tr</button>
+                    <button class="chip" onclick="setQuickValue(25000000)">25tr</button>
+                    <button class="chip" onclick="setQuickValue(30000000)">30tr</button>
+                </div>
+
+                <label>Mức thuế</label>
+                <div class="tax-options">
+                    <div class="tax-option">
+                        <input type="radio" name="taxRate" id="rate8" value="0.08" checked>
+                        <label for="rate8">8%</label>
+                    </div>
+                    <div class="tax-option">
+                        <input type="radio" name="taxRate" id="rate10" value="0.10">
+                        <label for="rate10">10%</label>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <div class="result-item">
+                        <span>Tiền thuế:</span>
+                        <span id="taxAmount" class="val">0 đ</span>
+                    </div>
+                    <div class="result-item" style="border-top: 1px dashed #ccc; padding-top: 10px;">
+                        <span>Giá gốc (Trước thuế):</span>
+                        <span id="preTaxResult" class="val val-total">0 đ</span>
+                    </div>
+                </div>
+
+                <button class="tool-btn tool-btn-primary" id="btnCopy" onclick="copyValue()"
+                    style="width:100%; margin-top:16px;">Sao chép giá gốc</button>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <div class="result-box">
-        <div class="result-item">
-            <span>Tiền thuế:</span>
-            <span id="taxAmount" class="val">0 đ</span>
-        </div>
-        <div class="result-item" style="border-top: 1px dashed #ccc; padding-top: 10px;">
-            <span>Giá gốc (Trước thuế):</span>
-            <span id="preTaxResult" class="val val-total">0 đ</span>
-        </div>
-    </div>
+    <script>
+        const input = document.getElementById('postTaxInput');
+        const preTaxDisplay = document.getElementById('preTaxResult');
+        const taxDisplay = document.getElementById('taxAmount');
+        const rates = document.getElementsByName('taxRate');
+        const btnCopy = document.getElementById('btnCopy');
+        let currentPreTaxRaw = 0;
 
-    <button class="btn-copy" id="btnCopy" onclick="copyValue()">Sao chép giá gốc</button>
-</div>
+        function formatNumber(n) { return n.toString().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+        function setQuickValue(amount) { input.value = formatNumber(amount); calculate(); }
 
-<script>
-    const input = document.getElementById('postTaxInput');
-    const preTaxDisplay = document.getElementById('preTaxResult');
-    const taxDisplay = document.getElementById('taxAmount');
-    const rates = document.getElementsByName('taxRate');
-    const btnCopy = document.getElementById('btnCopy');
-
-    let currentPreTaxRaw = 0; // Biến lưu trữ số nguyên thuần túy để copy
-
-    function formatNumber(n) {
-        return n.toString().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    function setQuickValue(amount) {
-        input.value = formatNumber(amount);
-        calculate();
-    }
-
-    function calculate() {
-        let postTaxVal = parseFloat(input.value.replace(/,/g, ''));
-        
-        if (isNaN(postTaxVal)) {
-            preTaxDisplay.innerText = "0 đ";
-            taxDisplay.innerText = "0 đ";
-            currentPreTaxRaw = 0;
-            return;
+        function calculate() {
+            let postTaxVal = parseFloat(input.value.replace(/,/g, ''));
+            if (isNaN(postTaxVal)) { preTaxDisplay.innerText = "0 đ"; taxDisplay.innerText = "0 đ"; currentPreTaxRaw = 0; return; }
+            let selectedRate = 0;
+            for (const rate of rates) { if (rate.checked) { selectedRate = parseFloat(rate.value); break; } }
+            let preTax = postTaxVal / (1 + selectedRate);
+            currentPreTaxRaw = Math.round(preTax);
+            preTaxDisplay.innerText = currentPreTaxRaw.toLocaleString('vi-VN') + " đ";
+            taxDisplay.innerText = Math.round(postTaxVal - preTax).toLocaleString('vi-VN') + " đ";
         }
 
-        let selectedRate = 0;
-        for (const rate of rates) {
-            if (rate.checked) {
-                selectedRate = parseFloat(rate.value);
-                break;
-            }
-        }
-
-        // Tính toán
-        let preTax = postTaxVal / (1 + selectedRate);
-        currentPreTaxRaw = Math.round(preTax); // Lưu số nguyên thuần túy vào biến
-
-        // Hiển thị
-        preTaxDisplay.innerText = currentPreTaxRaw.toLocaleString('vi-VN') + " đ";
-        taxDisplay.innerText = Math.round(postTaxVal - preTax).toLocaleString('vi-VN') + " đ";
-    }
-
-    input.addEventListener('input', function() {
-        let cursorPosition = this.selectionStart;
-        let oldLength = this.value.length;
-        this.value = formatNumber(this.value);
-        let newLength = this.value.length;
-        cursorPosition = cursorPosition + (newLength - oldLength);
-        this.setSelectionRange(cursorPosition, cursorPosition);
-        calculate();
-    });
-
-    rates.forEach(rate => rate.addEventListener('change', calculate));
-
-    function copyValue() {
-        if (currentPreTaxRaw === 0) return;
-
-        // Copy biến số nguyên thuần túy (ví dụ: 9259259)
-        const textToCopy = currentPreTaxRaw.toString();
-
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            const originalText = btnCopy.innerText;
-            btnCopy.innerText = "Đã chép: " + textToCopy;
-            btnCopy.style.background = "#10b981";
-            
-            setTimeout(() => {
-                btnCopy.innerText = originalText;
-                btnCopy.style.background = "#2563eb";
-            }, 1500);
-        }).catch(err => {
-            alert('Không thể sao chép, vui lòng thử lại');
+        input.addEventListener('input', function () {
+            let cursorPosition = this.selectionStart; let oldLength = this.value.length;
+            this.value = formatNumber(this.value); let newLength = this.value.length;
+            cursorPosition = cursorPosition + (newLength - oldLength);
+            this.setSelectionRange(cursorPosition, cursorPosition); calculate();
         });
-    }
-</script>
 
+        rates.forEach(rate => rate.addEventListener('change', calculate));
+
+        function copyValue() {
+            if (currentPreTaxRaw === 0) return;
+            const textToCopy = currentPreTaxRaw.toString();
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = btnCopy.innerText; btnCopy.innerText = "Đã chép: " + textToCopy;
+                btnCopy.style.background = "#10b981";
+                setTimeout(() => { btnCopy.innerText = originalText; btnCopy.style.background = ""; }, 1500);
+            });
+        }
+
+        // Mobile menu
+        const menuToggle = document.getElementById('menuToggle');
+        const navList = document.getElementById('navList');
+        if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
+    </script>
 </body>
+
 </html>

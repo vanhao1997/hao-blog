@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ads Structure & UTM Builder Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Ads Structure & UTM Builder Pro - Nguyễn Văn Hảo</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css?v=1.4">
+    <link rel="stylesheet" href="/css/style.css?v=1.5">
+    <link rel="stylesheet" href="/css/toolkit.css">
     <style>
         :root {
             --brand: #2563eb;
@@ -261,313 +268,341 @@
 </head>
 
 <body>
-
-    <div class="container">
-        <div class="header">
-            <h1>Ads Structure Creator</h1>
-            <p>Tích hợp UTM Builder Pro & Preview</p>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="/" class="logo"><span class="logo-icon">H</span><span class="hide-mobile">Nguyễn Văn Hảo</span></a>
+            <nav class="nav">
+                <button class="menu-toggle" id="menuToggle"
+                    aria-label="Menu"><span></span><span></span><span></span></button>
+                <ul class="nav-list" id="navList">
+                    <li><a href="/" class="nav-link">Trang chủ</a></li>
+                    <li><a href="/blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="/about.html" class="nav-link">Giới thiệu</a></li>
+                    <li><a href="/contact.html" class="nav-link">Liên hệ</a></li>
+                    <li><a href="/toolkit/" class="nav-link">Công cụ</a></li>
+                </ul>
+                <a href="/contact.html" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+            </nav>
         </div>
+    </header>
 
-        <!-- 1. TÊN CHIẾN DỊCH -->
-        <div class="section-card">
-            <h2>1. Tên chiến dịch (Campaign Name)</h2>
-            <div class="grid">
-                <div class="input-group">
-                    <label>Tên dự án</label>
-                    <select id="c_project" onchange="toggleOther('c_project', 'c_project_other')">
-                        <option value="NTPTK">Na Tra Phong Thần Ký</option>
-                        <option value="VLTK">Võ Lâm Truyền Kỳ</option>
-                        <option value="TDG">Tây Du Gầy</option>
-                        <option value="Khác">Khác...</option>
-                    </select>
-                    <input type="text" id="c_project_other" class="hidden" placeholder="Dự án khác..."
-                        oninput="updateAll()">
-                </div>
-                <div class="input-group"><label>Tháng</label><input type="text" id="c_month" readonly></div>
-                <div class="input-group"><label>Ngày Set Ads</label><input type="text" id="c_today" readonly></div>
-                <div class="input-group">
-                    <label>Nền tảng</label>
-                    <select id="c_platform" onchange="updateAll()">
-                        <option value="Facebook">Facebook</option>
-                        <option value="Tiktok">Tiktok</option>
-                        <option value="Google">Google</option>
-                        <option value="Zalo">Zalo</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>Mục tiêu</label>
-                    <select id="c_objective" onchange="toggleOther('c_objective', 'c_obj_other')">
-                        <option value="Traffic">Traffic</option>
-                        <option value="Awareness">Awareness</option>
-                        <option value="Engagement">Engagement</option>
-                        <option value="View">View</option>
-                        <option value="Landing Page View">Landing Page View</option>
-                        <option value="App Install">App Install</option>
-                        <option value="Messenger">Messenger</option>
-                        <option value="SEM">SEM</option>
-                        <option value="GDN">GDN</option>
-                        <option value="Khác">Khác...</option>
-                    </select>
-                    <input type="text" id="c_obj_other" class="hidden" placeholder="Mục tiêu khác..."
-                        oninput="updateAll()">
-                </div>
-                <div class="input-group"><label>Thiết bị</label><select id="c_device" onchange="updateAll()">
-                        <option value="Tất cả">Tất cả</option>
-                        <option value="PC">PC</option>
-                        <option value="Mobile">Mobile</option>
-                    </select></div>
-                <div class="input-group"><label>Ngày kết thúc</label><input type="date" id="c_enddate"
-                        onchange="updateAll()"></div>
-                <div class="input-group"><label>Số dòng camp</label><input type="number" id="c_row" value="1" min="1"
-                        oninput="updateAll()"></div>
-                <div class="input-group"><label>Note</label><input type="text" id="c_note" placeholder="Note dự án"
-                        oninput="updateAll()"></div>
-            </div>
-            <div class="output-area"><span class="result-text" id="res_campaign">...</span><button class="btn-copy"
-                    onclick="copyText('res_campaign')">Sao chép</button></div>
-        </div>
+    <section class="tool-page">
+        <div class="container" style="max-width:1000px;">
+            <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
 
-        <!-- 2. TÊN NHÓM QUẢNG CÁO -->
-        <div class="section-card">
-            <h2>2. Tên nhóm quảng cáo (Ad Set Name)</h2>
-            <div class="grid">
-                <div class="input-group">
-                    <label>Quốc gia / Khu vực</label>
-                    <select id="as_country" onchange="toggleOther('as_country', 'as_country_other')">
-                        <option value="Việt Nam">Việt Nam</option>
-                        <option value="Khác">Khác...</option>
-                    </select>
-                    <input type="text" id="as_country_other" class="hidden" placeholder="Khu vực khác..."
-                        oninput="updateAll()" style="margin-top:10px">
-                </div>
-                <div class="input-group"><label>Độ tuổi</label>
-                    <div class="age-row"><input type="number" id="as_age_start" value="18" oninput="updateAll()"
-                            style="width:70px"> <span>-</span> <input type="number" id="as_age_end" value="34"
-                            oninput="updateAll()" style="width:70px"></div>
-                </div>
-                <div class="input-group"><label>Giới tính</label><select id="as_gender" onchange="updateAll()">
-                        <option value="Giới tính:Tất cả">Tất cả</option>
-                        <option value="Nam">Nam</option>
-                        <option value="Nữ">Nữ</option>
-                    </select></div>
-                <div class="input-group"><label>Thiết bị</label><select id="as_device" onchange="updateAll()">
-                        <option value="Thiết bị:Tất cả">Tất cả</option>
-                        <option value="PC">PC</option>
-                        <option value="Mobile">Mobile</option>
-                        <option value="Mobile:Android">Android</option>
-                        <option value="Mobile:IOS">IOS</option>
-                    </select></div>
-                <div class="input-group"><label>Target</label><input type="text" id="as_audience"
-                        placeholder="Tên đối tượng" oninput="updateAll()"></div>
-                <div class="input-group"><label>Note</label><input type="text" id="as_note" placeholder="Note nhóm"
-                        oninput="updateAll()"></div>
-            </div>
-            <div class="output-area"><span class="result-text" id="res_adset">...</span><button class="btn-copy"
-                    onclick="copyText('res_adset')">Sao chép</button></div>
-        </div>
-
-        <!-- 3. TÊN QUẢNG CÁO -->
-        <div class="section-card">
-            <h2>3. Tên quảng cáo (Ad Name)</h2>
-            <div class="grid">
-                <div class="input-group"><label>CONTENT ANGLE</label><input type="text" id="a_angle"
-                        placeholder="Ví dụ: SALE50" oninput="updateAll()"></div>
-                <div class="input-group">
-                    <label>Định dạng (Format)</label>
-                    <select id="a_format" onchange="toggleOther('a_format', 'a_format_other')">
-                        <option value="Banner">Banner</option>
-                        <option value="Video">Video</option>
-                        <option value="Carousel">Carousel</option>
-                        <option value="Khác">Khác...</option>
-                    </select>
-                    <input type="text" id="a_format_other" class="hidden" placeholder="Định dạng khác..."
-                        oninput="updateAll()">
-                </div>
-                <div class="input-group"><label>ID Post</label><input type="text" id="a_id" placeholder="ID"
-                        oninput="updateAll()"></div>
-
-                <div class="input-group">
-                    <label>UTM (Link đích)</label>
-                    <input type="text" id="a_utm" placeholder="Dán link hoặc dùng công cụ" oninput="updateAll()">
-                    <div class="utm-toggle-btn"
-                        onclick="document.getElementById('utm_panel').classList.toggle('active')">Công cụ tạo UTM nhanh
-                    </div>
-                </div>
-
-                <div class="input-group"><label>Note</label><input type="text" id="a_note" placeholder="Note quảng cáo"
-                        oninput="updateAll()"></div>
+            <div class="header" style="text-align:center; margin-bottom:40px;">
+                <h1 style="font-weight:700; font-size:2rem; color:var(--brand); margin:0;">Ads Structure Creator</h1>
+                <p>Tích hợp UTM Builder Pro & Preview</p>
             </div>
 
-            <!-- BẢNG TẠO UTM MINI -->
-            <div class="utm-builder-panel" id="utm_panel">
-                <div class="utm-grid">
-                    <div class="utm-full"><span class="mini-label">URL Gốc</span><input type="text" id="u_base"
-                            class="mini-input" placeholder="https://example.com" oninput="updateUtmPreview()"></div>
-                    <div>
-                        <span class="mini-label">Source</span>
-                        <select id="u_src_sel" class="mini-input"
-                            onchange="toggleMiniOther('u_src_sel', 'u_src_cus'); updateUtmPreview();">
-                            <option value="facebook">Facebook</option>
-                            <option value="google">Google</option>
-                            <option value="tiktok">Tiktok</option>
-                            <option value="zalo">Zalo</option>
-                            <option value="Khác">Khác</option>
+            <!-- 1. TÊN CHIẾN DỊCH -->
+            <div class="section-card">
+                <h2>1. Tên chiến dịch (Campaign Name)</h2>
+                <div class="grid">
+                    <div class="input-group">
+                        <label>Tên dự án</label>
+                        <select id="c_project" onchange="toggleOther('c_project', 'c_project_other')">
+                            <option value="NTPTK">Na Tra Phong Thần Ký</option>
+                            <option value="VLTK">Võ Lâm Truyền Kỳ</option>
+                            <option value="TDG">Tây Du Gầy</option>
+                            <option value="Khác">Khác...</option>
                         </select>
-                        <input type="text" id="u_src_cus" class="mini-input hidden" placeholder="Nguồn khác"
-                            oninput="updateUtmPreview()">
+                        <input type="text" id="c_project_other" class="hidden" placeholder="Dự án khác..."
+                            oninput="updateAll()">
                     </div>
-                    <div>
-                        <span class="mini-label">Medium</span>
-                        <select id="u_med_sel" class="mini-input"
-                            onchange="toggleMiniOther('u_med_sel', 'u_med_cus'); updateUtmPreview();">
+                    <div class="input-group"><label>Tháng</label><input type="text" id="c_month" readonly></div>
+                    <div class="input-group"><label>Ngày Set Ads</label><input type="text" id="c_today" readonly></div>
+                    <div class="input-group">
+                        <label>Nền tảng</label>
+                        <select id="c_platform" onchange="updateAll()">
+                            <option value="Facebook">Facebook</option>
+                            <option value="Tiktok">Tiktok</option>
+                            <option value="Google">Google</option>
+                            <option value="Zalo">Zalo</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Mục tiêu</label>
+                        <select id="c_objective" onchange="toggleOther('c_objective', 'c_obj_other')">
                             <option value="Traffic">Traffic</option>
+                            <option value="Awareness">Awareness</option>
+                            <option value="Engagement">Engagement</option>
+                            <option value="View">View</option>
                             <option value="Landing Page View">Landing Page View</option>
                             <option value="App Install">App Install</option>
+                            <option value="Messenger">Messenger</option>
                             <option value="SEM">SEM</option>
                             <option value="GDN">GDN</option>
-                            <option value="Awareness">Awareness</option>
-                            <option value="Khác">Khác</option>
+                            <option value="Khác">Khác...</option>
                         </select>
-                        <input type="text" id="u_med_cus" class="mini-input hidden" placeholder="Hình thức khác"
-                            oninput="updateUtmPreview()">
+                        <input type="text" id="c_obj_other" class="hidden" placeholder="Mục tiêu khác..."
+                            oninput="updateAll()">
                     </div>
-                    <div><span class="mini-label">Campaign</span><input type="text" id="u_cam" class="mini-input"
-                            placeholder="spring_sale" oninput="updateUtmPreview()"></div>
-                    <div><span class="mini-label">Term</span><input type="text" id="u_term" class="mini-input"
-                            placeholder="keyword" oninput="updateUtmPreview()"></div>
-                    <div class="utm-full"><span class="mini-label">Content (Sẽ tự lọc dấu)</span><input type="text"
-                            id="u_con" class="mini-input" placeholder="HÉ LỘ SỰ KIỆN" oninput="updateUtmPreview()">
-                    </div>
+                    <div class="input-group"><label>Thiết bị</label><select id="c_device" onchange="updateAll()">
+                            <option value="Tất cả">Tất cả</option>
+                            <option value="PC">PC</option>
+                            <option value="Mobile">Mobile</option>
+                        </select></div>
+                    <div class="input-group"><label>Ngày kết thúc</label><input type="date" id="c_enddate"
+                            onchange="updateAll()"></div>
+                    <div class="input-group"><label>Số dòng camp</label><input type="number" id="c_row" value="1"
+                            min="1" oninput="updateAll()"></div>
+                    <div class="input-group"><label>Note</label><input type="text" id="c_note" placeholder="Note dự án"
+                            oninput="updateAll()"></div>
                 </div>
-
-                <span class="mini-label" style="margin-top: 10px;">Preview UTM:</span>
-                <div class="utm-preview-box" id="u_preview">https://example.com</div>
-
-                <button class="btn-apply-utm" onclick="applyUtm()">Áp dụng link vào UTM Ads</button>
+                <div class="output-area"><span class="result-text" id="res_campaign">...</span><button class="btn-copy"
+                        onclick="copyText('res_campaign')">Sao chép</button></div>
             </div>
 
-            <div class="output-area"><span class="result-text" id="res_ad">...</span><button class="btn-copy"
-                    onclick="copyText('res_ad')">Sao chép</button></div>
+            <!-- 2. TÊN NHÓM QUẢNG CÁO -->
+            <div class="section-card">
+                <h2>2. Tên nhóm quảng cáo (Ad Set Name)</h2>
+                <div class="grid">
+                    <div class="input-group">
+                        <label>Quốc gia / Khu vực</label>
+                        <select id="as_country" onchange="toggleOther('as_country', 'as_country_other')">
+                            <option value="Việt Nam">Việt Nam</option>
+                            <option value="Khác">Khác...</option>
+                        </select>
+                        <input type="text" id="as_country_other" class="hidden" placeholder="Khu vực khác..."
+                            oninput="updateAll()" style="margin-top:10px">
+                    </div>
+                    <div class="input-group"><label>Độ tuổi</label>
+                        <div class="age-row"><input type="number" id="as_age_start" value="18" oninput="updateAll()"
+                                style="width:70px"> <span>-</span> <input type="number" id="as_age_end" value="34"
+                                oninput="updateAll()" style="width:70px"></div>
+                    </div>
+                    <div class="input-group"><label>Giới tính</label><select id="as_gender" onchange="updateAll()">
+                            <option value="Giới tính:Tất cả">Tất cả</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select></div>
+                    <div class="input-group"><label>Thiết bị</label><select id="as_device" onchange="updateAll()">
+                            <option value="Thiết bị:Tất cả">Tất cả</option>
+                            <option value="PC">PC</option>
+                            <option value="Mobile">Mobile</option>
+                            <option value="Mobile:Android">Android</option>
+                            <option value="Mobile:IOS">IOS</option>
+                        </select></div>
+                    <div class="input-group"><label>Target</label><input type="text" id="as_audience"
+                            placeholder="Tên đối tượng" oninput="updateAll()"></div>
+                    <div class="input-group"><label>Note</label><input type="text" id="as_note" placeholder="Note nhóm"
+                            oninput="updateAll()"></div>
+                </div>
+                <div class="output-area"><span class="result-text" id="res_adset">...</span><button class="btn-copy"
+                        onclick="copyText('res_adset')">Sao chép</button></div>
+            </div>
+
+            <!-- 3. TÊN QUẢNG CÁO -->
+            <div class="section-card">
+                <h2>3. Tên quảng cáo (Ad Name)</h2>
+                <div class="grid">
+                    <div class="input-group"><label>CONTENT ANGLE</label><input type="text" id="a_angle"
+                            placeholder="Ví dụ: SALE50" oninput="updateAll()"></div>
+                    <div class="input-group">
+                        <label>Định dạng (Format)</label>
+                        <select id="a_format" onchange="toggleOther('a_format', 'a_format_other')">
+                            <option value="Banner">Banner</option>
+                            <option value="Video">Video</option>
+                            <option value="Carousel">Carousel</option>
+                            <option value="Khác">Khác...</option>
+                        </select>
+                        <input type="text" id="a_format_other" class="hidden" placeholder="Định dạng khác..."
+                            oninput="updateAll()">
+                    </div>
+                    <div class="input-group"><label>ID Post</label><input type="text" id="a_id" placeholder="ID"
+                            oninput="updateAll()"></div>
+
+                    <div class="input-group">
+                        <label>UTM (Link đích)</label>
+                        <input type="text" id="a_utm" placeholder="Dán link hoặc dùng công cụ" oninput="updateAll()">
+                        <div class="utm-toggle-btn"
+                            onclick="document.getElementById('utm_panel').classList.toggle('active')">Công cụ tạo UTM
+                            nhanh
+                        </div>
+                    </div>
+
+                    <div class="input-group"><label>Note</label><input type="text" id="a_note"
+                            placeholder="Note quảng cáo" oninput="updateAll()"></div>
+                </div>
+
+                <!-- BẢNG TẠO UTM MINI -->
+                <div class="utm-builder-panel" id="utm_panel">
+                    <div class="utm-grid">
+                        <div class="utm-full"><span class="mini-label">URL Gốc</span><input type="text" id="u_base"
+                                class="mini-input" placeholder="https://example.com" oninput="updateUtmPreview()"></div>
+                        <div>
+                            <span class="mini-label">Source</span>
+                            <select id="u_src_sel" class="mini-input"
+                                onchange="toggleMiniOther('u_src_sel', 'u_src_cus'); updateUtmPreview();">
+                                <option value="facebook">Facebook</option>
+                                <option value="google">Google</option>
+                                <option value="tiktok">Tiktok</option>
+                                <option value="zalo">Zalo</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                            <input type="text" id="u_src_cus" class="mini-input hidden" placeholder="Nguồn khác"
+                                oninput="updateUtmPreview()">
+                        </div>
+                        <div>
+                            <span class="mini-label">Medium</span>
+                            <select id="u_med_sel" class="mini-input"
+                                onchange="toggleMiniOther('u_med_sel', 'u_med_cus'); updateUtmPreview();">
+                                <option value="Traffic">Traffic</option>
+                                <option value="Landing Page View">Landing Page View</option>
+                                <option value="App Install">App Install</option>
+                                <option value="SEM">SEM</option>
+                                <option value="GDN">GDN</option>
+                                <option value="Awareness">Awareness</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                            <input type="text" id="u_med_cus" class="mini-input hidden" placeholder="Hình thức khác"
+                                oninput="updateUtmPreview()">
+                        </div>
+                        <div><span class="mini-label">Campaign</span><input type="text" id="u_cam" class="mini-input"
+                                placeholder="spring_sale" oninput="updateUtmPreview()"></div>
+                        <div><span class="mini-label">Term</span><input type="text" id="u_term" class="mini-input"
+                                placeholder="keyword" oninput="updateUtmPreview()"></div>
+                        <div class="utm-full"><span class="mini-label">Content (Sẽ tự lọc dấu)</span><input type="text"
+                                id="u_con" class="mini-input" placeholder="HÉ LỘ SỰ KIỆN" oninput="updateUtmPreview()">
+                        </div>
+                    </div>
+
+                    <span class="mini-label" style="margin-top: 10px;">Preview UTM:</span>
+                    <div class="utm-preview-box" id="u_preview">https://example.com</div>
+
+                    <button class="btn-apply-utm" onclick="applyUtm()">Áp dụng link vào UTM Ads</button>
+                </div>
+
+                <div class="output-area"><span class="result-text" id="res_ad">...</span><button class="btn-copy"
+                        onclick="copyText('res_ad')">Sao chép</button></div>
+            </div>
         </div>
-    </div>
 
+        <script>
+            const englishMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+            window.onload = function () {
+                const today = new Date();
+                document.getElementById('c_month').value = englishMonths[today.getMonth()];
+                const dd = String(today.getDate()).padStart(2, '0');
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const yyyy = today.getFullYear();
+                document.getElementById('c_today').value = `${dd}/${mm}/${yyyy}`;
+                const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                document.getElementById('c_enddate').value = `${lastDay.getFullYear()}-${String(lastDay.getMonth() + 1).padStart(2, '0')}-${String(lastDay.getDate()).padStart(2, '0')}`;
+                updateAll();
+                updateUtmPreview();
+            };
+
+            function toggleOther(selId, cusId) {
+                const sel = document.getElementById(selId);
+                const cus = document.getElementById(cusId);
+                cus.classList.toggle('hidden', sel.value !== 'Khác');
+                if (sel.value === 'Khác') cus.focus();
+                updateAll();
+            }
+
+            function toggleMiniOther(selId, cusId) {
+                const sel = document.getElementById(selId);
+                const cus = document.getElementById(cusId);
+                cus.classList.toggle('hidden', sel.value !== 'Khác');
+            }
+
+            function cleanStr(str) {
+                if (!str) return "";
+                return str.toLowerCase().normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .replace(/[đĐ]/g, "d")
+                    .replace(/[^a-z0-9\s]/g, "")
+                    .trim()
+                    .replace(/\s+/g, "_");
+            }
+
+            // Hàm tạo URL phục vụ cho cả Preview và Apply
+            function generateLink() {
+                const base = document.getElementById('u_base').value.trim() || "https://example.com";
+                const src = document.getElementById('u_src_sel').value === 'Khác' ? document.getElementById('u_src_cus').value.trim() : document.getElementById('u_src_sel').value;
+                const med_raw = document.getElementById('u_med_sel').value === 'Khác' ? document.getElementById('u_med_cus').value.trim() : document.getElementById('u_med_sel').value;
+                const med = cleanStr(med_raw);
+                const cam = document.getElementById('u_cam').value.trim();
+                const term = document.getElementById('u_term').value.trim();
+                const con = cleanStr(document.getElementById('u_con').value.trim());
+
+                if (!src || !med) return base;
+
+                const params = [`utm_source=${encodeURIComponent(src)}`, `utm_medium=${encodeURIComponent(med)}`];
+                if (cam) params.push(`utm_campaign=${encodeURIComponent(cam)}`);
+                if (term) params.push(`utm_term=${encodeURIComponent(term)}`);
+                if (con) params.push(`utm_content=${encodeURIComponent(con)}`);
+
+                return base + (base.includes('?') ? '&' : '?') + params.join('&');
+            }
+
+            function updateUtmPreview() {
+                document.getElementById('u_preview').innerText = generateLink();
+            }
+
+            function applyUtm() {
+                document.getElementById('a_utm').value = generateLink();
+                document.getElementById('utm_panel').classList.remove('active');
+                updateAll();
+            }
+
+            function updateAll() {
+                // --- 1. CHIẾN DỊCH ---
+                let proj = document.getElementById('c_project').value;
+                if (proj === 'Khác') proj = document.getElementById('c_project_other').value.trim() || "Project:*";
+                const month = document.getElementById('c_month').value;
+                const today = document.getElementById('c_today').value;
+                const plat = document.getElementById('c_platform').value;
+                let obj = document.getElementById('c_objective').value;
+                if (obj === 'Khác') obj = document.getElementById('c_obj_other').value.trim() || "Objective:*";
+                const dev = document.getElementById('c_device').value;
+                const end = document.getElementById('c_enddate').value ? document.getElementById('c_enddate').value.split('-').reverse().join('/') : "EndDate:*";
+                const row = document.getElementById('c_row').value || "1";
+                const cNote = document.getElementById('c_note').value.trim() || "Note:*";
+                const finalCamp = [proj, month, today, plat, obj, dev, end, `${proj}-CAMP-${row}`, cNote].join('_');
+                document.getElementById('res_campaign').innerText = finalCamp;
+
+                // --- 2. NHÓM ---
+                let country = document.getElementById('as_country').value;
+                if (country === 'Khác') country = document.getElementById('as_country_other').value.trim() || "Country:*";
+                const age = `${document.getElementById('as_age_start').value}-${document.getElementById('as_age_end').value}`;
+                const gen = document.getElementById('as_gender').value;
+                const asDev = document.getElementById('as_device').value;
+                const tar = document.getElementById('as_audience').value.trim() ? `Target:${document.getElementById('as_audience').value.trim()}` : "Target:*";
+                const asNote = document.getElementById('as_note').value.trim() || "Note:*";
+                const finalAdset = [finalCamp, country, age, gen, asDev, tar, asNote].join('_');
+                document.getElementById('res_adset').innerText = finalAdset;
+
+                // --- 3. QUẢNG CÁO ---
+                const angle = document.getElementById('a_angle').value.trim() || "Angle:*";
+                let format = document.getElementById('a_format').value;
+                if (format === 'Khác') format = document.getElementById('a_format_other').value.trim() || "Format:*";
+                const aid = document.getElementById('a_id').value.trim() || "ID:*";
+                const utm = document.getElementById('a_utm').value.trim() ? `UTM:${document.getElementById('a_utm').value.trim()}` : "UTM:*";
+                const aNote = document.getElementById('a_note').value.trim() || "Note:*";
+                const finalAd = [finalCamp, angle, format, aid, utm, aNote].join('_');
+                document.getElementById('res_ad').innerText = finalAd;
+            }
+
+            function copyText(id) {
+                const text = document.getElementById(id).innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = event.target;
+                    const old = btn.innerText;
+                    btn.innerText = "Đã chép!"; btn.style.background = "#10b981";
+                    setTimeout(() => { btn.innerText = old; btn.style.background = "#2563eb"; }, 1500);
+                });
+            }
+        </script>
+        </div>
+    </section>
     <script>
-        const englishMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-        window.onload = function () {
-            const today = new Date();
-            document.getElementById('c_month').value = englishMonths[today.getMonth()];
-            const dd = String(today.getDate()).padStart(2, '0');
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const yyyy = today.getFullYear();
-            document.getElementById('c_today').value = `${dd}/${mm}/${yyyy}`;
-            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            document.getElementById('c_enddate').value = `${lastDay.getFullYear()}-${String(lastDay.getMonth() + 1).padStart(2, '0')}-${String(lastDay.getDate()).padStart(2, '0')}`;
-            updateAll();
-            updateUtmPreview();
-        };
-
-        function toggleOther(selId, cusId) {
-            const sel = document.getElementById(selId);
-            const cus = document.getElementById(cusId);
-            cus.classList.toggle('hidden', sel.value !== 'Khác');
-            if (sel.value === 'Khác') cus.focus();
-            updateAll();
-        }
-
-        function toggleMiniOther(selId, cusId) {
-            const sel = document.getElementById(selId);
-            const cus = document.getElementById(cusId);
-            cus.classList.toggle('hidden', sel.value !== 'Khác');
-        }
-
-        function cleanStr(str) {
-            if (!str) return "";
-            return str.toLowerCase().normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .replace(/[đĐ]/g, "d")
-                .replace(/[^a-z0-9\s]/g, "")
-                .trim()
-                .replace(/\s+/g, "_");
-        }
-
-        // Hàm tạo URL phục vụ cho cả Preview và Apply
-        function generateLink() {
-            const base = document.getElementById('u_base').value.trim() || "https://example.com";
-            const src = document.getElementById('u_src_sel').value === 'Khác' ? document.getElementById('u_src_cus').value.trim() : document.getElementById('u_src_sel').value;
-            const med_raw = document.getElementById('u_med_sel').value === 'Khác' ? document.getElementById('u_med_cus').value.trim() : document.getElementById('u_med_sel').value;
-            const med = cleanStr(med_raw);
-            const cam = document.getElementById('u_cam').value.trim();
-            const term = document.getElementById('u_term').value.trim();
-            const con = cleanStr(document.getElementById('u_con').value.trim());
-
-            if (!src || !med) return base;
-
-            const params = [`utm_source=${encodeURIComponent(src)}`, `utm_medium=${encodeURIComponent(med)}`];
-            if (cam) params.push(`utm_campaign=${encodeURIComponent(cam)}`);
-            if (term) params.push(`utm_term=${encodeURIComponent(term)}`);
-            if (con) params.push(`utm_content=${encodeURIComponent(con)}`);
-
-            return base + (base.includes('?') ? '&' : '?') + params.join('&');
-        }
-
-        function updateUtmPreview() {
-            document.getElementById('u_preview').innerText = generateLink();
-        }
-
-        function applyUtm() {
-            document.getElementById('a_utm').value = generateLink();
-            document.getElementById('utm_panel').classList.remove('active');
-            updateAll();
-        }
-
-        function updateAll() {
-            // --- 1. CHIẾN DỊCH ---
-            let proj = document.getElementById('c_project').value;
-            if (proj === 'Khác') proj = document.getElementById('c_project_other').value.trim() || "Project:*";
-            const month = document.getElementById('c_month').value;
-            const today = document.getElementById('c_today').value;
-            const plat = document.getElementById('c_platform').value;
-            let obj = document.getElementById('c_objective').value;
-            if (obj === 'Khác') obj = document.getElementById('c_obj_other').value.trim() || "Objective:*";
-            const dev = document.getElementById('c_device').value;
-            const end = document.getElementById('c_enddate').value ? document.getElementById('c_enddate').value.split('-').reverse().join('/') : "EndDate:*";
-            const row = document.getElementById('c_row').value || "1";
-            const cNote = document.getElementById('c_note').value.trim() || "Note:*";
-            const finalCamp = [proj, month, today, plat, obj, dev, end, `${proj}-CAMP-${row}`, cNote].join('_');
-            document.getElementById('res_campaign').innerText = finalCamp;
-
-            // --- 2. NHÓM ---
-            let country = document.getElementById('as_country').value;
-            if (country === 'Khác') country = document.getElementById('as_country_other').value.trim() || "Country:*";
-            const age = `${document.getElementById('as_age_start').value}-${document.getElementById('as_age_end').value}`;
-            const gen = document.getElementById('as_gender').value;
-            const asDev = document.getElementById('as_device').value;
-            const tar = document.getElementById('as_audience').value.trim() ? `Target:${document.getElementById('as_audience').value.trim()}` : "Target:*";
-            const asNote = document.getElementById('as_note').value.trim() || "Note:*";
-            const finalAdset = [finalCamp, country, age, gen, asDev, tar, asNote].join('_');
-            document.getElementById('res_adset').innerText = finalAdset;
-
-            // --- 3. QUẢNG CÁO ---
-            const angle = document.getElementById('a_angle').value.trim() || "Angle:*";
-            let format = document.getElementById('a_format').value;
-            if (format === 'Khác') format = document.getElementById('a_format_other').value.trim() || "Format:*";
-            const aid = document.getElementById('a_id').value.trim() || "ID:*";
-            const utm = document.getElementById('a_utm').value.trim() ? `UTM:${document.getElementById('a_utm').value.trim()}` : "UTM:*";
-            const aNote = document.getElementById('a_note').value.trim() || "Note:*";
-            const finalAd = [finalCamp, angle, format, aid, utm, aNote].join('_');
-            document.getElementById('res_ad').innerText = finalAd;
-        }
-
-        function copyText(id) {
-            const text = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = event.target;
-                const old = btn.innerText;
-                btn.innerText = "Đã chép!"; btn.style.background = "#10b981";
-                setTimeout(() => { btn.innerText = old; btn.style.background = "#2563eb"; }, 1500);
-            });
-        }
+        const menuToggle = document.getElementById('menuToggle');
+        const navList = document.getElementById('navList');
+        if (menuToggle) menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); menuToggle.classList.toggle('active'); });
     </script>
 </body>
 

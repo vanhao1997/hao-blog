@@ -1,0 +1,282 @@
+/* ===== Toolkit Shared Styles ===== */
+
+/* Page layout */
+.tool-page {
+    padding: 100px 0 60px;
+    min-height: 100vh;
+}
+
+/* Back link */
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: opacity 0.2s;
+}
+
+.back-link:hover {
+    opacity: 0.7;
+}
+
+/* Tool header */
+.tool-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.tool-header .badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.tool-header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.tool-header p {
+    color: var(--color-gray);
+    font-size: 1.05rem;
+}
+
+/* Tool card / container */
+.tool-card-wrap {
+    background: var(--color-white);
+    border: 2px solid var(--color-border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 4px 4px 0 var(--color-border);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.tool-card-wrap.wide {
+    max-width: 1000px;
+}
+
+/* Form elements */
+.tool-card-wrap label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-black);
+}
+
+.tool-card-wrap label small {
+    font-weight: 400;
+    color: var(--color-gray);
+}
+
+.tool-card-wrap input[type="text"],
+.tool-card-wrap input[type="number"],
+.tool-card-wrap input[type="url"],
+.tool-card-wrap input[type="email"],
+.tool-card-wrap textarea,
+.tool-card-wrap select {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    outline: none;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: var(--color-white);
+    color: var(--color-black);
+    transition: border-color 0.2s;
+}
+
+.tool-card-wrap input:focus,
+.tool-card-wrap textarea:focus,
+.tool-card-wrap select:focus {
+    border-color: var(--color-primary);
+}
+
+.tool-card-wrap textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Button row */
+.tool-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+/* Buttons */
+.tool-btn {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 2px solid var(--color-black);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tool-btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+}
+
+.tool-btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.tool-btn-success {
+    background: #22C55E;
+    color: #fff;
+    border-color: #22C55E;
+}
+
+.tool-btn-success:hover {
+    background: #16A34A;
+    border-color: #16A34A;
+}
+
+.tool-btn-danger {
+    background: #EF4444;
+    color: #fff;
+    border-color: #EF4444;
+}
+
+.tool-btn-danger:hover {
+    background: #DC2626;
+    border-color: #DC2626;
+}
+
+.tool-btn-outline {
+    background: transparent;
+    color: var(--color-black);
+}
+
+.tool-btn-outline:hover {
+    background: var(--color-black);
+    color: var(--color-white);
+}
+
+/* Result box */
+.tool-result {
+    background: #f0fdf4;
+    border: 2px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    word-break: break-all;
+}
+
+.tool-result-neutral {
+    background: var(--color-bg-light, #f8fafc);
+    border-color: var(--color-border);
+}
+
+/* Grid layout for multi-column tools */
+.tool-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.tool-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 768px) {
+
+    .tool-grid,
+    .tool-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .tool-card-wrap {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .tool-page {
+        padding: 80px 0 40px;
+    }
+}
+
+/* Section title inside tool */
+.tool-section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--color-border);
+}
+
+/* Compact form group */
+.form-group {
+    margin-bottom: 16px;
+}
+
+/* Output label */
+.output-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* Hidden utility */
+.hidden {
+    display: none !important;
+}
+
+/* Quick chips */
+.chip-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.chip {
+    padding: 6px 14px;
+    background: var(--color-white);
+    border: 2px solid var(--color-border);
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.chip:hover,
+.chip.active {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: #eff6ff;
+}
+
+/* Banner title for backward compat */
+.tool-banner {
+    background: var(--color-primary);
+    color: #fff;
+    text-align: center;
+    padding: 16px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
