@@ -447,10 +447,15 @@ Output Format:
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
+                    generationConfig: { temperature: 0.1 }
                 }),
             });
-            if (!response.ok) throw new Error("API Connection Failed");
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                const errMsg = errData?.error?.message || `HTTP ${response.status}`;
+                console.error('Gemini API Error:', errData);
+                throw new Error(`Gemini API: ${errMsg}`);
+            }
             const data = await response.json();
             const contentString = data.candidates[0].content.parts[0].text.trim();
             const firstBracket = contentString.indexOf('{');
