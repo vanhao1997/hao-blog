@@ -372,6 +372,11 @@
     <script src="../js/api.js?v=2"></script>
     <script src="js/admin.js?v=2"></script>
     <script>
+        // Auth guard — redirect to login if not authenticated
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+        });
+
         // Banner Generator Logic
         const canvas = document.getElementById('bannerCanvas');
         const ctx = canvas.getContext('2d');
