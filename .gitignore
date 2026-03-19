@@ -1,0 +1,16 @@
+# Database dumps
+*.sql
+
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Agent brain (local only)
+.gemini/

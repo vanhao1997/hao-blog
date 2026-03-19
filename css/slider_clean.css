@@ -1,0 +1,81 @@
+/* ============================================
+   HERO SLIDER
+   ============================================ */
+.hero-slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    /* 3D Perspective for Tilt Effect */
+    perspective: 1000px;
+    z-index: 10;
+}
+
+.hero-slider {
+    position: relative;
+    width: 100%;
+    /* Ensure child slides can be 3D transformed */
+    transform-style: preserve-3d;
+}
+
+.hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Default Initial State (Hidden) */
+    transform: rotateY(-10deg) rotateX(5deg) translateY(50px) scale(0.9);
+    transform-origin: center center;
+}
+
+.hero-slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+    /* Active State (Visible & Tilted) */
+    /* "Nghiêng nghiêng" effect: Rotate Y and X slightly */
+    transform: rotateY(-12deg) rotateX(10deg) translateY(0) scale(1);
+    box-shadow: -20px 20px 60px rgba(0, 0, 0, 0.15);
+    /* Deep shadow for 3D feel */
+}
+
+/* Ensure the card looks good in 3D */
+.hero-slide .post-card {
+    height: auto;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.hero-slide .post-card-image {
+    height: 200px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Floating animation for the active slide to make it feel alive */
+@keyframes float-hero {
+
+    0%,
+    100% {
+        transform: rotateY(-12deg) rotateX(10deg) translateY(0) scale(1);
+    }
+
+    50% {
+        transform: rotateY(-10deg) rotateX(8deg) translateY(-10px) scale(1);
+    }
+}
+
+.hero-slide.active .post-card {
+    animation: float-hero 6s ease-in-out infinite;
+}

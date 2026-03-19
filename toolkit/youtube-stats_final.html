@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Phân tích Kênh YouTube</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; padding: 20px; max-width: 1000px; margin: auto; color: #333; }
+        .container { background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #c00; }
+        .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
+        input[type="text"] { flex-grow: 1; padding: 10px; min-width: 300px; border: 1px solid #ccc; border-radius: 4px; }
+        input[type="date"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 18px; cursor: pointer; background-color: #FF0000; color: white; border: none; border-radius: 4px; font-weight: bold; }
+        button:hover { background-color: #c00; }
+        #status { margin-bottom: 15px; font-size: 0.95em; color: #555; min-height: 24px; }
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #c00;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            vertical-align: middle;
+            animation: spin 1s linear infinite;
+            margin-right: 6px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #results { margin-top: 10px; }
+        #channel-info { display: flex; align-items: center; gap: 20px; border: 1px solid #eee; padding: 15px; border-radius: 8px; background-color: #fcfcfc; }
+        #channel-info img { border-radius: 50%; }
+        #video-table { width: 100%; border-collapse: collapse; margin-top: 25px; }
+        #video-table th, #video-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        #video-table th { background-color: #f4f4f4; }
+        #video-table tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📈 Phân tích Kênh YouTube</h1>
+        <p>Dán URL kênh, chọn khoảng thời gian (không bắt buộc) và nhấn nút.</p>
+        
+        <div class="controls">
+            <input type="text" id="channelUrlInput" placeholder="Ví dụ: https://www.youtube.com/@hoptri.summit">
+            <label for="startDate">Từ:</label>
+            <input type="date" id="startDate">
+            <label for="endDate">Đến:</label>
+            <input type="date" id="endDate">
+            <button onclick="fetchChannelData()">Lấy Dữ Liệu</button>
+        </div>
+
+        <div id="status"></div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_KEY = "AIzaSyC0Fy4N2WDafvslGRRG49enEQsbcMKjHvQ";
+        const YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3";
+        let currentVideoStats = [];
+        let currentChannelTitle = "";
+
+        function setStatus(message, loading = false) {
+            const statusDiv = document.getElementById('status');
+            if (loading) {
+                statusDiv.innerHTML = `<span class="spinner"></span>${message}`;
+            } else {
+                statusDiv.textContent = message;
+            }
+        }
+
+        async function fetchChannelData() {
+            setStatus('Đang xử lý...', true);
+            const channelUrl = document.getElementById('channelUrlInput').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            if (!channelUrl) {
+                setStatus('Vui lòng nhập URL của kênh.', false);
+                return;
+            }
+
+            try {
+                const handle = extractHandleFromUrl(channelUrl);
+                const channelId = handle ? await getChannelIdByHandle(handle) : null;
+                if (!channelId) {
+                    setStatus('Không tìm thấy kênh hoặc URL không hợp lệ.', false);
+                    return;
+                }
+
+                const channelData = await getChannelDetails(channelId);
+                displayChannelInfo(channelData);
+
+                const uploadsPlaylistId = channelData.contentDetails.relatedPlaylists.uploads;
+                const videos = await getAllVideosFromPlaylist(uploadsPlaylistId, startDate, endDate);
+
+                if (videos.length === 0) {
+                    document.getElementById('results').innerHTML = "<p>Không có video nào trong khoảng thời gian đã chọn.</p>";
+                    setStatus('Hoàn thành: không có dữ liệu.', false);
+                    return;
+                }
+                
+                const videoIds = videos.map(v => v.snippet.resourceId.videoId);
+                const videoStats = await getVideoStatistics(videoIds);
+                
+                displayVideoTable(videoStats);
+                setStatus('Hoàn thành.', false);
+
+            } catch (error) {
+                console.error("Đã xảy ra lỗi:", error);
+                setStatus('Đã xảy ra lỗi khi gọi API.', false);
+            }
+        }
+
+        function extractHandleFromUrl(url) {
+            const match = url.match(/@([\w.-]+)/);
+            return match ? match[1] : null;
+        }
+
+        async function getChannelIdByHandle(handle) {
+            const url = `${YOUTUBE_API_BASE_URL}/search?part=id&q=@${handle}&type=channel&key=${API_KEY}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.items?.[0]?.id?.channelId;
+        }
+
+        async function getChannelDetails(channelId) {
+            const url = `${YOUTUBE_API_BASE_URL}/channels?part=snippet,statistics,contentDetails&id=${channelId}&key=${API_KEY}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.items[0];
+        }
+
+        async function getAllVideosFromPlaylist(playlistId, startDate, endDate) {
+            let allVideos = [], nextPageToken = null;
+            do {
+                const url = `${YOUTUBE_API_BASE_URL}/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&pageToken=${nextPageToken||''}&key=${API_KEY}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                allVideos = allVideos.concat(data.items);
+                nextPageToken = data.nextPageToken;
+            } while (nextPageToken);
+
+            if (startDate || endDate) {
+                const start = startDate ? new Date(startDate) : null;
+                const end = endDate ? new Date(endDate) : null;
+                if (start) start.setHours(0,0,0,0);
+                if (end) end.setHours(23,59,59,999);
+                return allVideos.filter(v => {
+                    const pub = new Date(v.snippet.publishedAt);
+                    return (!start || pub >= start) && (!end || pub <= end);
+                });
+            }
+            return allVideos;
+        }
+
+        async function getVideoStatistics(ids) {
+            let details = [];
+            for (let i = 0; i < ids.length; i += 50) {
+                const chunk = ids.slice(i, i + 50);
+                const url = `${YOUTUBE_API_BASE_URL}/videos?part=snippet,statistics&id=${chunk.join(',')}&key=${API_KEY}`;
+                const resp = await fetch(url);
+                const data = await resp.json();
+                details = details.concat(data.items);
+            }
+            return details;
+        }
+
+        function displayChannelInfo(data) {
+            const resultsDiv = document.getElementById('results');
+            const snip = data.snippet, stats = data.statistics;
+            currentChannelTitle = snip.title || "";
+            const fmt = new Intl.NumberFormat('vi-VN');
+            resultsDiv.innerHTML = `
+                <h3>Thông tin Kênh</h3>
+                <div id="channel-info">
+                    <img src="${snip.thumbnails.default.url}" alt="Ảnh đại diện kênh">
+                    <div>
+                        <h4>${snip.title}</h4>
+                        <p><strong>Người đăng ký:</strong> ${fmt.format(stats.subscriberCount)}</p>
+                        <p><strong>Tổng số video:</strong> ${fmt.format(stats.videoCount)}</p>
+                        <p><strong>Tổng lượt xem:</strong> ${fmt.format(stats.viewCount)}</p>
+                    </div>
+                </div>
+                <div id="video-list"></div>`;
+        }
+
+        function displayVideoTable(videos) {
+            const div = document.getElementById('video-list');
+            const fmt = new Intl.NumberFormat('vi-VN');
+            currentVideoStats = [...videos];
+            videos.sort((a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt));
+
+            let html = `
+                <h3 style="display:flex;align-items:center;justify-content:space-between;">
+                    <span>Chi tiết các Video (${videos.length} video)</span>
+                    <button onclick="downloadExcel()">Tải file Excel</button>
+                </h3>
+                <table id="video-table">
+                    <tr>
+                        <th>Tiêu đề Video</th>
+                        <th>Ngày đăng</th>
+                        <th>Lượt xem</th>
+                        <th>Lượt thích</th>
+                        <th>Bình luận</th>
+                    </tr>`;
+
+            for (const v of videos) {
+                html += `
+                    <tr>
+                        <td>${v.snippet.title}</td>
+                        <td>${new Date(v.snippet.publishedAt).toLocaleDateString('vi-VN')}</td>
+                        <td>${fmt.format(v.statistics.viewCount)}</td>
+                        <td>${fmt.format(v.statistics.likeCount || 0)}</td>
+                        <td>${fmt.format(v.statistics.commentCount || 0)}</td>
+                    </tr>`;
+            }
+            html += '</table>';
+            div.innerHTML = html;
+        }
+
+        function downloadExcel() {
+            if (!currentVideoStats.length) {
+                alert("Không có dữ liệu để xuất.");
+                return;
+            }
+            const rows = currentVideoStats
+                .sort((a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt))
+                .map(v => {
+                    const id = v.id || v.snippet.resourceId.videoId || "";
+                    return {
+                        "Tiêu đề": v.snippet.title,
+                        "Ngày đăng": new Date(v.snippet.publishedAt).toLocaleDateString('vi-VN'),
+                        "Lượt xem": Number(v.statistics.viewCount || 0),
+                        "Lượt thích": Number(v.statistics.likeCount || 0),
+                        "Bình luận": Number(v.statistics.commentCount || 0),
+                        "URL Video": id ? `https://www.youtube.com/watch?v=${id}` : ""
+                    };
+                });
+
+            const ws = XLSX.utils.json_to_sheet(rows, { header: ["Tiêu đề","Ngày đăng","Lượt xem","Lượt thích","Bình luận","URL Video"] });
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Videos");
+
+            // Tự động điều chỉnh độ rộng cột
+            const colWidths = Object.keys(rows[0]).map(key => {
+                const maxLen = rows.reduce((mx, r) => Math.max(mx, String(r[key] || "").length), key.length);
+                return { wch: Math.min(Math.max(maxLen + 2, 12), 80) };
+            });
+            ws['!cols'] = colWidths;
+
+            const today = new Date();
+            const y = today.getFullYear();
+            const m = String(today.getMonth() + 1).padStart(2, '0');
+            const d = String(today.getDate()).padStart(2, '0');
+            const safeTitle = (currentChannelTitle || "YouTube_Channel").replace(/[\\/:*?"<>|]/g, '_').slice(0, 60);
+            const fname = `YouTube_Videos_${safeTitle}_${y}${m}${d}.xlsx`;
+
+            XLSX.writeFile(wb, fname);
+        }
+    </script>
+</body>
+</html>

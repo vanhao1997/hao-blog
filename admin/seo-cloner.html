@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Cloner - Admin Panel</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a', 950: '#020617', },
+                        indigo: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', }
+                    },
+                    fontFamily: { sans: ['DM Sans', 'sans-serif'], },
+                }
+            },
+            plugins: [
+                function ({ addBase }) {
+                    addBase({
+                        '.prose h2': { fontSize: '1.5rem', marginTop: '1.5rem', marginBottom: '0.75rem', fontWeight: '700', color: '#0f172a' },
+                        '.prose h3': { fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem', fontWeight: '600', color: '#1e293b' },
+                        '.prose p': { marginBottom: '1rem', lineHeight: '1.75' },
+                        '.prose ul': { listStyleType: 'disc', paddingLeft: '1.5rem', marginBottom: '1rem' },
+                        '.prose ol': { listStyleType: 'decimal', paddingLeft: '1.5rem', marginBottom: '1rem' },
+                        '.prose table': { width: '100%', borderCollapse: 'collapse', margin: '1rem 0' },
+                        '.prose th, .prose td': { border: '1px solid #e2e8f0', padding: '0.75rem', textAlign: 'left' },
+                        '.prose th': { backgroundColor: '#f8fafc', fontWeight: '600' },
+                        '.prose img': { borderRadius: '0.75rem', margin: '1.5rem auto', display: 'block', maxWidth: '100%' },
+                        '.prose iframe': { width: '100%', aspectRatio: '16/9', borderRadius: '0.75rem', margin: '1.5rem 0' },
+                    })
+                }
+            ],
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; }
+        .controls-scroll::-webkit-scrollbar { width: 6px; }
+        .controls-scroll::-webkit-scrollbar-track { background: transparent; }
+        .controls-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        .loader { width: 48px; height: 48px; border: 5px solid #FFF; border-bottom-color: #4f46e5; border-radius: 50%; display: inline-block; box-sizing: border-box; animation: rotation 1s linear infinite; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 min-h-screen flex">
+
+    <!-- Admin Sidebar -->
+    <aside class="w-64 bg-[#1f2937] text-white fixed h-full overflow-y-auto z-50 flex flex-col p-6 hidden md:flex">
+        <a href="/admin/index.html" class="flex items-center gap-3 text-xl font-bold text-white no-underline mb-8">
+            <div class="w-10 h-10 bg-[#22C55E] flex items-center justify-center rounded-lg font-bold">H</div>
+            <span>Admin</span>
+        </a>
+        <nav class="flex flex-col gap-1">
+            <a href="/admin/index.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 rounded-lg hover:bg-white/10 hover:text-white transition-all text-base font-medium">📊 Dashboard</a>
+            <a href="/admin/posts.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 rounded-lg hover:bg-white/10 hover:text-white transition-all text-base font-medium">📝 Bài viết</a>
+            <a href="/admin/categories.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 rounded-lg hover:bg-white/10 hover:text-white transition-all text-base font-medium">📂 Danh mục</a>
+            <a href="/admin/images.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 rounded-lg hover:bg-white/10 hover:text-white transition-all text-base font-medium">🖼️ Hình ảnh</a>
+            <a href="/admin/banner.html" class="flex items-center gap-3 px-4 py-3 bg-[#22C55E] text-white font-semibold shadow-lg shadow-green-500/20 rounded-lg text-base">🎨 Tạo Banner</a>
+            <a href="/admin/seo-cloner.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 rounded-lg hover:bg-white/10 hover:text-white transition-all text-base font-medium">🤖 SEO Cloner</a>
+            <div class="h-px bg-white/10 my-4"></div>
+            <a href="/" target="_blank" class="flex items-center gap-3 px-4 py-3 text-slate-400 rounded-lg hover:bg-white/10 hover:text-white transition-all text-base font-medium">🌐 Xem trang</a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-all text-base font-medium">🚪 Đăng xuất</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden bg-slate-50">
+        <header class="flex-none w-full p-4 md:px-8 md:py-5 flex justify-between items-center bg-white border-b border-slate-200">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-2xl text-slate-600">☰</button>
+                <div class="flex items-center gap-2 text-indigo-600">
+                    <span class="font-bold text-xl text-slate-800 tracking-tight">SEO Cloner</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSettings()" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors border border-transparent hover:border-indigo-100">
+                    <i data-lucide="settings" class="w-4 h-4"></i> Settings
+                </button>
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                    <span class="font-medium text-slate-700">Admin</span>
+                    <div class="w-8 h-8 rounded-full bg-[#22C55E] text-white flex items-center justify-center font-bold text-sm">A</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 container mx-auto px-4 py-6 max-w-7xl h-full flex flex-col overflow-hidden">
+            <!-- View: Input -->
+            <div id="view-input" class="flex flex-col items-center justify-center flex-1 transition-all pb-24">
+                <div class="w-full max-w-2xl text-center space-y-8 animate-fade-in">
+                    <div class="space-y-4">
+                        <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-900 via-indigo-800 to-slate-700 bg-clip-text text-transparent">Clone & Rewrite</h1>
+                        <p class="text-slate-500 text-lg max-w-lg mx-auto">Tự động viết lại bài viết chuyên sâu và thiết kế banner nhanh chóng.</p>
+                    </div>
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-green-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-200"></div>
+                        <form id="analyzeForm" class="relative bg-white rounded-xl p-2 shadow-2xl shadow-indigo-100/50 flex items-center border border-slate-100">
+                            <div class="pl-4 text-slate-400"><i data-lucide="link-2" class="w-5 h-5"></i></div>
+                            <input type="url" id="urlInput" required placeholder="Dán URL bài viết tại đây..." class="w-full p-4 bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 font-medium">
+                            <button type="submit" class="bg-slate-900 hover:bg-indigo-600 text-white p-3 rounded-lg transition-all duration-200 flex items-center justify-center shadow-lg shadow-slate-900/10">
+                                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div id="errorMsg" class="hidden bg-red-50 text-red-600 px-4 py-3 rounded-lg border border-red-200 text-sm flex items-center gap-2 justify-center">
+                        <i data-lucide="alert-circle" class="w-4 h-4"></i> <span id="errorText"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: Loading -->
+            <div id="view-loading" class="hidden flex-col items-center justify-center flex-1 pb-24">
+                <div class="text-center space-y-6">
+                    <span class="loader border-slate-200 border-b-indigo-600"></span>
+                    <div class="space-y-2">
+                        <h3 class="text-2xl font-semibold text-slate-800">Analyzing Content</h3>
+                        <p class="text-slate-500 animate-pulse">Đang trích xuất dữ liệu, hình ảnh và video...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: Result -->
+            <div id="view-result" class="hidden flex-1 flex flex-col overflow-hidden h-full pb-6">
+                <div class="flex justify-between items-center mb-4 flex-none">
+                    <button onclick="resetApp()" class="flex items-center gap-2 text-slate-500 hover:text-indigo-600 transition-colors group text-sm font-medium px-2 py-1 rounded hover:bg-indigo-50">
+                        <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
+                        <span>New Analysis</span>
+                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="saveToPosts()" id="btnSaveToPosts" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-indigo-200 active:scale-95">
+                            <i data-lucide="rocket" class="w-4 h-4"></i> <span>Publish Post</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full overflow-hidden">
+                    <!-- Left: Metadata -->
+                    <div class="lg:col-span-4 flex flex-col gap-4 overflow-y-auto controls-scroll pr-1 pb-20">
+                        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-5">
+                            <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-2">
+                                <div class="bg-indigo-50 p-1.5 rounded-md text-indigo-600"><i data-lucide="tag" class="w-4 h-4"></i></div>
+                                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wide">SEO Metadata</h3>
+                            </div>
+                            <!-- Title Field with Popup Trigger -->
+                            <div class="group relative">
+                                <label class="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider flex justify-between items-center">
+                                    <span>Title Tag</span>
+                                    <button onclick="openBannerModal()" title="Create Banner"
+                                        class="text-[10px] bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-0.5 rounded flex items-center gap-1 transition-colors font-bold">
+                                        <i data-lucide="image" class="w-3 h-3"></i> Create Banner
+                                    </button>
+                                </label>
+                                <p id="res-seo-title" class="text-slate-800 text-sm font-medium leading-relaxed bg-slate-50 border border-slate-200 p-3 rounded-lg cursor-pointer hover:border-indigo-300 transition-all" onclick="copyText(this.innerText)"></p>
+                            </div>
+                            <div class="group relative">
+                                <label class="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Meta Description</label>
+                                <p id="res-meta-desc" class="text-slate-600 text-sm leading-relaxed bg-slate-50 border border-slate-200 p-3 rounded-lg cursor-pointer hover:border-indigo-300 transition-all" onclick="copyText(this.innerText)"></p>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">Target Keywords</label>
+                                <div id="res-keywords" class="flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Content -->
+                    <div class="lg:col-span-8 h-full overflow-hidden flex flex-col bg-white border border-slate-200 rounded-xl shadow-xl shadow-slate-200/50">
+                        <div class="bg-slate-50/80 border-b border-slate-200 px-6 py-4 flex-none flex justify-between items-center sticky top-0 z-10">
+                            <div class="flex items-center gap-2 text-slate-600">
+                                <i data-lucide="file-text" class="w-5 h-5 text-indigo-500"></i>
+                                <span class="font-bold text-sm uppercase tracking-wide">Article Draft</span>
+                            </div>
+                            <div class="text-xs text-slate-400 font-mono">Markdown Preview</div>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                            <div id="res-content" class="prose prose-slate max-w-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Modal -->
+            <div id="settings-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity">
+                <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-6 shadow-2xl transition-all scale-100 opacity-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-slate-900">Settings</h2>
+                        <button onclick="toggleSettings()" class="text-slate-400 hover:text-slate-600 p-2 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Perplexity API Key</label>
+                            <input type="password" id="apiKeyInput" placeholder="pplx-..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 outline-none text-sm font-medium">
+                        </div>
+                        <button onclick="saveSettings()" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">Save Configuration</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner Modal (LỚN HƠN & KHÔNG CÓ MENU) -->
+            <div id="banner-modal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md transition-opacity">
+                <div class="bg-white rounded-2xl w-full max-w-[95vw] h-[95vh] flex flex-col shadow-2xl overflow-hidden relative border border-slate-200">
+                    <div class="p-4 border-b flex justify-between items-center bg-white">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2 uppercase tracking-wide text-sm">
+                            <i data-lucide="palette" class="w-4 h-4 text-indigo-600"></i> Banner Generator
+                        </h3>
+                        <button onclick="closeBannerModal()" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                            <i data-lucide="x" class="w-6 h-6 text-slate-400"></i>
+                        </button>
+                    </div>
+                    <iframe id="banner-iframe" src="" class="flex-1 w-full border-none"></iframe>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-lg shadow-xl transform translate-y-24 opacity-0 transition-all duration-300 z-[200] flex items-center gap-3 font-medium">
+        <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i> <span id="toastMsg"></span>
+    </div>
+
+    <script>
+        const state = { apiKey: localStorage.getItem('pplx_api_key') || '', data: null };
+        const views = { 
+            input: document.getElementById('view-input'), 
+            loading: document.getElementById('view-loading'), 
+            result: document.getElementById('view-result'), 
+            settings: document.getElementById('settings-modal'),
+            bannerModal: document.getElementById('banner-modal'),
+            bannerIframe: document.getElementById('banner-iframe')
+        };
+        const resultEls = { title: document.getElementById('res-seo-title'), desc: document.getElementById('res-meta-desc'), keywords: document.getElementById('res-keywords'), content: document.getElementById('res-content') };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            document.getElementById('apiKeyInput').value = state.apiKey;
+            if (!state.apiKey) toggleSettings();
+            document.getElementById('analyzeForm').addEventListener('submit', handleAnalyze);
+
+            // Tự động ẩn menu trong iframe khi load xong (chỉ hoạt động nếu cùng domain)
+            views.bannerIframe.onload = function() {
+                try {
+                    const iframeDoc = views.bannerIframe.contentDocument || views.bannerIframe.contentWindow.document;
+                    // Tìm các thẻ có khả năng là menu sidebar và ẩn đi
+                    const sidebar = iframeDoc.querySelector('aside');
+                    if(sidebar) sidebar.style.display = 'none';
+                    
+                    // Điều chỉnh margin cho phần content chính trong iframe để tràn rộng
+                    const mainContent = iframeDoc.querySelector('main');
+                    if(mainContent) {
+                        mainContent.style.marginLeft = '0';
+                        mainContent.style.width = '100%';
+                    }
+                } catch(e) {
+                    console.log("CORS prevents script injection, ensure iframe and host are on same domain.");
+                }
+            };
+        });
+
+        function toggleSettings() { views.settings.classList.toggle('hidden'); views.settings.classList.toggle('flex'); }
+        
+        // Modal Banner Functions
+        function openBannerModal() {
+            if (state.data && state.data.seo_title) {
+                const title = encodeURIComponent(state.data.seo_title);
+                // Thêm tham số embed để script trong banner.html biết (nếu bạn có hỗ trợ phía kia)
+                views.bannerIframe.src = `/admin/banner.html?title=${title}&embed=true`;
+                views.bannerModal.classList.remove('hidden');
+                views.bannerModal.classList.add('flex');
+            } else {
+                showToast("No title available to generate banner");
+            }
+        }
+
+        function closeBannerModal() {
+            views.bannerModal.classList.add('hidden');
+            views.bannerModal.classList.remove('flex');
+            views.bannerIframe.src = ""; 
+        }
+
+        function saveSettings() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key) { state.apiKey = key; localStorage.setItem('pplx_api_key', key); toggleSettings(); showToast("API Key saved!"); }
+        }
+        function resetApp() { switchView('input'); state.data = null; document.getElementById('urlInput').value = ''; }
+        function showToast(msg) {
+            const toast = document.getElementById('toast'); document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('translate-y-24', 'opacity-0'); setTimeout(() => { toast.classList.add('translate-y-24', 'opacity-0'); }, 3000);
+        }
+        function copyText(text) { navigator.clipboard.writeText(text); showToast("Copied!"); }
+
+        function switchView(viewName) {
+            ['input', 'loading', 'result'].forEach(v => { views[v].classList.add('hidden'); views[v].classList.remove('flex'); });
+            views[viewName].classList.remove('hidden');
+            views[viewName].classList.add('flex');
+        }
+
+        async function handleAnalyze(e) {
+            e.preventDefault();
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url || !state.apiKey) return;
+            switchView('loading');
+            try {
+                const data = await callPerplexityAPI(url, state.apiKey);
+                state.data = data;
+                renderResult(data);
+                switchView('result');
+            } catch (err) {
+                alert(err.message);
+                switchView('input');
+            }
+        }
+
+        async function callPerplexityAPI(url, apiKey) {
+            const prompt = `
+Role: Senior SEO Content Specialist focused on the Vietnamese market.
+Task: Analyze content from ${url} and rewrite it into a high-quality blog post for "nguyenvanhao.name.vn".
+
+Guidelines:
+1.  **Language & Tone**: Write in natural, engaging Vietnamese.
+2.  **Originality**: Do NOT simply translate. Synthesize the information.
+3.  **Formatting**: Use Markdown for the content (H2, H3, bold). 
+    **CRITICAL**: Keep and include all original <img> tags (with their original source URLs) and YouTube <iframe> tags found in the source article. Place them in appropriate positions.
+4.  **Constraints**: 
+    - Strictly NO mention of the original brand/competitors.
+    - NO external text links, but KEEP original image and video embeds.
+    - DO NOT use citation symbols [1], [2],.. 
+    - DO NOT write summary sentences counting the total number of words at the end of the article
+5.  **Clean Output Rules**: Return ONLY a valid raw JSON object.
+6.  **LENGTH: From 1800 to 2000 words. Must write deeply and rich in information.
+
+Output Format:
+{
+  "seo_title": "...",
+  "meta_description": "...",
+  "keywords": ["keyword1", "keyword2"],
+  "content_markdown": "Full blog post with <img> and <iframe> tags included."
+}
+`;
+            const response = await fetch("https://api.perplexity.ai/chat/completions", {
+                method: "POST", headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ model: "sonar-pro", messages: [{ role: "system", content: "You are a helpful assistant. You return valid JSON containing HTML for images and videos within markdown." }, { role: "user", content: prompt }], temperature: 0.1 }),
+            });
+            if (!response.ok) throw new Error("API Connection Failed");
+            const data = await response.json();
+            const contentString = data.choices[0].message.content.trim();
+            const firstBracket = contentString.indexOf('{');
+            const lastBracket = contentString.lastIndexOf('}');
+            return JSON.parse(contentString.substring(firstBracket, lastBracket + 1));
+        }
+
+        function renderResult(data) {
+            resultEls.title.textContent = data.seo_title;
+            resultEls.desc.textContent = data.meta_description;
+            resultEls.keywords.innerHTML = (Array.isArray(data.keywords) ? data.keywords : []).map(k => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-md border border-slate-200">${k}</span>`).join('');
+            
+            const html = marked.parse(data.content_markdown);
+            resultEls.content.innerHTML = DOMPurify.sanitize(html, {
+                ADD_TAGS: ["iframe"],
+                ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling", "src"]
+            });
+            lucide.createIcons();
+        }
+
+        async function saveToPosts() {
+            if (!state.data) return;
+            const btn = document.getElementById('btnSaveToPosts');
+            const originalText = btn.innerHTML;
+            btn.disabled = true; btn.innerHTML = '⏳ Saving...';
+            try {
+                const slug = state.data.seo_title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-');
+                const postData = {
+                    title: state.data.seo_title,
+                    slug: slug,
+                    excerpt: state.data.meta_description,
+                    content: resultEls.content.innerHTML, 
+                    is_published: 0
+                };
+                const response = await fetch('/api/posts.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(postData) });
+                const res = await response.json();
+                if (res.success) showToast("Draft saved successfully!");
+                else throw new Error(res.error || "Save failed");
+            } catch (e) { showToast(e.message); }
+            finally { btn.disabled = false; btn.innerHTML = originalText; }
+        }
+    </script>
+</body>
+
+</html>

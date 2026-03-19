@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý danh mục - Admin</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <a href="/admin/index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
+            <nav class="admin-nav">
+                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
+                <a href="/admin/categories.html" class="nav-item active">📂 Danh mục</a>
+                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
+                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
+                <a href="/admin/seo-cloner.html" class="nav-item">🤖 SEO Cloner</a>
+                <div class="nav-divider"></div>
+                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>Quản lý danh mục</h1>
+                <button class="btn btn-primary" onclick="openCategoryModal()">+ Thêm danh mục</button>
+            </header>
+
+            <div class="admin-content">
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tên danh mục</th>
+                                <th>Slug</th>
+                                <th>Màu sắc</th>
+                                <th>Sắp xếp</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriesTable">
+                            <tr>
+                                <td colspan="3" style="text-align: center; padding: 40px;">Đang tải...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal-overlay" id="categoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Thêm danh mục</h3>
+                <button class="modal-close" onclick="closeCategoryModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <input type="hidden" id="categoryId">
+                    <div class="form-group">
+                        <label class="form-label">Tên danh mục *</label>
+                        <input type="text" id="categoryName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Slug (URL)</label>
+                        <input type="text" id="categorySlug" class="form-input" placeholder="tu-dong-tao-tu-ten">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Màu sắc</label>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <input type="color" id="categoryColor" value="#22C55E"
+                                style="width: 60px; height: 40px; border: none; cursor: pointer; border-radius: 8px;">
+                            <input type="text" id="categoryColorText" class="form-input" value="#22C55E"
+                                style="flex: 1; font-family: monospace;" placeholder="#22C55E">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Lưu danh mục</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
+    <!-- <script src="/js/supabase-config.js"></script> -->
+    <script src="/js/api.js"></script>
+    <script src="/admin/js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            await loadCategoriesManagement();
+        });
+
+        // Modal Logic
+        async function openCategoryModal(id = null) {
+            document.getElementById('modalTitle').textContent = id ? 'Sửa danh mục' : 'Thêm danh mục';
+            document.getElementById('categoryForm').reset();
+            document.getElementById('categoryId').value = '';
+            document.getElementById('categoryModal').classList.add('active');
+
+            if (id) {
+                try {
+                    // Fetch all categories and find the one to edit (since we don't have getCategory yet, or use getCategories with id param if supported)
+                    // Efficient way: use the API.getCategories({id: id}) if supported or just filter from list
+                    // Let's implement API.getCategory(id) or just iterate since list is small. 
+                    // Better: API.getCategories returns list.
+                    const categories = await API.getCategories();
+                    const category = categories.find(c => c.id == id);
+
+                    if (category) {
+                        document.getElementById('categoryId').value = category.id;
+                        document.getElementById('categoryName').value = category.name;
+                        document.getElementById('categorySlug').value = category.slug;
+                        document.getElementById('categoryColor').value = category.color || '#22C55E';
+                        document.getElementById('categoryColorText').value = category.color || '#22C55E';
+                    }
+                } catch (e) {
+                    console.error('Error fetching category details', e);
+                }
+            }
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.remove('active');
+        }
+
+        window.openCategoryModal = openCategoryModal;
+        window.closeCategoryModal = closeCategoryModal;
+        window.editCategory = openCategoryModal;
+
+        // Form Submit
+        document.getElementById('categoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'Đang lưu...';
+
+            const result = await saveCategory({
+                id: document.getElementById('categoryId').value || null,
+                name: document.getElementById('categoryName').value,
+                slug: document.getElementById('categorySlug').value,
+                color: document.getElementById('categoryColor').value
+            });
+
+            btn.disabled = false;
+            btn.textContent = 'Lưu danh mục';
+
+            if (result.success) {
+                showToast('Đã lưu!', 'success');
+                closeCategoryModal();
+                await loadCategoriesManagement();
+            } else {
+                showToast('Lỗi: ' + result.error, 'error');
+            }
+        });
+        // Color Picker Sync
+        const colorInput = document.getElementById('categoryColor');
+        const colorText = document.getElementById('categoryColorText');
+
+        if (colorInput && colorText) {
+            colorInput.addEventListener('input', (e) => {
+                colorText.value = e.target.value.toUpperCase();
+            });
+
+            colorText.addEventListener('input', (e) => {
+                let val = e.target.value;
+                if (!val.startsWith('#')) {
+                    val = '#' + val;
+                }
+                if (val.length === 7) {
+                    colorInput.value = val;
+                }
+            });
+
+            // Sync on change (paste)
+            colorText.addEventListener('change', (e) => {
+                let val = e.target.value;
+                if (!val.startsWith('#')) val = '#' + val;
+                if (val.length === 7) colorInput.value = val;
+                // normalize
+                e.target.value = val.toUpperCase();
+            });
+        }
+    </script>
+</body>
+
+</html>

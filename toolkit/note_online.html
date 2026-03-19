@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOTE ONLINE</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Font chữ DM Sans */
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        /* Custom scrollbar cho danh sách ghi chú */
+        #notes-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #notes-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        #notes-container::-webkit-scrollbar-thumb {
+            background: #a5b4fc;
+            border-radius: 10px;
+        }
+
+        #notes-container::-webkit-scrollbar-thumb:hover {
+            background: #818cf8;
+        }
+    </style>
+</head>
+
+<body class="bg-indigo-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <!-- Tiêu đề -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">NOTE ONLINE</h1>
+            <p class="text-gray-600 mt-2">Ghi chú của bạn được lưu ngay trên trình duyệt.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Cột bên trái: Form tạo ghi chú -->
+            <div class="md:col-span-1 bg-white p-6 rounded-xl shadow-lg h-fit">
+                <h2 class="text-2xl font-semibold mb-4 border-b pb-2 text-gray-900">Tạo Ghi Chú Mới</h2>
+                <form id="note-form" class="space-y-4">
+                    <div>
+                        <label for="note-title" class="block text-sm font-medium text-gray-700">Tiêu đề</label>
+                        <input type="text" id="note-title" placeholder="Nhập tiêu đề..."
+                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            required>
+                    </div>
+                    <div>
+                        <label for="note-content" class="block text-sm font-medium text-gray-700">Nội dung</label>
+                        <textarea id="note-content" rows="8" placeholder="Nội dung ghi chú..."
+                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            required></textarea>
+                    </div>
+                    <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Lưu Ghi Chú
+                    </button>
+                </form>
+            </div>
+
+            <!-- Cột bên phải: Danh sách ghi chú -->
+            <div class="md:col-span-2 bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4 border-b pb-2 text-gray-900">Danh Sách Ghi Chú</h2>
+                <div id="notes-container" class="space-y-4 h-[65vh] overflow-y-auto pr-2">
+                    <!-- Ghi chú sẽ được thêm vào đây bằng JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const noteForm = document.getElementById('note-form');
+            const noteTitleInput = document.getElementById('note-title');
+            const noteContentInput = document.getElementById('note-content');
+            const notesContainer = document.getElementById('notes-container');
+
+            /**
+             * Lấy danh sách ghi chú từ localStorage.
+             * @returns {Array} Mảng các đối tượng ghi chú.
+             */
+            const getNotes = () => {
+                const notes = localStorage.getItem('simple-notes');
+                return notes ? JSON.parse(notes) : [];
+            };
+
+            /**
+             * Lưu danh sách ghi chú vào localStorage.
+             * @param {Array} notes Mảng các đối tượng ghi chú cần lưu.
+             */
+            const saveNotes = (notes) => {
+                localStorage.setItem('simple-notes', JSON.stringify(notes));
+            };
+
+            /**
+             * Hiển thị các ghi chú lên giao diện.
+             */
+            const renderNotes = () => {
+                const notes = getNotes();
+                notesContainer.innerHTML = ''; // Xóa danh sách cũ
+
+                if (notes.length === 0) {
+                    notesContainer.innerHTML = '<p class="text-center text-gray-500 py-10">Chưa có ghi chú nào. Hãy tạo ghi chú đầu tiên của bạn!</p>';
+                    return;
+                }
+
+                // Sắp xếp ghi chú mới nhất lên đầu
+                notes.sort((a, b) => b.id - a.id);
+
+                notes.forEach(note => {
+                    const noteElement = document.createElement('div');
+                    noteElement.className = 'bg-indigo-50 p-4 rounded-lg border border-indigo-200 shadow-sm';
+
+                    // Chuyển đổi timestamp sang định dạng ngày giờ dễ đọc
+                    const date = new Date(note.id).toLocaleString('vi-VN');
+
+                    noteElement.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-gray-900">${note.title}</h3>
+                            <button class="delete-btn text-gray-400 hover:text-red-600" data-id="${note.id}" title="Xóa ghi chú">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="text-gray-700 whitespace-pre-wrap mb-3">${note.content}</p>
+                        <p class="text-xs text-gray-500 text-right">Tạo lúc: ${date}</p>
+                    `;
+                    notesContainer.appendChild(noteElement);
+                });
+            };
+
+            /**
+             * Xử lý sự kiện thêm ghi chú mới.
+             * @param {Event} e Sự kiện submit form.
+             */
+            const addNote = (e) => {
+                e.preventDefault();
+                const title = noteTitleInput.value.trim();
+                const content = noteContentInput.value.trim();
+
+                if (title && content) {
+                    const notes = getNotes();
+                    const newNote = {
+                        id: Date.now(), // Sử dụng timestamp làm ID duy nhất
+                        title,
+                        content
+                    };
+                    notes.push(newNote);
+                    saveNotes(notes);
+                    noteForm.reset();
+                    renderNotes();
+                }
+            };
+
+            /**
+             * Xử lý sự kiện xóa một ghi chú.
+             * @param {Event} e Sự kiện click.
+             */
+            const deleteNote = (e) => {
+                if (e.target.classList.contains('delete-btn')) {
+                    const noteId = parseInt(e.target.dataset.id);
+                    let notes = getNotes();
+                    notes = notes.filter(note => note.id !== noteId);
+                    saveNotes(notes);
+                    renderNotes();
+                }
+            };
+
+            // Gán các sự kiện
+            noteForm.addEventListener('submit', addNote);
+            notesContainer.addEventListener('click', deleteNote);
+
+            // Hiển thị ghi chú khi tải trang
+            renderNotes();
+        });
+    </script>
+</body>
+
+</html>

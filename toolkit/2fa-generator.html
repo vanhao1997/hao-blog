@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2FA Manager</title>
+  <style>
+    :root { --brand:#2563eb; --bg:#f6f8fa; --text:#1f2937; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      background:var(--bg); color:var(--text);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      padding:24px;
+    }
+    .container { max-width:960px; margin:0 auto; }
+    .banner {
+      background:var(--brand); color:#fff; padding:12px; font-size:20px; font-weight:600;
+      border-radius:4px; display:flex; gap:8px; align-items:center; justify-content:flex-start;
+      margin-bottom:16px;
+    }
+    .banner button { background:#ef4444; }
+    .banner .btn-export { background:#10b981; }
+    .banner .btn-import { background:#fbbf24; }
+    form, .app { background:#fff; padding:16px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,.1); margin-bottom:24px; }
+    label { display:block; margin-bottom:4px; font-weight:500; }
+    input[type=text] { width:100%; padding:8px 10px; border:1px solid #e5e7eb; border-radius:4px; margin-bottom:12px; font-size:14px; }
+    button { background:var(--brand); color:#fff; border:none; padding:8px 12px; border-radius:4px; cursor:pointer; font-size:14px; transition:background .2s; }
+    button:hover { background:#1e4bb8; }
+    #entries { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; }
+    .entry { background:#fff; padding:16px; border-radius:6px; box-shadow:0 1px 4px rgba(0,0,0,.08); display:flex; flex-direction:column; }
+    .entry-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .entry-label { font-weight:600; font-size:16px; }
+    .code-display { font-family:"Courier New", monospace; font-size:28px; letter-spacing:4px; text-align:center; margin-bottom:8px; }
+    .countdown { height:4px; background:#eef2f7; border-radius:2px; overflow:hidden; }
+    .progress-bar { height:100%; width:100%; background:var(--brand); transition:width 1s linear; }
+    .buttons { margin-top:8px; display:flex; justify-content:flex-end; gap:8px; }
+    .small-btn { background:#ef4444; }
+    .copy-btn { background:#10b981; }
+    .edit-btn { background:#f59e0b; }
+    input[type=file] { display:none; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.4.2/sha.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="banner">
+      <span>2FA Manager</span>
+      <button id="btnExport" class="btn btn-export">Xuất JSON</button>
+      <button id="btnImport" class="btn btn-import">Nhập JSON</button>
+    </div>
+
+    <input type="file" id="importFile" accept="application/json" />
+    <form id="addForm">
+      <label for="labelInput">Tên dịch vụ</label>
+      <input id="labelInput" type="text" placeholder="Ví dụ: Gmail, GitHub" required />
+      <label for="secretInput">Secret Key (Base32)</label>
+      <input id="secretInput" type="text" placeholder="JBSWY3DPEHPK3PXP" required autocomplete="off" />
+      <button type="submit" id="submitBtn">Thêm 2FA</button>
+    </form>
+
+    <div id="entries"></div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = '2faEntries';
+    const btnExport = document.getElementById('btnExport');
+    const btnImport = document.getElementById('btnImport');
+    const importFile = document.getElementById('importFile');
+    const form = document.getElementById('addForm');
+    const labelInput = document.getElementById('labelInput');
+    const secretInput = document.getElementById('secretInput');
+    const entriesDiv = document.getElementById('entries');
+    const submitBtn = document.getElementById('submitBtn');
+    let editIndex = null;
+
+    function loadEntries() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch { return []; }
+    }
+    function saveEntries(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    function base32tohex(base32) {
+      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+      base32 = base32.replace(/=+$/,'').replace(/\s+/g,'').toUpperCase().replace(/[^A-Z2-7]/g,'');
+      let bits='', hex='';
+      for(const c of base32) bits += alphabet.indexOf(c).toString(2).padStart(5,'0');
+      for(let i=0;i+4<=bits.length;i+=4) hex += parseInt(bits.substr(i,4),2).toString(16);
+      return hex;
+    }
+
+    function generateTOTP(secret) {
+      try {
+        const key = base32tohex(secret);
+        const epoch = Math.floor(Date.now()/1000);
+        const time = Math.floor(epoch/30).toString(16).padStart(16,'0');
+        const sha = new jsSHA('SHA-1','HEX'); sha.setHMACKey(key,'HEX'); sha.update(time);
+        const hmac = sha.getHMAC('HEX');
+        const offset = parseInt(hmac.substr(-1),16);
+        const bin = parseInt(hmac.substr(offset*2,8),16) & 0x7fffffff;
+        return (bin % 1000000).toString().padStart(6,'0');
+      } catch { return '------'; }
+    }
+
+    function render() {
+      entriesDiv.innerHTML = '';
+      loadEntries().forEach((item,index) => {
+        const div = document.createElement('div'); div.className='entry'; div.dataset.index=index;
+        div.innerHTML = `
+          <div class="entry-header">
+            <span class="entry-label">${item.label}</span>
+          </div>
+          <div class="code-display">------</div>
+          <div class="countdown"><div class="progress-bar"></div></div>
+          <div class="buttons">
+            <button class="edit-btn">Sửa</button>
+            <button class="copy-btn">Copy</button>
+            <button class="small-btn">Xóa</button>
+          </div>
+        `;
+        entriesDiv.appendChild(div);
+      });
+      attachEvents();
+      updateAll();
+    }
+
+    function attachEvents() {
+      document.querySelectorAll('.small-btn').forEach(btn => {
+        btn.onclick = () => {
+          const idx = +btn.closest('.entry').dataset.index;
+          const arr = loadEntries(); arr.splice(idx,1); saveEntries(arr); render();
+        };
+      });
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.onclick = () => {
+          const code = btn.closest('.entry').querySelector('.code-display').textContent;
+          navigator.clipboard.writeText(code);
+          btn.textContent='Copied!'; setTimeout(() => btn.textContent='Copy',1200);
+        };
+      });
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.onclick = () => {
+          const idx = +btn.closest('.entry').dataset.index;
+          const items = loadEntries();
+          labelInput.value = items[idx].label;
+          secretInput.value = items[idx].secret;
+          submitBtn.textContent = 'Cập nhật'; editIndex = idx;
+        };
+      });
+    }
+
+    function updateAll() {
+      const now = Math.floor(Date.now()/1000), remain = 30 - (now % 30);
+      document.querySelectorAll('.entry').forEach(div => {
+        const idx = +div.dataset.index;
+        const items = loadEntries();
+        div.querySelector('.code-display').textContent = generateTOTP(items[idx].secret);
+        div.querySelector('.progress-bar').style.width = (remain/30*100)+'%';
+      });
+    }
+
+    // Export JSON
+    document.getElementById('btnExport').onclick = () => {
+      const data = JSON.stringify(loadEntries(), null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = `2fa_backup.json`; document.body.appendChild(a); a.click(); a.remove();
+    };
+    // Import JSON
+    document.getElementById('btnImport').onclick = () => importFile.click();
+    importFile.onchange = e => {
+      const file = e.target.files[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => {
+        try {
+          const arr = JSON.parse(evt.target.result);
+          if(Array.isArray(arr)) { saveEntries(arr); render(); alert('Đã nhập ' + arr.length + ' mục'); }
+          else alert('File không đúng định dạng JSON');
+        } catch { alert('Lỗi khi đọc file JSON'); }
+      };
+      reader.readAsText(file);
+      importFile.value = null;
+    };
+
+    form.onsubmit = e => {
+      e.preventDefault(); const label = labelInput.value.trim(), secret = secretInput.value.trim();
+      if(!label || !secret) return;
+      const items = loadEntries();
+      if(editIndex !== null) items[editIndex] = {label,secret};
+      else items.push({label,secret});
+      saveEntries(items); labelInput.value = ''; secretInput.value = '';
+      submitBtn.textContent = 'Thêm 2FA'; editIndex = null; render();
+    };
+
+    // Initialize
+    render();
+    setInterval(updateAll, 1000);
+  </script>
+</body>
+</html>

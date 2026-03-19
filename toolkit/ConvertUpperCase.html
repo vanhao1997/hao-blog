@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chuyển đổi chữ hoa / chữ thường</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <style>
+    :root { --brand:#2563eb; --bg:#f6f8fa; --text:#1f2937; }
+    * { box-sizing:border-box }
+    body { margin:0; background:var(--bg); color:var(--text);
+           font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:16px; line-height:1.5; }
+    .wrap { max-width:980px; margin:32px auto; padding:24px; background:#fff; border-radius:12px;
+            box-shadow:0 8px 24px rgba(0,0,0,.06); }
+    h1 { margin:0 0 8px; font-size:22px }
+    p.lead { margin:0 0 16px; color:#6b7280 }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px }
+    .ctrl { display:flex; flex-direction:column; gap:8px }
+    label { font-size:13px; color:#374151 }
+    textarea { width:100%; min-height:260px; padding:12px; border:1px solid #e5e7eb; border-radius:10px; resize:vertical;
+               outline:none; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:14px; }
+    select, input[type="text"] { width:100%; padding:10px 12px; border:1px solid #e5e7eb; border-radius:8px; outline:none; background:#fff }
+    .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+    .btn { appearance:none; border:1px solid var(--brand); background:#fff; color:var(--brand);
+           padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; font-size:14px; transition:.15s }
+    .btn:hover { background:rgba(37,99,235,.06) }
+    .btn.primary { background:var(--brand); color:#fff }
+    .btn.primary:hover { filter:brightness(.96) }
+    .btn:disabled { opacity:.5; cursor:not-allowed }
+    .hint { font-size:12px; color:#6b7280 }
+    .stats { font-size:13px; color:#6b7280 }
+    .footer { margin-top:18px; font-size:12px; color:#9ca3af }
+    @media (max-width:880px){ .grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Chuyển đổi chữ hoa / chữ thường</h1>
+    <p class="lead">Nhập văn bản, chọn chế độ rồi bấm <b>Thực hiện</b>. Xử lý hoàn toàn trên thiết bị của bạn.</p>
+
+    <div class="grid">
+      <!-- CỘT TRÁI -->
+      <div class="ctrl">
+        <label for="input">Văn bản gốc</label>
+        <textarea id="input" placeholder="Dán hoặc nhập văn bản tại đây..."></textarea>
+
+        <div class="row">
+          <select id="mode" title="Chọn chế độ">
+            <option value="upper">UPPERCASE (chữ HOA)</option>
+            <option value="lower">lowercase (chữ thường)</option>
+            <option value="title">Capitalize Words (hoa chữ cái đầu mỗi từ)</option>
+            <option value="sentence">Sentence case (hoa chữ cái đầu mỗi câu)</option>
+            <option value="invert">iNVERT cASE (đảo hoa ↔ thường)</option>
+            <option value="random">rAnDoM cAsE (ngẫu nhiên)</option>
+          </select>
+          <button class="btn primary" id="convert" type="button">Thực hiện</button>
+          <label class="row" style="gap:6px; margin-left:auto; font-size:13px;">
+            <input type="checkbox" id="auto" checked /> Tự động khi gõ
+          </label>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="swap" type="button">Đổi chỗ (kết quả → đầu vào)</button>
+          <button class="btn" id="clear" type="button">Xoá</button>
+          <span class="stats" id="stats-in" style="margin-left:auto;">0 ký tự • 0 từ • 0 dòng</span>
+        </div>
+      </div>
+
+      <!-- CỘT PHẢI -->
+      <div class="ctrl">
+        <label for="output">Kết quả</label>
+        <textarea id="output" placeholder="Kết quả sẽ hiển thị tại đây..." readonly></textarea>
+
+        <div class="row">
+          <button class="btn" id="copy" type="button">Sao chép</button>
+          <button class="btn" id="download" type="button">Tải .txt</button>
+          <span class="stats" id="stats-out" style="margin-left:auto;">0 ký tự • 0 từ • 0 dòng</span>
+        </div>
+        <span class="hint">Gợi ý: <i>Sentence case</i> viết hoa chữ cái đầu sau dấu chấm (., !, ?).</span>
+      </div>
+    </div>
+
+    <div class="footer">© Case Converter · Client‑side only · Không lưu dữ liệu.</div>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    input: $('input'), output: $('output'), mode: $('mode'),
+    convert: $('convert'), copy: $('copy'), download: $('download'),
+    swap: $('swap'), clear: $('clear'), auto: $('auto'),
+    statsIn: $('stats-in'), statsOut: $('stats-out')
+  };
+
+  // ===== Helpers =====
+  function countStats(s){
+    const chars = s.length;
+    // Nhận diện từ cho tiếng Việt/Latin mở rộng (không dùng \p{L})
+    const words = (s.match(/[A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+/g) || []).length;
+    const lines = s.split(/\r\n|\r|\n/).length;
+    return { chars, words, lines };
+  }
+  function renderStats(){
+    const i = countStats(els.input.value);
+    els.statsIn.textContent = `${i.chars} ký tự • ${i.words} từ • ${i.lines} dòng`;
+    const o = countStats(els.output.value);
+    els.statsOut.textContent = `${o.chars} ký tự • ${o.words} từ • ${o.lines} dòng`;
+  }
+
+  // Title Case — chữ đầu mỗi từ viết hoa (an toàn, không dùng \p{L})
+  function toTitleCase(str){
+    return (str || '').replace(/\S+/g, w => {
+      const first = w[0] || '';
+      const rest  = w.slice(1) || '';
+      return first.toLocaleUpperCase() + rest.toLocaleLowerCase();
+    });
+  }
+
+  // Sentence Case — viết hoa chữ đầu câu, phần còn lại thường
+  function toSentenceCase(str){
+    const lower = (str || '').toLocaleLowerCase();
+    // Hoa chữ cái đầu chuỗi
+    let out = lower.replace(/^[\s]*([A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ])/,
+                            (m, p1) => m.replace(p1, p1.toLocaleUpperCase()));
+    // Sau dấu .!? + khoảng trắng/ xuống dòng
+    out = out.replace(/([.!?]+[\s\n\r]+)([A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ])/g,
+                      (m, p1, p2) => p1 + p2.toLocaleUpperCase());
+    return out;
+  }
+
+  // Invert Case
+  function invertCase(str){
+    return Array.from(str || '').map(ch => {
+      const up = ch.toLocaleUpperCase();
+      const low = ch.toLocaleLowerCase();
+      return ch === up ? low : up;
+    }).join('');
+  }
+
+  // Random Case
+  function randomCase(str){
+    return Array.from(str || '').map(ch => {
+      if (!/[A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]/.test(ch)) return ch;
+      return Math.random() < 0.5 ? ch.toLocaleLowerCase() : ch.toLocaleUpperCase();
+    }).join('');
+  }
+
+  function transform(){
+    const text = els.input.value || '';
+    let out = text;
+    switch(els.mode.value){
+      case 'upper': out = text.toLocaleUpperCase(); break;
+      case 'lower': out = text.toLocaleLowerCase(); break;
+      case 'title': out = toTitleCase(text); break;
+      case 'sentence': out = toSentenceCase(text); break;
+      case 'invert': out = invertCase(text); break;
+      case 'random': out = randomCase(text); break;
+    }
+    els.output.value = out;
+    renderStats();
+  }
+
+  // ===== Events =====
+  els.convert.addEventListener('click', transform);
+  els.mode.addEventListener('change', () => els.auto.checked ? transform() : null);
+  els.input.addEventListener('input', () => els.auto.checked ? transform() : renderStats());
+
+  els.copy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(els.output.value || '');
+      els.copy.textContent = 'Đã sao chép'; setTimeout(()=> els.copy.textContent='Sao chép', 1200);
+    } catch { els.output.select(); document.execCommand('copy'); }
+  });
+
+  els.download.addEventListener('click', () => {
+    const blob = new Blob([els.output.value || ''], { type:'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'ket-qua.txt';
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url), 500);
+  });
+
+  els.swap.addEventListener('click', () => { els.input.value = els.output.value || ''; transform(); });
+  els.clear.addEventListener('click', () => { els.input.value=''; els.output.value=''; renderStats(); els.input.focus(); });
+
+  // Init
+  transform();
+  // Flag kiểm tra nhanh trên Console
+  window.CASE_CONVERTER_READY = true;
+});
+</script>
+</body>
+</html>

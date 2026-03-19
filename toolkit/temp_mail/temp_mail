@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temp Mail Tool - Mail.tm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                </div>
+                <h1>Temp Mail</h1>
+            </div>
+            <p class="tagline">Tạo email tạm thời miễn phí & bảo mật</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Email Generator Card -->
+            <section class="card email-generator">
+                <div class="card-header">
+                    <h2>📧 Email Tạm Thời</h2>
+                    <span class="badge" id="statusBadge">Chưa tạo</span>
+                </div>
+                
+                <div class="email-display" id="emailDisplay">
+                    <div class="email-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        <p>Nhấn nút bên dưới để tạo email tạm</p>
+                    </div>
+                    <div class="email-address hidden" id="emailAddress">
+                        <span class="email-text" id="emailText"></span>
+                        <button class="btn-icon copy-btn" onclick="copyEmail()" title="Sao chép">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="createBtn" onclick="createEmail()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Tạo Email Mới
+                    </button>
+                    <button class="btn btn-secondary" id="refreshBtn" onclick="refreshInbox()" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"/>
+                            <polyline points="1 20 1 14 7 14"/>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                        </svg>
+                        Làm mới Inbox
+                    </button>
+                </div>
+
+                <div class="auto-refresh">
+                    <label class="toggle">
+                        <input type="checkbox" id="autoRefresh" onchange="toggleAutoRefresh()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span>Tự động làm mới (10s)</span>
+                </div>
+            </section>
+
+            <!-- Inbox Card -->
+            <section class="card inbox">
+                <div class="card-header">
+                    <h2>📬 Hộp Thư Đến</h2>
+                    <span class="message-count" id="messageCount">0 tin</span>
+                </div>
+
+                <div class="inbox-content" id="inboxContent">
+                    <div class="empty-inbox" id="emptyInbox">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                            <path d="M22 12h-6l-2 3h-4l-2-3H2"/>
+                            <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+                        </svg>
+                        <p>Hộp thư trống</p>
+                        <span>Các email mới sẽ hiển thị ở đây</span>
+                    </div>
+                    <div class="message-list hidden" id="messageList"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Email Detail Modal -->
+        <div class="modal" id="emailModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalSubject">Tiêu đề email</h3>
+                    <button class="btn-icon close-modal" onclick="closeModal()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Từ:</span>
+                        <span class="meta-value" id="modalFrom"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Đến:</span>
+                        <span class="meta-value" id="modalTo"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Thời gian:</span>
+                        <span class="meta-value" id="modalDate"></span>
+                    </div>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast">
+            <span id="toastMessage">Đã sao chép!</span>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

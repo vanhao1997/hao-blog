@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý bài viết - Admin</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/css/admin.css">
+    <!-- Marked JS for Markdown Support -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* TinyMCE Fixes if needed */
+        .tox-tinymce {
+            border-radius: 8px !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <a href="index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
+            <nav class="admin-nav">
+                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item active">📝 Bài viết</a>
+                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
+                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
+                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
+                <a href="/admin/seo-cloner.html" class="nav-item">🤖 SEO Cloner</a>
+                <div class="nav-divider"></div>
+                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>Quản lý bài viết</h1>
+                <button class="btn btn-primary" onclick="openModal()">+ Thêm bài viết</button>
+            </header>
+
+            <div class="admin-content">
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tiêu đề</th>
+                                <th>Danh mục</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="postsTable">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 40px;">Đang tải...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Post Modal -->
+    <div class="modal-overlay" id="postModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Thêm bài viết</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="postForm">
+                    <input type="hidden" id="postId">
+                    <div class="form-group">
+                        <label class="form-label">Tiêu đề *</label>
+                        <input type="text" id="postTitle" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Slug (URL)</label>
+                        <input type="text" id="postSlug" class="form-input" placeholder="tu-dong-tao-tu-tieu-de">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Danh mục</label>
+                        <select id="postCategory" class="form-select"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mô tả ngắn</label>
+                        <textarea id="postExcerpt" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <label class="form-label" style="margin-bottom:0;">Nội dung</label>
+                            <button type="button" class="btn btn-secondary"
+                                style="font-size: 0.85rem; padding: 6px 12px; display: flex; align-items: center; gap: 6px;"
+                                onclick="document.getElementById('mdInput').click()">
+                                <span>📥</span> Import Markdown
+                            </button>
+                            <input type="file" id="mdInput" accept=".md,.txt" style="display:none"
+                                onchange="handleMarkdownImport(this)">
+                        </div>
+                        <div style="margin-top: 8px;">
+                            <!-- TinyMCE Container -->
+                        </div>
+                        <textarea id="postContent" style="min-height: 400px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ảnh đại diện (URL)</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="url" id="postImage" class="form-input" placeholder="https://..."
+                                style="flex: 1;">
+                            <button type="button" class="btn btn-secondary" onclick="openImagePicker()">🖼️ Chọn
+                                ảnh</button>
+                        </div>
+                    </div>
+                    <div class="form-actions" style="display: flex; gap: 12px; margin-top: 24px;">
+                        <button type="button" class="btn btn-secondary" onclick="submitPost(false)" style="flex: 1;">📝
+                            Lưu nháp</button>
+                        <button type="button" class="btn btn-primary" onclick="submitPost(true)" style="flex: 1;">🚀
+                            Xuất bản</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Picker Modal -->
+    <div class="modal-overlay" id="imagePickerModal" style="z-index: 2000;">
+        <div class="modal" style="width: 95%; max-width: 1500px; height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 class="modal-title">Chọn ảnh từ thư viện</h3>
+                <button class="modal-close" onclick="closeImagePicker()">&times;</button>
+            </div>
+            <div class="modal-body"
+                style="flex: 1; overflow-y: hidden; padding: 0; display: flex; flex-direction: column;">
+                <div class="image-grid" id="pickerImagesGrid"
+                    style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; overflow-y: auto; padding: 24px; flex: 1; align-content: start;">
+                    <!-- Images will be loaded here -->
+                    <p>Đang tải...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
+    <!-- <script src="/js/supabase-config.js"></script> -->
+    <script src="/js/api.js"></script>
+    <script src="/admin/js/admin.js"></script>
+    <!-- TinyMCE JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.3.0/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        // Initialize Quill
+        // Initialize TinyMCE
+        tinymce.init({
+            selector: '#postContent',
+            plugins: 'table lists link image code wordcount',
+            toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | table link image | code',
+            height: 400,
+            menubar: false,
+            statusbar: true,
+            branding: false,
+            promotion: false,
+            block_formats: 'Paragraph=p; Header 1=h2; Header 2=h3; Header 3=h4; Preformatted=pre',
+            content_style: `
+                body { font-family: 'DM Sans', sans-serif; font-size: 16px; color: #334155; line-height: 1.6; }
+                h2, h3, h4 { color: #0f172a; margin-top: 20px; font-weight: 700; }
+                table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+                table td, table th { border: 1px solid #cbd5e1; padding: 10px; }
+                table th { background-color: #f1f5f9; font-weight: 600; text-align: left; }
+                ul, ol { padding-left: 20px; }
+                blockquote { border-left: 4px solid #6366f1; padding-left: 16px; margin-left: 0; color: #64748b; font-style: italic; }
+            `,
+            setup: function (editor) {
+                editor.on('change', function () {
+                    editor.save();
+                });
+            }
+        });
+
+        async function handleMarkdownImport(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                // Convert Markdown to HTML using Marked
+                const html = marked.parse(text);
+
+                // Insert into TinyMCE
+                if (tinymce.get('postContent')) {
+                    tinymce.get('postContent').setContent(html);
+                    showToast('Đã import nội dung từ Markdown!', 'success');
+                }
+            } catch (e) {
+                console.error('Markdown import error', e);
+                showToast('Lỗi đọc file Markdown: ' + e.message, 'error');
+            }
+            input.value = ''; // Reset
+        }
+
+        let currentPostId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            await loadAllPosts();
+            await loadCategoriesSelect();
+
+            // Auto-generate slug
+            const titleInput = document.getElementById('postTitle');
+            const slugInput = document.getElementById('postSlug');
+
+            titleInput.addEventListener('input', (e) => {
+                if (!currentPostId || !slugInput.value) {
+                    slugInput.value = slugify(e.target.value);
+                }
+            });
+        });
+
+        async function openModal(id = null) {
+            currentPostId = id;
+            document.getElementById('modalTitle').textContent = id ? 'Sửa bài viết' : 'Thêm bài viết';
+            document.getElementById('postForm').reset();
+            // Clear TinyMCE
+            if (tinymce.get('postContent')) tinymce.get('postContent').setContent('');
+            document.getElementById('postId').value = '';
+            document.getElementById('postModal').classList.add('active');
+
+            if (id) {
+                try {
+                    const post = await API.getPost(id);
+                    if (post) {
+                        document.getElementById('postId').value = post.id;
+                        document.getElementById('postTitle').value = post.title;
+                        document.getElementById('postSlug').value = post.slug;
+                        document.getElementById('postCategory').value = post.category_id || '';
+                        document.getElementById('postExcerpt').value = post.excerpt || '';
+                        // document.getElementById('postContent').value = post.content || ''; // Old textarea way
+                        // Load content into TinyMCE
+                        if (tinymce.get('postContent')) tinymce.get('postContent').setContent(post.content || '');
+                        // Published status is now handled by buttons on save, 
+                        // but we might want to show current status? 
+                        // For now, simplicity: buttons determine new status.
+                    }
+                } catch (e) {
+                    console.error('Error fetching post', e);
+                    showToast('Lỗi tải bài viết: ' + e.message, 'error');
+                }
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('postModal').classList.remove('active');
+        }
+
+        window.editPost = openModal;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+
+        // Save Post Logic (Draft vs Publish)
+        async function submitPost(isPublished) {
+            const btn = isPublished ?
+                document.querySelector('button[onclick="submitPost(true)"]') :
+                document.querySelector('button[onclick="submitPost(false)"]');
+
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⏳ ...';
+
+            const result = await savePost({
+                id: document.getElementById('postId').value || null,
+                title: document.getElementById('postTitle').value,
+                slug: document.getElementById('postSlug').value,
+                excerpt: document.getElementById('postExcerpt').value,
+                content: tinymce.get('postContent').getContent(),
+                featured_image: document.getElementById('postImage').value,
+                category_id: document.getElementById('postCategory').value,
+                is_published: isPublished ? 1 : 0
+            });
+
+            btn.disabled = false;
+            btn.textContent = originalText;
+
+            if (result.success) {
+                showToast(isPublished ? 'Đã xuất bản!' : 'Đã lưu nháp!', 'success');
+                closeModal();
+                await loadAllPosts();
+            } else {
+                showToast('Lỗi: ' + result.error, 'error');
+            }
+        }
+
+        // Image Picker Logic (updated with tight layout)
+        function openImagePicker() {
+            document.getElementById('imagePickerModal').classList.add('active');
+            loadPickerImages();
+        }
+
+        function closeImagePicker() {
+            document.getElementById('imagePickerModal').classList.remove('active');
+        }
+
+        async function loadPickerImages() {
+            const grid = document.getElementById('pickerImagesGrid');
+            grid.innerHTML = '<p style="text-align:center;">Đang tải ảnh...</p>';
+
+            try {
+                const response = await API.getImages();
+                let images = [];
+                if (Array.isArray(response)) {
+                    images = response;
+                } else if (response && response.data) {
+                    images = response.data;
+                }
+
+                if (!images || images.length === 0) {
+                    grid.innerHTML = '<p style="text-align:center; padding: 20px;">Chưa có ảnh nào trong thư viện.</p>';
+                    return;
+                }
+
+                grid.innerHTML = images.map(img => `
+                    <div class="image-card" onclick="selectPickerImage('${img.url}')" style="cursor: pointer; border: 2px solid transparent; transition: all 0.2s; padding: 4px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.1); border-radius: 8px; height: fit-content;">
+                        <img src="${img.url}" alt="${img.alt_text || ''}" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; display: block;">
+                    </div>
+                `).join('');
+
+                // Add hover effect
+                grid.querySelectorAll('.image-card').forEach(card => {
+                    card.addEventListener('mouseover', () => card.style.borderColor = '#22C55E');
+                    card.addEventListener('mouseout', () => card.style.borderColor = 'transparent');
+                });
+            } catch (error) {
+                console.error('Load images error:', error);
+                grid.innerHTML = `<p style="color: red; text-align:center;">Lỗi tải thư viện ảnh: ${error.message}</p>`;
+            }
+        }
+
+        function selectPickerImage(url) {
+            document.getElementById('postImage').value = url;
+            closeImagePicker();
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Google Keyword Wrapper</title>
+  <style>
+    :root { --brand:#2563eb; --bg:#f6f8fa; --text:#1f2937; }
+    * { box-sizing:border-box; }
+    body {
+      margin:0; padding:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background:var(--bg); color:var(--text);
+    }
+    .wrap {
+      max-width:800px; margin:32px auto; padding:24px;
+      background:#fff; border-radius:8px;
+      box-shadow:0 4px 16px rgba(0,0,0,.1);
+    }
+    .banner {
+      background:var(--brand); color:#fff; text-align:center;
+      padding:16px; font-size:28px; font-weight:700; border-radius:6px;
+      margin-bottom:24px;
+    }
+    h1 {
+      margin:0 0 16px; font-size:24px; color:var(--brand);
+      text-align:center;
+    }
+    textarea {
+      width:100%; min-height:120px; padding:12px;
+      border:1px solid #e5e7eb; border-radius:6px;
+      resize:vertical; font-size:14px;
+    }
+    .row {
+      display:flex; gap:12px; align-items:center; margin-top:16px;
+    }
+    .btn {
+      padding:8px 16px; font-size:14px; border:none; border-radius:6px;
+      background:var(--brand); color:#fff; cursor:pointer;
+      transition:background .2s;
+    }
+    .btn:hover { background:#1e4bb8; }
+    .controls {
+      display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:24px;
+    }
+    .out-group { display:flex; flex-direction:column; gap:8px; }
+    .title { font-weight:600; font-size:16px; }
+    .copy-btn { background:#10b981; margin-top:4px; }
+    .reset-btn { background:#ef4444; margin-top:4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="banner">Google Keyword Wrapper</div>
+    <div class="out-group">
+      <label for="inputKeywords" class="title">Nhập keywords</label>
+      <textarea id="inputKeywords" placeholder="Nhập một từ khoá mỗi dòng hoặc ngăn cách dấu phẩy"></textarea>
+    </div>
+
+    <div class="row">
+      <button id="btnGenerate" class="btn">Generate</button>
+      <button id="btnLowercase" class="btn">Chuyển sang chữ thường</button>
+      <button id="btnReset" class="btn reset-btn">Reset</button>
+    </div>
+
+    <div class="controls">
+      <div class="out-group">
+        <label for="outputPhrase" class="title">Khớp cụm từ</label>
+        <textarea id="outputPhrase" readonly></textarea>
+        <button id="copyPhrase" class="btn copy-btn">Copy</button>
+      </div>
+      <div class="out-group">
+        <label for="outputExact" class="title">Khớp chính xác</label>
+        <textarea id="outputExact" readonly></textarea>
+        <button id="copyExact" class="btn copy-btn">Copy</button>
+      </div>
+      <div class="out-group">
+        <label for="outputNegative" class="title">Từ khoá phủ định</label>
+        <textarea id="outputNegative" readonly></textarea>
+        <button id="copyNegative" class="btn copy-btn">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    function parseInput(txt) {
+      return txt
+        .split(/[\r\n,]+/)  
+        .map(s => s.trim())
+        .filter(Boolean);
+    }
+
+    function generate() {
+      const raw = $('inputKeywords').value;
+      const kws = parseInput(raw);
+
+      const phrase = [];
+      const exact = [];
+      const negative = [];
+
+      kws.forEach(kw => {
+        phrase.push(`"${kw}"`);
+        exact.push(`[${kw}]`);
+        negative.push(`-${kw}`);
+      });
+
+      $('outputPhrase').value = phrase.join('\n');
+      $('outputExact').value = exact.join('\n');
+      $('outputNegative').value = negative.join('\n');
+    }
+
+    function copyText(id) {
+      const txt = $(id).value;
+      navigator.clipboard.writeText(txt).then(() => {
+        const btn = $(id.replace('output', 'copy'));
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = orig, 1200);
+      });
+    }
+
+    // Lowercase transformation
+    function toLowercase() {
+      const area = $('inputKeywords');
+      area.value = area.value.toLowerCase();
+    }
+
+    // Reset all fields
+    function resetAll() {
+      $('inputKeywords').value = '';
+      $('outputPhrase').value = '';
+      $('outputExact').value = '';
+      $('outputNegative').value = '';
+    }
+
+    // Event listeners
+    $('btnGenerate').addEventListener('click', generate);
+    $('btnLowercase').addEventListener('click', toLowercase);
+    $('btnReset').addEventListener('click', resetAll);
+    $('copyPhrase').addEventListener('click', () => copyText('outputPhrase'));
+    $('copyExact').addEventListener('click', () => copyText('outputExact'));
+    $('copyNegative').addEventListener('click', () => copyText('outputNegative'));
+  </script>
+</body>
+</html>

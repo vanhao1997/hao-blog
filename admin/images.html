@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý hình ảnh - Admin</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <a href="/admin/index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
+            <nav class="admin-nav">
+                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
+                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
+                <a href="/admin/images.html" class="nav-item active">🖼️ Hình ảnh</a>
+                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
+                <a href="/admin/seo-cloner.html" class="nav-item">🤖 SEO Cloner</a>
+                <div class="nav-divider"></div>
+                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>Quản lý hình ảnh</h1>
+            </header>
+
+            <div class="admin-content">
+                <!-- Add by File Upload (Hosting) -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header">
+                        <h3>Upload hình ảnh (Hosting)</h3>
+                    </div>
+                    <div style="padding: 24px;">
+                        <form id="uploadForm" style="display: flex; gap: 12px; align-items: center;">
+                            <input type="file" id="imageFile" class="form-input" accept="image/*" required
+                                style="flex: 1;">
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </form>
+                        <div style="margin-top: 10px; font-size: 0.9em; color: #6b7280;">
+                            * Lưu ý: Tính năng upload chỉ hoạt động khi đã deploy lên hosting có hỗ trợ PHP.
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Images Grid -->
+                <div class="image-grid" id="imagesGrid">
+                    <p style="grid-column: 1/-1; text-align: center; padding: 60px;">Đang tải...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
+    <!-- <script src="/js/supabase-config.js"></script> -->
+    <script src="/js/api.js"></script>
+    <script src="/admin/js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            await loadImages();
+        });
+
+        // Handle File Upload
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('imageFile');
+            const file = fileInput.files[0];
+            const btn = e.target.querySelector('button');
+
+            if (!file) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Đang upload...';
+
+            const result = await uploadImageFile(file);
+
+            btn.disabled = false;
+            btn.textContent = 'Upload';
+
+            if (result.success) {
+                showToast('Upload thành công!', 'success');
+                fileInput.value = '';
+                await loadImages();
+            } else {
+                showToast('Lỗi: ' + result.error, 'error');
+            }
+        });
+
+        // Add image by URL
+        document.getElementById('urlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('imageUrl').value;
+            const alt = document.getElementById('imageAlt').value;
+            const btn = e.target.querySelector('button');
+
+            btn.disabled = true;
+            btn.textContent = 'Đang thêm...';
+
+            try {
+                const filename = url.split('/').pop().split('?')[0] || 'image';
+
+                await API.request('/images.php', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        filename: filename,
+                        url: url,
+                        alt_text: alt
+                    })
+                });
+
+                showToast('Đã thêm!', 'success');
+                e.target.reset();
+                await loadImages();
+            } catch (error) {
+                showToast('Lỗi: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Thêm Link';
+            }
+        });
+    </script>
+</body>
+
+</html>
