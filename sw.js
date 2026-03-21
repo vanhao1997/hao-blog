@@ -3,9 +3,9 @@ const CACHE_NAME = 'nvh-blog-v1';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
-    '/blog.html',
-    '/about.html',
-    '/contact.html',
+    '/blog',
+    '/gioi-thieu',
+    '/lien-he',
     '/css/main.css',
     '/css/style.css',
     '/css/animations.css',
