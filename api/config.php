@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'qskqmzfd_nguyenvanhao.name.vn');
 define('DB_USER', 'qskqmzfd_vanhao97');
-define('DB_PASS', '090597aA!@');
+define('DB_PASS', 'Haoblog2026!@#');
 
 // Error Reporting (Turn off for production to avoid leaking info, but keep logged)
 error_reporting(E_ALL);
