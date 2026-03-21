@@ -187,162 +187,34 @@
                         <p id="formStatus" style="margin-top: 12px; font-weight: 600; display: none;"></p>
                     </form>
 
-                    <!-- Thank You Popup -->
-                    <div class="thankyou-overlay" id="thankyouPopup">
-                        <div class="thankyou-popup">
-                            <button class="thankyou-close" id="thankyouClose">&times;</button>
-                            <div class="thankyou-icon">
-                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-                                    <circle cx="32" cy="32" r="30" stroke="#22C55E" stroke-width="4" fill="#22C55E"
-                                        fill-opacity="0.1" />
-                                    <path d="M20 33L28 41L44 23" stroke="#22C55E" stroke-width="4"
-                                        stroke-linecap="round" stroke-linejoin="round" class="thankyou-check" />
-                                </svg>
-                            </div>
-                            <h3 class="thankyou-title">Cảm ơn bạn!</h3>
-                            <p class="thankyou-message">Tin nhắn đã được gửi thành công.<br>Mình sẽ phản hồi sớm nhất có
-                                thể!</p>
-                            <button class="btn btn-primary btn-lg thankyou-btn" id="thankyouOk">Tuyệt vời! ✨</button>
-                        </div>
-                    </div>
-
-                    <style>
-                        .thankyou-overlay {
-                            position: fixed;
-                            inset: 0;
-                            z-index: 9999;
-                            background: rgba(0, 0, 0, 0.5);
-                            backdrop-filter: blur(6px);
-                            display: none;
-                            align-items: center;
-                            justify-content: center;
-                            opacity: 0;
-                            transition: opacity 0.3s ease;
-                        }
-
-                        .thankyou-overlay.active {
-                            display: flex;
-                            opacity: 1;
-                        }
-
-                        .thankyou-popup {
-                            background: var(--color-white, #fff);
-                            border: 3px solid var(--color-black, #1F2937);
-                            border-radius: 24px;
-                            padding: 48px 40px;
-                            text-align: center;
-                            max-width: 420px;
-                            width: 90%;
-                            box-shadow: 8px 8px 0 var(--color-black, #1F2937);
-                            transform: scale(0.8);
-                            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-                            position: relative;
-                        }
-
-                        .thankyou-overlay.active .thankyou-popup {
-                            transform: scale(1);
-                        }
-
-                        .thankyou-close {
-                            position: absolute;
-                            top: 16px;
-                            right: 20px;
-                            background: none;
-                            border: none;
-                            font-size: 28px;
-                            cursor: pointer;
-                            color: var(--color-gray, #6B7280);
-                            line-height: 1;
-                        }
-
-                        .thankyou-close:hover {
-                            color: var(--color-black, #1F2937);
-                        }
-
-                        .thankyou-icon {
-                            margin-bottom: 20px;
-                        }
-
-                        .thankyou-check {
-                            stroke-dasharray: 40;
-                            stroke-dashoffset: 40;
-                            animation: drawCheck 0.6s 0.3s ease forwards;
-                        }
-
-                        @keyframes drawCheck {
-                            to {
-                                stroke-dashoffset: 0;
-                            }
-                        }
-
-                        .thankyou-title {
-                            font-size: 1.8rem;
-                            font-weight: 700;
-                            margin-bottom: 12px;
-                            color: var(--color-black, #1F2937);
-                        }
-
-                        .thankyou-message {
-                            color: var(--color-gray, #6B7280);
-                            font-size: 1rem;
-                            line-height: 1.6;
-                            margin-bottom: 28px;
-                        }
-
-                        .thankyou-btn {
-                            width: 100%;
-                            font-size: 1.1rem;
-                        }
-                    </style>
-
                     <script>
-                        (function () {
-                            const popup = document.getElementById('thankyouPopup');
-                            const closeBtn = document.getElementById('thankyouClose');
-                            const okBtn = document.getElementById('thankyouOk');
-
-                            function showPopup() {
-                                popup.style.display = 'flex';
-                                requestAnimationFrame(() => popup.classList.add('active'));
-                            }
-                            function hidePopup() {
-                                popup.classList.remove('active');
-                                setTimeout(() => { popup.style.display = 'none'; }, 300);
-                            }
-                            closeBtn.addEventListener('click', hidePopup);
-                            okBtn.addEventListener('click', hidePopup);
-                            popup.addEventListener('click', function (e) {
-                                if (e.target === popup) hidePopup();
-                            });
-
-                            document.getElementById('contactFormPage').addEventListener('submit', async function (e) {
-                                e.preventDefault();
-                                const btn = document.getElementById('submitBtn');
-                                const status = document.getElementById('formStatus');
-                                btn.disabled = true;
-                                btn.textContent = 'Đang gửi...';
-                                status.style.display = 'none';
-                                try {
-                                    const res = await fetch(this.action, {
-                                        method: 'POST',
-                                        body: new FormData(this),
-                                        headers: { 'Accept': 'application/json' }
-                                    });
-                                    if (res.ok) {
-                                        this.reset();
-                                        showPopup();
-                                    } else {
-                                        throw new Error('failed');
-                                    }
-                                } catch (err) {
-                                    status.textContent = '❌ Có lỗi xảy ra. Vui lòng thử lại hoặc liên hệ qua email.';
-                                    status.style.color = '#EF4444';
-                                    status.style.display = 'block';
+                        document.getElementById('contactFormPage').addEventListener('submit', async function (e) {
+                            e.preventDefault();
+                            const btn = document.getElementById('submitBtn');
+                            const status = document.getElementById('formStatus');
+                            btn.disabled = true;
+                            btn.textContent = 'Đang gửi...';
+                            status.style.display = 'none';
+                            try {
+                                const res = await fetch(this.action, {
+                                    method: 'POST',
+                                    body: new FormData(this),
+                                    headers: { 'Accept': 'application/json' }
+                                });
+                                if (res.ok) {
+                                    this.reset();
+                                    showThankYouPopup();
+                                } else {
+                                    throw new Error('failed');
                                 }
-                                btn.disabled = false;
-                                btn.textContent = 'Gửi tin nhắn →';
-                            });
-                        })();
+                            } catch (err) {
+                                status.textContent = '❌ Có lỗi xảy ra. Vui lòng thử lại hoặc liên hệ qua email.';
+                                status.style.color = '#EF4444';
+                                status.style.display = 'block';
+                            }
+                            btn.disabled = false;
+                            btn.textContent = 'Gửi tin nhắn →';
+                        });
                     </script>
                 </div>
             </div>
