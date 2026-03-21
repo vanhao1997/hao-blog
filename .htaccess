@@ -39,3 +39,8 @@ RewriteRule ^blog$ /blog.html [L]
 RewriteRule ^gioi-thieu$ /about.html [L]
 RewriteRule ^lien-he$ /contact.html [L]
 RewriteRule ^toolkit$ /toolkit/index.html [L]
+
+# Blog post pretty URLs: /blog/my-post-slug → post.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^blog/(.+)$ /post.html [L]
