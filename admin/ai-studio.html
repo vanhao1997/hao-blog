@@ -211,7 +211,8 @@
                 <button class="md:hidden text-2xl text-slate-600">☰</button>
                 <div class="flex items-center gap-3">
                     <span class="font-bold text-xl text-slate-800 tracking-tight">AI Content Studio</span>
-                    <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">v2.0</span>
+                    <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">v3.0 SEO
+                        Pro</span>
                 </div>
             </div>
             <div class="flex items-center gap-4">
@@ -309,34 +310,58 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full overflow-hidden animate-fade-in">
                     <!-- Left: Metadata + Banner -->
                     <div class="lg:col-span-4 flex flex-col gap-4 overflow-y-auto controls-scroll pr-1 pb-20">
-                        <!-- SEO Metadata -->
+                        <!-- SEO Metadata (Editable) -->
                         <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
                             <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
                                 <div class="bg-indigo-50 p-1.5 rounded-md text-indigo-600"><i data-lucide="tag"
                                         class="w-4 h-4"></i></div>
                                 <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wide">SEO Metadata</h3>
+                                <span
+                                    class="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-bold ml-auto">Editable</span>
                             </div>
                             <div>
                                 <label
                                     class="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Title
-                                    Tag</label>
-                                <p id="res-seo-title"
-                                    class="text-slate-800 text-sm font-medium leading-relaxed bg-slate-50 border border-slate-200 p-3 rounded-lg cursor-pointer hover:border-indigo-300 transition-all"
-                                    onclick="copyText(this.innerText)"></p>
+                                    Tag <span id="titleCharCount" class="text-indigo-500 font-mono"></span></label>
+                                <input type="text" id="res-seo-title"
+                                    class="w-full text-slate-800 text-sm font-medium bg-slate-50 border border-slate-200 p-3 rounded-lg focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+                                    oninput="updateTitleCount()">
                             </div>
                             <div>
                                 <label
                                     class="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Meta
-                                    Description</label>
-                                <p id="res-meta-desc"
-                                    class="text-slate-600 text-sm leading-relaxed bg-slate-50 border border-slate-200 p-3 rounded-lg cursor-pointer hover:border-indigo-300 transition-all"
-                                    onclick="copyText(this.innerText)"></p>
+                                    Description <span id="descCharCount"
+                                        class="text-indigo-500 font-mono"></span></label>
+                                <textarea id="res-meta-desc" rows="3"
+                                    class="w-full text-slate-600 text-sm bg-slate-50 border border-slate-200 p-3 rounded-lg focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition-all resize-none"
+                                    oninput="updateDescCount()"></textarea>
+                            </div>
+                            <div>
+                                <label
+                                    class="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Danh
+                                    mục</label>
+                                <select id="res-category"
+                                    class="w-full text-sm bg-slate-50 border border-slate-200 p-3 rounded-lg outline-none focus:border-indigo-400">
+                                    <option value="">— Chọn danh mục —</option>
+                                </select>
                             </div>
                             <div>
                                 <label
                                     class="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">Keywords</label>
                                 <div id="res-keywords" class="flex flex-wrap gap-2"></div>
                             </div>
+                        </div>
+
+                        <!-- SEO Score -->
+                        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
+                            <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                                <div class="bg-amber-50 p-1.5 rounded-md text-amber-600"><i data-lucide="bar-chart-3"
+                                        class="w-4 h-4"></i></div>
+                                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wide">SEO Score</h3>
+                                <span id="seoScoreBadge"
+                                    class="ml-auto text-xs font-bold px-2 py-0.5 rounded-full"></span>
+                            </div>
+                            <div class="space-y-2" id="seoChecklist"></div>
                         </div>
 
                         <!-- Auto Banner -->
@@ -621,53 +646,85 @@
 
         function buildPromptURL(url) {
             return `
-Role: Senior SEO Content Specialist focused on the Vietnamese market.
-Task: Analyze content from ${url} and rewrite it into a high-quality blog post for "nguyenvanhao.name.vn".
+Role: Senior SEO Content Specialist & On-Page SEO Expert focused on the Vietnamese market.
+Task: Analyze content from ${url} and rewrite it into a top-ranking SEO blog post for "nguyenvanhao.name.vn".
 
-Guidelines:
-1. **Language & Tone**: Write in natural, engaging Vietnamese.
-2. **Originality**: Do NOT simply translate. Synthesize the information.
-3. **Formatting**: Use Markdown for the content (H2, H3, bold).
-   **CRITICAL**: Keep and include all original <img> tags (with their original source URLs) and YouTube <iframe> tags found in the source article.
-4. **Constraints**:
-   - Strictly NO mention of the original brand/competitors.
-   - NO external text links, but KEEP original image and video embeds.
+## SEO Requirements (MANDATORY):
+1. **Title Tag**: 55-65 characters. Must contain main keyword near the beginning. Use power words.
+2. **Meta Description**: 145-160 characters. Include main keyword + clear CTA.
+3. **Keywords**: Return 5-8 LSI keywords relevant to the topic.
+4. **Article Structure**:
+   - Start with a compelling intro (2-3 sentences hooking the reader, mention the main keyword)
+   - Use **Table of Contents** at the top using markdown links: "## Nội dung bài viết" followed by numbered list
+   - Use **H2 headings** that contain target keywords (5-8 H2s)
+   - Use **H3 sub-headings** for detailed breakdowns under H2s
+   - Include **bold** for important terms and key phrases
+   - Include at least 1 comparison **table** (markdown table format)
+   - Include at least 1 **numbered list** or **bullet list** of actionable tips
+   - End with "## Câu hỏi thường gặp (FAQ)" section with 3-5 Q&A pairs using **### format** for each question
+   - End with a brief conclusion with a CTA sentence.
+5. **Content Quality**:
+   - Write in natural, engaging Vietnamese. Avoid robotic tone.
+   - Each H2 section should be 150-300 words.
+   - Use transition words between sections.
+   - Include practical examples, data points, or case studies.
+6. **CRITICAL - Media**: Keep and include ALL original <img> tags (with their original URLs) and YouTube <iframe> tags found in source.
+7. **Constraints**:
+   - Strictly NO mention of original brand/competitors.
+   - NO external text links, but KEEP original image/video embeds.
    - DO NOT use citation symbols [1], [2],..
-   - DO NOT write summary sentences counting the total number of words
-5. **Clean Output Rules**: Return ONLY a valid raw JSON object.
-6. **LENGTH**: From 1800 to 2000 words. Must write deeply and rich in information.
+   - DO NOT write word count summaries.
+   - DO NOT write "Bài viết này" or self-referencing sentences.
+8. **LENGTH**: 2000-2500 words minimum. Write deeply with rich information.
+9. **Clean Output**: Return ONLY valid raw JSON.
 
 Output Format:
 {
-  "seo_title": "...",
-  "meta_description": "...",
-  "keywords": ["keyword1", "keyword2"],
-  "content_markdown": "Full blog post with <img> and <iframe> tags included."
+  "seo_title": "55-65 char title with main keyword",
+  "meta_description": "145-160 char description with keyword + CTA",
+  "keywords": ["main keyword", "lsi1", "lsi2", "lsi3", "lsi4"],
+  "content_markdown": "Full SEO-optimized blog post in Markdown with TOC, FAQ, tables, and media."
 }`;
         }
 
         function buildPromptKeyword(keyword) {
             return `
 Role: Senior SEO Content Specialist & Expert Writer focused on the Vietnamese market.
-Task: Write an original, comprehensive blog post about "${keyword}" for "nguyenvanhao.name.vn".
+Task: Write a top-ranking, original SEO blog post about "${keyword}" for "nguyenvanhao.name.vn".
 
-Guidelines:
-1. **Language & Tone**: Write in natural, engaging Vietnamese. Professional but approachable.
-2. **Originality**: This must be 100% original content. Well-researched, authoritative.
-3. **Formatting**: Use Markdown (H2, H3, bold, lists, tables where appropriate).
-4. **Structure**: Include numbered sections, practical examples, actionable tips.
-5. **Constraints**:
+## SEO Requirements (MANDATORY):
+1. **Title Tag**: 55-65 characters. "${keyword}" must appear near the beginning. Use power words (Hướng dẫn, Chiến lược, Bí quyết, Top, etc.).
+2. **Meta Description**: 145-160 characters. Include "${keyword}" + clear value proposition.
+3. **Keywords**: Return the main keyword + 5-7 LSI/related keywords.
+4. **Article Structure**:
+   - Start with a compelling intro (2-3 sentences, mention "${keyword}" naturally in first paragraph)
+   - Use **Table of Contents** at top: "## Nội dung bài viết" with numbered markdown links
+   - Use **H2 headings** that strategically include "${keyword}" or variations (5-8 H2s)
+   - Use **H3 sub-headings** for deeper breakdowns
+   - Use **bold** for important terms/phrases that support SEO
+   - Include at least 1 **comparison table** (markdown table)
+   - Include at least 1 **numbered/bullet list** of actionable tips
+   - End with "## Câu hỏi thường gặp (FAQ)" — 3-5 Q&A pairs, each question as ### heading
+   - End with conclusion + CTA.
+5. **Content Quality**:
+   - 100% original, authoritative, well-researched.
+   - Natural Vietnamese, professional but approachable.
+   - Each H2 section: 150-300 words with practical examples.
+   - Use transition words between sections.
+   - Include real-world examples, statistics, or data points where applicable.
+6. **Constraints**:
    - DO NOT use citation symbols [1], [2],..
-   - DO NOT write summary sentences counting the total number of words
-6. **Clean Output Rules**: Return ONLY a valid raw JSON object.
-7. **LENGTH**: From 1800 to 2000 words. Must write deeply and rich in information.
+   - DO NOT write word count summaries.
+   - DO NOT write self-referencing sentences ("Bài viết này...").
+7. **LENGTH**: 2000-2500 words minimum. Deep, comprehensive, information-rich.
+8. **Clean Output**: Return ONLY valid raw JSON.
 
 Output Format:
 {
-  "seo_title": "...",
-  "meta_description": "...",
-  "keywords": ["keyword1", "keyword2"],
-  "content_markdown": "Full blog post in Markdown."
+  "seo_title": "55-65 char title with ${keyword}",
+  "meta_description": "145-160 char with ${keyword} + value prop",
+  "keywords": ["${keyword}", "lsi1", "lsi2", "lsi3", "lsi4", "lsi5"],
+  "content_markdown": "Full SEO-optimized blog post in Markdown with TOC, FAQ, tables."
 }`;
         }
 
@@ -688,7 +745,7 @@ Output Format:
 
                 // Step 2 — AI writes
                 await new Promise(r => setTimeout(r, 500));
-                updateProgress(2, 'Bước 2/3: AI đang viết bài SEO 1800-2000 từ...');
+                updateProgress(2, 'Bước 2/3: AI đang viết bài SEO 2000-2500 từ (TOC + FAQ + Table)...');
 
                 const prompt = currentMode === 'url' ? buildPromptURL(input) : buildPromptKeyword(input);
                 const data = await callAI(prompt);
@@ -719,12 +776,79 @@ Output Format:
         }
 
         function renderResult(data) {
-            resultEls.title.textContent = data.seo_title;
-            resultEls.desc.textContent = data.meta_description;
+            document.getElementById('res-seo-title').value = data.seo_title || '';
+            document.getElementById('res-meta-desc').value = data.meta_description || '';
+            updateTitleCount(); updateDescCount();
             resultEls.keywords.innerHTML = (Array.isArray(data.keywords) ? data.keywords : []).map(k => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-md border border-slate-200">${k}</span>`).join('');
-            const html = marked.parse(data.content_markdown);
+            const html = marked.parse(data.content_markdown || '');
             resultEls.content.innerHTML = DOMPurify.sanitize(html, { ADD_TAGS: ["iframe"], ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling", "src"] });
             lucide.createIcons();
+            runSeoAnalysis(data);
+        }
+
+        function updateTitleCount() {
+            const len = document.getElementById('res-seo-title').value.length;
+            const el = document.getElementById('titleCharCount');
+            el.textContent = `(${len}/65)`;
+            el.className = len >= 55 && len <= 65 ? 'text-emerald-600 font-mono text-[10px]' : len > 65 ? 'text-red-500 font-mono text-[10px]' : 'text-amber-500 font-mono text-[10px]';
+        }
+        function updateDescCount() {
+            const len = document.getElementById('res-meta-desc').value.length;
+            const el = document.getElementById('descCharCount');
+            el.textContent = `(${len}/160)`;
+            el.className = len >= 145 && len <= 160 ? 'text-emerald-600 font-mono text-[10px]' : len > 160 ? 'text-red-500 font-mono text-[10px]' : 'text-amber-500 font-mono text-[10px]';
+        }
+
+        function runSeoAnalysis(data) {
+            const content = data.content_markdown || '';
+            const title = data.seo_title || '';
+            const desc = data.meta_description || '';
+            const words = content.split(/\s+/).filter(w => w.length > 0);
+            const wordCount = words.length;
+            const h2s = (content.match(/^## /gm) || []).length;
+            const h3s = (content.match(/^### /gm) || []).length;
+            const hasFAQ = /FAQ|Câu hỏi thường gặp/i.test(content);
+            const hasTOC = /Nội dung bài viết|Mục lục/i.test(content);
+            const hasTable = content.includes('|---') || content.includes('| ---');
+            const hasList = (content.match(/^[\-\*] |^\d+\. /gm) || []).length;
+            const titleLen = title.length;
+            const descLen = desc.length;
+            const mainKw = (data.keywords && data.keywords[0]) || '';
+            const kwInTitle = mainKw && title.toLowerCase().includes(mainKw.toLowerCase());
+            const kwInDesc = mainKw && desc.toLowerCase().includes(mainKw.toLowerCase());
+            const kwInH2 = mainKw && new RegExp(`## .*${mainKw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'im').test(content);
+            const kwInIntro = mainKw && content.split('\n').slice(0, 5).join(' ').toLowerCase().includes(mainKw.toLowerCase());
+
+            const checks = [
+                { label: `Số từ: ${wordCount}`, ok: wordCount >= 1800, detail: wordCount >= 1800 ? '✓ Đủ dài' : `Cần thêm ${1800 - wordCount} từ` },
+                { label: `Title: ${titleLen} ký tự`, ok: titleLen >= 50 && titleLen <= 70, detail: titleLen >= 50 && titleLen <= 70 ? '✓ Tối ưu' : titleLen < 50 ? 'Quá ngắn' : 'Quá dài' },
+                { label: `Description: ${descLen} ký tự`, ok: descLen >= 140 && descLen <= 165, detail: descLen >= 140 && descLen <= 165 ? '✓ Tối ưu' : descLen < 140 ? 'Quá ngắn' : 'Quá dài' },
+                { label: `H2 headings: ${h2s}`, ok: h2s >= 4, detail: h2s >= 4 ? '✓ Tốt' : 'Cần ≥4 H2' },
+                { label: `H3 sub-headings: ${h3s}`, ok: h3s >= 2, detail: h3s >= 2 ? '✓ Có cấu trúc' : 'Cần thêm H3' },
+                { label: 'Keyword trong Title', ok: kwInTitle, detail: kwInTitle ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Keyword trong Description', ok: kwInDesc, detail: kwInDesc ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Keyword trong H2', ok: kwInH2, detail: kwInH2 ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Keyword trong đoạn đầu', ok: kwInIntro, detail: kwInIntro ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Mục lục (TOC)', ok: hasTOC, detail: hasTOC ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Phần FAQ', ok: hasFAQ, detail: hasFAQ ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Bảng so sánh', ok: hasTable, detail: hasTable ? '✓ Có' : '✗ Thiếu' },
+                { label: `Danh sách: ${hasList} mục`, ok: hasList >= 3, detail: hasList >= 3 ? '✓ Đủ' : 'Cần thêm' },
+            ];
+
+            const score = Math.round((checks.filter(c => c.ok).length / checks.length) * 100);
+            const badge = document.getElementById('seoScoreBadge');
+            badge.textContent = `${score}/100`;
+            badge.className = `ml-auto text-xs font-bold px-2 py-0.5 rounded-full ${score >= 80 ? 'bg-emerald-100 text-emerald-700' : score >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`;
+
+            const checklist = document.getElementById('seoChecklist');
+            checklist.innerHTML = checks.map(c => `
+                <div class="flex items-center justify-between text-xs py-1.5 px-2 rounded ${c.ok ? 'bg-emerald-50' : 'bg-red-50'}">
+                    <span class="flex items-center gap-1.5 ${c.ok ? 'text-emerald-700' : 'text-red-600'}">
+                        <span>${c.ok ? '✅' : '⚠️'}</span> ${c.label}
+                    </span>
+                    <span class="${c.ok ? 'text-emerald-600' : 'text-red-500'} font-medium">${c.detail}</span>
+                </div>
+            `).join('');
         }
 
         // ============================================================
@@ -754,13 +878,17 @@ Output Format:
                     if (uploadData.success) bannerUrl = uploadData.url;
                 }
 
-                // 2. Save post as draft
+                // 2. Save post as draft (use editable fields)
+                const editedTitle = document.getElementById('res-seo-title').value;
+                const editedDesc = document.getElementById('res-meta-desc').value;
+                const selectedCat = document.getElementById('res-category').value;
                 const postData = {
-                    title: state.data.seo_title,
-                    slug: slugify(state.data.seo_title),
-                    excerpt: state.data.meta_description,
+                    title: editedTitle,
+                    slug: slugify(editedTitle),
+                    excerpt: editedDesc,
                     content: resultEls.content.innerHTML,
                     featured_image: bannerUrl,
+                    category_id: selectedCat || null,
                     is_published: 0
                 };
                 const response = await fetch('/api/posts.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(postData) });
@@ -792,6 +920,14 @@ Output Format:
             document.getElementById('apiKeyInput').value = state.apiKey;
             if (!state.apiKey) toggleSettings();
             document.getElementById('analyzeForm').addEventListener('submit', handleAnalyze);
+
+            // Load categories for dropdown
+            try {
+                const catRes = await fetch('/api/categories.php');
+                const cats = await catRes.json();
+                const sel = document.getElementById('res-category');
+                if (Array.isArray(cats)) cats.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.name; sel.appendChild(o); });
+            } catch (e) { console.log('Could not load categories'); }
         });
     </script>
 </body>
