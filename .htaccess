@@ -43,11 +43,18 @@ RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Pretty URLs
+# Pretty URLs — specific aliases
 RewriteRule ^blog$ /blog.html [L]
 RewriteRule ^gioi-thieu$ /about.html [L]
 RewriteRule ^lien-he$ /contact.html [L]
 RewriteRule ^toolkit$ /toolkit/index.html [L]
+
+# Generic .html extension removal — works for ALL directories
+# e.g. /admin/login → /admin/login.html, /toolkit/banner_tool → /toolkit/banner_tool.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]
 
 # Blog post pretty URLs: /blog/my-post-slug → post.html
 RewriteCond %{REQUEST_FILENAME} !-f
