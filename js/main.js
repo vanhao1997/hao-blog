@@ -636,3 +636,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 800);
   }
 });
+
+// ============================================
+// BACK TO TOP BUTTON
+// ============================================
+document.addEventListener('DOMContentLoaded', function () {
+  const btn = document.createElement('button');
+  btn.id = 'backToTop';
+  btn.innerHTML = '↑';
+  btn.setAttribute('aria-label', 'Lên đầu trang');
+  document.body.appendChild(btn);
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #backToTop {
+      position:fixed;bottom:32px;right:32px;z-index:9990;
+      width:48px;height:48px;border-radius:14px;
+      background:var(--color-primary,#22C55E);color:#fff;
+      border:3px solid var(--color-black,#1F2937);
+      box-shadow:4px 4px 0 var(--color-black,#1F2937);
+      font-size:1.3rem;font-weight:700;cursor:pointer;
+      opacity:0;visibility:hidden;
+      transition:all .3s ease;
+      font-family:inherit;
+    }
+    #backToTop.visible{opacity:1;visibility:visible}
+    #backToTop:hover{transform:translateY(-3px);box-shadow:4px 7px 0 var(--color-black,#1F2937)}
+  `;
+  document.head.appendChild(style);
+
+  window.addEventListener('scroll', function () {
+    btn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+
+  btn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// ============================================
+// LAZY LOADING IMAGES
+// ============================================
+document.addEventListener('DOMContentLoaded', function () {
+  // Add loading="lazy" to all images that don't have it
+  document.querySelectorAll('img:not([loading])').forEach(function (img) {
+    img.setAttribute('loading', 'lazy');
+  });
+});

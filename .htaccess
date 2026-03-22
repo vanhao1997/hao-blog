@@ -27,6 +27,15 @@
 </IfModule>
 # END Cache & Compression
 
+# Block sensitive files
+<FilesMatch "\.(sql|log|bak|env|ini)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Custom 404
+ErrorDocument 404 /404.html
+
 # Rewrite rules
 RewriteEngine On
 

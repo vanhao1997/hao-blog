@@ -6,8 +6,15 @@
   <script src="/js/tracking.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Bài viết về Digital Marketing - Nguyễn Văn Hảo Blog">
+  <meta name="description" content="Bài viết về Digital Marketing - Nguyễn Văn Hảo Blog" id="metaDesc">
   <meta name="author" content="Nguyễn Văn Hảo">
+  <!-- OG Tags (updated dynamically by post.js) -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Nguyễn Văn Hảo Blog">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:image" content="https://nguyenvanhao.name.vn/images/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://nguyenvanhao.name.vn/images/og-cover.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml"
@@ -23,6 +30,7 @@
     rel="stylesheet">
 
   <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/main.css?v=1.4">
   <link rel="stylesheet" href="/css/style.css?v=1.4">
   <link rel="stylesheet" href="/css/animations.css?v=1.4">
   <link rel="stylesheet" href="/css/phosphor/style.css">
@@ -56,6 +64,18 @@
       </nav>
     </div>
   </header>
+
+  <!-- Breadcrumbs -->
+  <nav class="container" aria-label="breadcrumb" style="padding-top: 90px;">
+    <ol
+      style="list-style:none;display:flex;gap:8px;font-size:0.9rem;color:var(--color-gray,#6B7280);flex-wrap:wrap;padding:0;margin:0 0 -60px 0">
+      <li><a href="/" style="color:var(--color-primary,#22C55E);text-decoration:none">Trang chủ</a></li>
+      <li>›</li>
+      <li><a href="/blog" style="color:var(--color-primary,#22C55E);text-decoration:none">Blog</a></li>
+      <li>›</li>
+      <li id="breadcrumbTitle" style="color:var(--color-gray,#6B7280)">Bài viết</li>
+    </ol>
+  </nav>
 
   <!-- Post Header -->
   <section class="post-header">
@@ -185,6 +205,34 @@
   <script src="/js/api.js"></script>
   <script src="/js/post.js?v=1.5"></script>
   <script src="/js/main.js?v=1.4"></script>
+  <!-- BlogPosting Schema (dynamic) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        var title = document.getElementById('postTitle');
+        var date = document.getElementById('postDate');
+        var bread = document.getElementById('breadcrumbTitle');
+        if (title && title.textContent !== '...') {
+          if (bread) bread.textContent = title.textContent;
+          document.title = title.textContent + ' - Nguyễn Văn Hảo Blog';
+          var schema = {
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            'headline': title.textContent,
+            'author': { '@type': 'Person', 'name': 'Nguyễn Văn Hảo' },
+            'publisher': { '@type': 'Person', 'name': 'Nguyễn Văn Hảo' },
+            'datePublished': date ? date.textContent : '',
+            'url': window.location.href,
+            'image': 'https://nguyenvanhao.name.vn/images/og-cover.png'
+          };
+          var s = document.createElement('script');
+          s.type = 'application/ld+json';
+          s.textContent = JSON.stringify(schema);
+          document.head.appendChild(s);
+        }
+      }, 1500);
+    });
+  </script>
 </body>
 
 </html>

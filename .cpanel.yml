@@ -2,7 +2,7 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/qskqmzfd/public_html/
-    - /bin/cp -R about.html blog.html contact.html index.html post.html $DEPLOYPATH
+    - /bin/cp -R about.html blog.html contact.html index.html post.html 404.html $DEPLOYPATH
     - /bin/cp -R .htaccess $DEPLOYPATH
     - /bin/cp -R css/ $DEPLOYPATH
     - /bin/cp -R js/ $DEPLOYPATH
