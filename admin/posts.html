@@ -119,9 +119,11 @@
                         </div>
                     </div>
                     <div class="form-actions" style="display: flex; gap: 12px; margin-top: 24px;">
-                        <button type="button" class="btn btn-secondary" onclick="submitPost(false)" style="flex: 1;">📝
+                        <button type="button" class="btn btn-secondary" id="btnSaveDraft" onclick="submitPost(false)"
+                            style="flex: 1;">📝
                             Lưu nháp</button>
-                        <button type="button" class="btn btn-primary" onclick="submitPost(true)" style="flex: 1;">🚀
+                        <button type="button" class="btn btn-primary" id="btnPublish" onclick="submitPost(true)"
+                            style="flex: 1;">🚀
                             Xuất bản</button>
                     </div>
                 </form>
@@ -239,6 +241,7 @@
                         document.getElementById('postSlug').value = post.slug;
                         document.getElementById('postCategory').value = post.category_id || '';
                         document.getElementById('postExcerpt').value = post.excerpt || '';
+                        document.getElementById('postImage').value = post.featured_image || '';
                         // document.getElementById('postContent').value = post.content || ''; // Old textarea way
                         // Load content into TinyMCE
                         if (tinymce.get('postContent')) tinymce.get('postContent').setContent(post.content || '');
@@ -263,34 +266,40 @@
 
         // Save Post Logic (Draft vs Publish)
         async function submitPost(isPublished) {
-            const btn = isPublished ?
-                document.querySelector('button[onclick="submitPost(true)"]') :
-                document.querySelector('button[onclick="submitPost(false)"]');
+            const btn = isPublished
+                ? document.getElementById('btnPublish')
+                : document.getElementById('btnSaveDraft');
 
-            const originalText = btn.textContent;
-            btn.disabled = true;
-            btn.textContent = '⏳ ...';
+            const originalHTML = btn ? btn.innerHTML : '';
+            if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Đang lưu...'; }
 
-            const result = await savePost({
-                id: document.getElementById('postId').value || null,
-                title: document.getElementById('postTitle').value,
-                slug: document.getElementById('postSlug').value,
-                excerpt: document.getElementById('postExcerpt').value,
-                content: tinymce.get('postContent').getContent(),
-                featured_image: document.getElementById('postImage').value,
-                category_id: document.getElementById('postCategory').value,
-                is_published: isPublished ? 1 : 0
-            });
+            try {
+                const postId = document.getElementById('postId').value || null;
+                const postData = {
+                    id: postId,
+                    title: document.getElementById('postTitle').value,
+                    slug: document.getElementById('postSlug').value || slugify(document.getElementById('postTitle').value),
+                    excerpt: document.getElementById('postExcerpt').value,
+                    content: tinymce.get('postContent') ? tinymce.get('postContent').getContent() : document.getElementById('postContent').value,
+                    featured_image: document.getElementById('postImage').value,
+                    category_id: document.getElementById('postCategory').value,
+                    is_published: isPublished ? 1 : 0
+                };
 
-            btn.disabled = false;
-            btn.textContent = originalText;
+                const result = await savePost(postData);
 
-            if (result.success) {
-                showToast(isPublished ? 'Đã xuất bản!' : 'Đã lưu nháp!', 'success');
-                closeModal();
-                await loadAllPosts();
-            } else {
-                showToast('Lỗi: ' + result.error, 'error');
+                if (result.success) {
+                    showToast(isPublished ? '🚀 Đã xuất bản!' : '📝 Đã lưu nháp!', 'success');
+                    closeModal();
+                    await loadAllPosts();
+                } else {
+                    showToast('Lỗi: ' + (result.error || 'Không xác định'), 'error');
+                }
+            } catch (err) {
+                console.error('submitPost error:', err);
+                showToast('Lỗi: ' + err.message, 'error');
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerHTML = originalHTML; }
             }
         }
 

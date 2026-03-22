@@ -112,9 +112,13 @@ async function loadAllPosts() {
         <td><span class="status-badge ${post.is_published == 1 ? 'published' : 'draft'}">${post.is_published == 1 ? 'Đã xuất bản' : 'Bản nháp'}</span></td>
         <td>${formatDate(post.created_at)}</td>
         <td>
-          <div class="action-btns">
-            <button class="action-btn edit" onclick="editPost('${post.id}')" title="Sửa">✏️</button>
-            <button class="action-btn delete" onclick="deletePost('${post.id}')" title="Xóa">🗑️</button>
+          <div class="action-btns" style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="action-btn edit" onclick="editPost('${post.id}')" title="Sửa" style="font-size:0.8rem;">✏️ Sửa</button>
+            ${post.is_published == 1
+                ? `<button class="action-btn" onclick="publishNow('${post.id}', false)" title="Gỡ xuống" style="font-size:0.8rem;background:#f59e0b;color:#fff;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;">📥 Gỡ</button>`
+                : `<button class="action-btn" onclick="publishNow('${post.id}', true)" title="Đăng ngay" style="font-size:0.8rem;background:#22c55e;color:#fff;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;">🚀 Đăng</button>`
+            }
+            <button class="action-btn delete" onclick="deletePost('${post.id}')" title="Xóa" style="font-size:0.8rem;">🗑️</button>
           </div>
         </td>
       </tr>
@@ -269,6 +273,22 @@ async function deletePost(id) {
         await API.deletePost(id);
         loadAllPosts();
         showToast('Đã xóa bài viết', 'success');
+    } catch (error) {
+        showToast('Lỗi: ' + error.message, 'error');
+    }
+}
+
+// Quick publish/unpublish from list
+async function publishNow(id, shouldPublish) {
+    const action = shouldPublish ? 'xuất bản' : 'gỡ xuống';
+    if (!confirm(`Bạn có chắc muốn ${action} bài viết này?`)) return;
+
+    try {
+        await API.updatePost(id, { is_published: shouldPublish ? 1 : 0 });
+        loadAllPosts();
+        // Also refresh dashboard if on that page
+        if (typeof loadRecentPosts === 'function') loadRecentPosts();
+        showToast(shouldPublish ? '🚀 Đã xuất bản!' : '📥 Đã gỡ xuống!', 'success');
     } catch (error) {
         showToast('Lỗi: ' + error.message, 'error');
     }
@@ -502,6 +522,7 @@ window.saveCategory = saveCategory;
 window.deleteCategory = deleteCategory;
 window.savePost = savePost;
 window.deletePost = deletePost;
+window.publishNow = publishNow;
 window.loadImages = loadImages;
 window.uploadImageFile = uploadImageFile;
 window.slugify = slugify;
