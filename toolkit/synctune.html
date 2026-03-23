@@ -1831,6 +1831,7 @@
             // ===== ROOM MANAGEMENT =====
             function createRoom() {
                 currentUser = usernameInput.value.trim() || 'Guest';
+                localStorage.setItem('synctune_username', currentUser);
                 roomCode = generateRoomCode();
                 roomName = document.getElementById('roomNameInput').value.trim();
                 isHost = true;
@@ -1848,6 +1849,7 @@
 
             function joinRoom() {
                 currentUser = usernameInput.value.trim() || 'Guest';
+                localStorage.setItem('synctune_username', currentUser);
                 roomCode = roomCodeInput.value.trim().toUpperCase();
                 if (roomCode.length < 4) { toast('M\u00e3 ph\u00f2ng kh\u00f4ng h\u1ee3p l\u1ec7!'); return; }
                 isHost = false;
@@ -2967,16 +2969,27 @@
             loadActiveRoomsFromDB();
             cleanupOldRooms();
 
+            // Restore saved username
+            var savedUser = localStorage.getItem('synctune_username');
+            if (savedUser && !usernameInput.value.trim()) {
+                usernameInput.value = savedUser;
+            }
+
             // Check URL params — auto-join if ?room= is present
             var urlParams = new URLSearchParams(window.location.search);
             var paramRoom = urlParams.get('room');
             if (paramRoom) {
                 roomCodeInput.value = paramRoom.toUpperCase();
+                // Use saved username or 'Guest' to auto-join
+                if (!usernameInput.value.trim() && savedUser) {
+                    usernameInput.value = savedUser;
+                }
+                if (!usernameInput.value.trim()) {
+                    usernameInput.value = 'Guest';
+                }
                 // Auto join after short delay to allow lobby to initialize
                 setTimeout(function () {
-                    if (usernameInput.value.trim()) {
-                        joinRoom();
-                    }
+                    joinRoom();
                 }, 500);
             }
 
