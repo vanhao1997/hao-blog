@@ -17,65 +17,14 @@
         rel="stylesheet">
     <link rel="stylesheet" href="/css/main.css?v=1.4">
     <link rel="stylesheet" href="/css/style.css?v=1.5">
+    <link rel="stylesheet" href="/css/toolkit.css?v=20260323">
     <link rel="stylesheet" href="/css/phosphor/style.css">
 
-    <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-
     <style>
-        /* ===== SyncTune Dark Theme ===== */
-        :root {
-            --st-bg: #0f0f0f;
-            --st-surface: #1a1a2e;
-            --st-surface-2: #16213e;
-            --st-accent: #22C55E;
-            --st-accent-glow: rgba(34, 197, 94, 0.3);
-            --st-text: #e2e8f0;
-            --st-text-muted: #94a3b8;
-            --st-border: #2d2d44;
-            --st-danger: #ef4444;
-            --st-radius: 14px;
-        }
-
-        /* Override light theme for this page */
-        body {
-            background: var(--st-bg) !important;
-            color: var(--st-text) !important;
-            font-family: 'DM Sans', sans-serif;
-            margin: 0;
-            min-height: 100vh;
-        }
-
-        /* Header override for dark */
-        .header {
-            background: rgba(15, 15, 15, 0.9) !important;
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--st-border) !important;
-        }
-
-        .header .logo,
-        .header .nav-link,
-        .header .logo-icon {
-            color: var(--st-text) !important;
-        }
-
-        .header .nav-link:hover {
-            color: var(--st-accent) !important;
-        }
-
-        /* Back link */
-        .st-back {
-            display: inline-block;
-            margin: 100px 0 0;
-            padding: 0 24px;
-            color: var(--st-accent);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .st-back:hover {
-            opacity: 0.7;
+        /* ===== SyncTune — Light Theme (matching homepage) ===== */
+        .st-page {
+            padding: 100px 0 40px;
+            min-height: calc(100vh - 70px);
         }
 
         /* ===== LOBBY ===== */
@@ -83,47 +32,55 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: calc(100vh - 70px);
+            min-height: calc(100vh - 200px);
             padding: 20px;
         }
 
         .lobby-card {
-            background: var(--st-surface);
-            border: 2px solid var(--st-border);
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
             border-radius: 24px;
             padding: 48px;
             max-width: 440px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            box-shadow: 6px 6px 0 var(--color-border, #e5e7eb);
         }
 
         .lobby-logo {
-            font-size: 3rem;
-            margin-bottom: 8px;
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            background: #ECFDF5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 16px;
+            border: 2px solid var(--color-border, #e5e7eb);
         }
 
         .lobby-title {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 700;
-            color: var(--st-accent);
+            color: var(--color-black, #1F2937);
             margin-bottom: 4px;
         }
 
         .lobby-subtitle {
-            color: var(--st-text-muted);
+            color: var(--color-gray, #6b7280);
             font-size: 0.95rem;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
 
         .lobby-input {
             width: 100%;
             padding: 14px 16px;
-            background: var(--st-bg);
-            border: 2px solid var(--st-border);
-            border-radius: 12px;
-            color: var(--st-text);
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 14px;
+            color: var(--color-black, #1F2937);
             font-size: 1rem;
             font-family: inherit;
             outline: none;
@@ -133,18 +90,18 @@
         }
 
         .lobby-input:focus {
-            border-color: var(--st-accent);
+            border-color: var(--color-primary, #22C55E);
         }
 
         .lobby-input::placeholder {
-            color: var(--st-text-muted);
+            color: var(--color-gray, #6b7280);
         }
 
         .lobby-btn {
             width: 100%;
             padding: 14px;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
@@ -154,24 +111,25 @@
         }
 
         .lobby-btn-primary {
-            background: var(--st-accent);
+            background: var(--color-primary, #22C55E);
             color: #fff;
+            box-shadow: 4px 4px 0 #16a34a;
         }
 
         .lobby-btn-primary:hover {
-            background: #16a34a;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 4px 6px 0 #16a34a;
         }
 
         .lobby-btn-outline {
-            background: transparent;
-            border: 2px solid var(--st-border);
-            color: var(--st-text);
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            color: var(--color-black, #1F2937);
         }
 
         .lobby-btn-outline:hover {
-            border-color: var(--st-accent);
-            color: var(--st-accent);
+            border-color: var(--color-primary, #22C55E);
+            color: var(--color-primary, #22C55E);
         }
 
         .lobby-divider {
@@ -179,7 +137,7 @@
             align-items: center;
             gap: 12px;
             margin: 20px 0;
-            color: var(--st-text-muted);
+            color: var(--color-gray, #6b7280);
             font-size: 0.85rem;
         }
 
@@ -188,7 +146,7 @@
             content: '';
             flex: 1;
             height: 1px;
-            background: var(--st-border);
+            background: var(--color-border, #e5e7eb);
         }
 
         /* ===== ROOM ===== */
@@ -201,12 +159,12 @@
         }
 
         .room-header {
-            padding: 80px 24px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            margin-bottom: 16px;
         }
 
         .room-brand {
@@ -216,48 +174,58 @@
         }
 
         .room-brand-icon {
-            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: #ECFDF5;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 2px solid var(--color-border, #e5e7eb);
         }
 
         .room-brand-name {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 1.3rem;
             font-weight: 700;
-            color: var(--st-accent);
+            color: var(--color-black, #1F2937);
         }
 
         .room-info {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             font-size: 0.85rem;
         }
 
         .room-code {
-            background: var(--st-surface);
-            border: 1px solid var(--st-border);
-            padding: 6px 14px;
+            background: var(--color-lavender, #f0f0ff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            padding: 6px 16px;
             border-radius: 100px;
             cursor: pointer;
             transition: 0.2s;
-            color: var(--st-text);
+            color: var(--color-black, #1F2937);
+            font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
         }
 
         .room-code:hover {
-            border-color: var(--st-accent);
+            border-color: var(--color-primary, #22C55E);
         }
 
         .room-users {
             display: flex;
             align-items: center;
             gap: 6px;
-            color: var(--st-text-muted);
+            color: var(--color-gray, #6b7280);
         }
 
         .online-dot {
             width: 8px;
             height: 8px;
-            background: var(--st-accent);
+            background: var(--color-primary, #22C55E);
             border-radius: 50%;
             animation: pulse-dot 2s infinite;
         }
@@ -276,13 +244,10 @@
 
         .room-body {
             display: grid;
-            grid-template-columns: 1fr 380px;
+            grid-template-columns: 1fr 360px;
             gap: 16px;
-            padding: 12px 24px 24px;
-            max-height: calc(100vh - 130px);
         }
 
-        /* Left column */
         .left-col {
             display: flex;
             flex-direction: column;
@@ -291,11 +256,13 @@
 
         /* Player */
         .player-wrap {
-            background: #000;
-            border-radius: var(--st-radius);
+            background: #1F2937;
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 20px;
             overflow: hidden;
             aspect-ratio: 16/9;
             position: relative;
+            box-shadow: 4px 4px 0 var(--color-border, #e5e7eb);
         }
 
         .player-wrap iframe {
@@ -311,7 +278,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: var(--st-text-muted);
+            color: #94a3b8;
             gap: 12px;
         }
 
@@ -328,10 +295,10 @@
         .add-url-input {
             flex: 1;
             padding: 12px 16px;
-            background: var(--st-surface);
-            border: 2px solid var(--st-border);
-            border-radius: 12px;
-            color: var(--st-text);
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 14px;
+            color: var(--color-black, #1F2937);
             font-size: 0.9rem;
             font-family: inherit;
             outline: none;
@@ -339,53 +306,54 @@
         }
 
         .add-url-input:focus {
-            border-color: var(--st-accent);
+            border-color: var(--color-primary, #22C55E);
         }
 
         .add-url-input::placeholder {
-            color: var(--st-text-muted);
+            color: var(--color-gray, #6b7280);
         }
 
         .add-url-btn {
             padding: 12px 20px;
-            background: var(--st-accent);
+            background: var(--color-primary, #22C55E);
             color: #fff;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 700;
             cursor: pointer;
             font-family: inherit;
             white-space: nowrap;
             transition: 0.2s;
+            box-shadow: 3px 3px 0 #16a34a;
         }
 
         .add-url-btn:hover {
-            background: #16a34a;
+            transform: translateY(-1px);
+            box-shadow: 3px 4px 0 #16a34a;
         }
 
-        /* Reactions row */
+        /* Reactions */
         .reactions-row {
             display: flex;
             gap: 6px;
-            position: relative;
+            flex-wrap: wrap;
         }
 
         .reaction-btn {
             padding: 8px 14px;
-            background: var(--st-surface);
-            border: 1px solid var(--st-border);
-            border-radius: 10px;
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 12px;
             font-size: 1.2rem;
             cursor: pointer;
             transition: 0.2s;
         }
 
         .reaction-btn:hover {
-            border-color: var(--st-accent);
+            border-color: var(--color-primary, #22C55E);
             transform: scale(1.1);
         }
 
-        /* Floating reactions */
         .floating-reaction {
             position: fixed;
             font-size: 2rem;
@@ -411,31 +379,32 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-height: calc(100vh - 130px);
         }
 
-        /* Queue panel */
+        /* Panels */
         .panel {
-            background: var(--st-surface);
-            border: 1px solid var(--st-border);
-            border-radius: var(--st-radius);
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 20px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            box-shadow: 4px 4px 0 var(--color-border, #e5e7eb);
         }
 
         .panel-header {
             padding: 14px 16px;
-            border-bottom: 1px solid var(--st-border);
+            border-bottom: 2px solid var(--color-border, #e5e7eb);
             font-weight: 700;
             font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            color: var(--color-black, #1F2937);
         }
 
         .panel-header .count {
-            background: var(--st-accent);
+            background: var(--color-primary, #22C55E);
             color: #fff;
             padding: 2px 10px;
             border-radius: 100px;
@@ -446,8 +415,8 @@
             flex: 1;
             overflow-y: auto;
             padding: 8px;
-            min-height: 120px;
-            max-height: 260px;
+            min-height: 100px;
+            max-height: 240px;
         }
 
         .queue-item {
@@ -455,27 +424,27 @@
             align-items: center;
             gap: 10px;
             padding: 8px 10px;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: 0.2s;
             font-size: 0.85rem;
         }
 
         .queue-item:hover {
-            background: var(--st-surface-2);
+            background: #f3f4f6;
         }
 
         .queue-item.playing {
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
+            background: #ECFDF5;
+            border: 2px solid #BBF7D0;
         }
 
         .queue-item-thumb {
             width: 48px;
             height: 36px;
-            border-radius: 6px;
+            border-radius: 8px;
             object-fit: cover;
-            background: var(--st-bg);
+            background: #f3f4f6;
         }
 
         .queue-item-info {
@@ -488,17 +457,18 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: var(--color-black, #1F2937);
         }
 
         .queue-item-added {
             font-size: 0.75rem;
-            color: var(--st-text-muted);
+            color: var(--color-gray, #6b7280);
         }
 
         .queue-item-remove {
             background: none;
             border: none;
-            color: var(--st-text-muted);
+            color: var(--color-gray, #6b7280);
             cursor: pointer;
             padding: 4px;
             font-size: 1rem;
@@ -506,17 +476,17 @@
         }
 
         .queue-item-remove:hover {
-            color: var(--st-danger);
+            color: #ef4444;
         }
 
         .queue-empty {
             text-align: center;
-            padding: 30px;
-            color: var(--st-text-muted);
+            padding: 24px;
+            color: var(--color-gray, #6b7280);
             font-size: 0.85rem;
         }
 
-        /* Chat panel */
+        /* Chat */
         .chat-panel {
             flex: 1;
             min-height: 200px;
@@ -529,14 +499,15 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            max-height: 220px;
-            min-height: 150px;
+            max-height: 200px;
+            min-height: 140px;
         }
 
         .chat-msg {
             font-size: 0.83rem;
             line-height: 1.4;
             animation: fade-in 0.3s;
+            color: var(--color-black, #1F2937);
         }
 
         @keyframes fade-in {
@@ -553,12 +524,12 @@
 
         .chat-msg .chat-user {
             font-weight: 700;
-            color: var(--st-accent);
+            color: var(--color-primary, #22C55E);
             margin-right: 6px;
         }
 
         .chat-msg.system-msg {
-            color: var(--st-text-muted);
+            color: var(--color-gray, #6b7280);
             font-style: italic;
             font-size: 0.78rem;
         }
@@ -567,31 +538,31 @@
             display: flex;
             gap: 6px;
             padding: 10px 12px;
-            border-top: 1px solid var(--st-border);
+            border-top: 2px solid var(--color-border, #e5e7eb);
         }
 
         .chat-input {
             flex: 1;
             padding: 10px 12px;
-            background: var(--st-bg);
-            border: 1px solid var(--st-border);
-            border-radius: 10px;
-            color: var(--st-text);
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 12px;
+            color: var(--color-black, #1F2937);
             font-size: 0.85rem;
             font-family: inherit;
             outline: none;
         }
 
         .chat-input:focus {
-            border-color: var(--st-accent);
+            border-color: var(--color-primary, #22C55E);
         }
 
         .chat-send-btn {
             padding: 10px 16px;
-            background: var(--st-accent);
+            background: var(--color-primary, #22C55E);
             color: #fff;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
             font-family: inherit;
@@ -605,8 +576,8 @@
         /* Leave button */
         .leave-btn {
             background: none;
-            border: 1px solid var(--st-danger);
-            color: var(--st-danger);
+            border: 2px solid #ef4444;
+            color: #ef4444;
             padding: 6px 14px;
             border-radius: 100px;
             font-size: 0.8rem;
@@ -616,46 +587,8 @@
         }
 
         .leave-btn:hover {
-            background: var(--st-danger);
+            background: #ef4444;
             color: #fff;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .room-body {
-                grid-template-columns: 1fr;
-                max-height: none;
-                padding: 12px 16px;
-            }
-
-            .right-col {
-                max-height: none;
-            }
-
-            .lobby-card {
-                padding: 32px 24px;
-            }
-
-            .room-header {
-                padding: 70px 16px 8px;
-            }
-        }
-
-        /* Scrollbar dark */
-        .queue-list::-webkit-scrollbar,
-        .chat-messages::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .queue-list::-webkit-scrollbar-track,
-        .chat-messages::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .queue-list::-webkit-scrollbar-thumb,
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: var(--st-border);
-            border-radius: 4px;
         }
 
         /* Toast */
@@ -664,9 +597,8 @@
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--st-surface);
-            border: 1px solid var(--st-accent);
-            color: var(--st-text);
+            background: var(--color-black, #1F2937);
+            color: #fff;
             padding: 10px 24px;
             border-radius: 100px;
             font-size: 0.85rem;
@@ -693,6 +625,52 @@
                 transform: translateX(-50%) translateY(20px);
             }
         }
+
+        /* Status indicator */
+        .st-status {
+            font-size: 0.8rem;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-weight: 600;
+        }
+
+        .st-status.connecting {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .st-status.connected {
+            background: #ECFDF5;
+            color: #065F46;
+        }
+
+        .st-status.error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .room-body {
+                grid-template-columns: 1fr;
+            }
+
+            .lobby-card {
+                padding: 32px 24px;
+            }
+        }
+
+        /* Scrollbar */
+        .queue-list::-webkit-scrollbar,
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .queue-list::-webkit-scrollbar-thumb,
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
     </style>
 </head>
 
@@ -715,561 +693,534 @@
         </div>
     </header>
 
-    <!-- ===== LOBBY ===== -->
-    <div id="lobby" class="lobby">
-        <div class="lobby-card">
-            <div class="lobby-logo">🎵</div>
-            <h1 class="lobby-title">SyncTune</h1>
-            <p class="lobby-subtitle">Nghe nhạc YouTube chung real-time với bạn bè</p>
+    <div class="st-page">
+        <div class="container">
 
-            <input type="text" id="usernameInput" class="lobby-input" placeholder="Nhập tên của bạn..." maxlength="20">
+            <!-- ===== LOBBY ===== -->
+            <div id="lobby" class="lobby">
+                <div class="lobby-card">
+                    <div class="lobby-logo">🎵</div>
+                    <h1 class="lobby-title">SyncTune</h1>
+                    <p class="lobby-subtitle">Nghe nhạc YouTube chung real-time với bạn bè</p>
 
-            <button id="createRoomBtn" class="lobby-btn lobby-btn-primary">🎧 Tạo Phòng Mới</button>
+                    <input type="text" id="usernameInput" class="lobby-input" placeholder="Nhập tên của bạn..."
+                        maxlength="20">
+                    <button id="createRoomBtn" class="lobby-btn lobby-btn-primary">🎧 Tạo Phòng Mới</button>
 
-            <div class="lobby-divider">hoặc</div>
+                    <div class="lobby-divider">hoặc</div>
 
-            <input type="text" id="roomCodeInput" class="lobby-input" placeholder="Nhập mã phòng (VD: ABC123)"
-                maxlength="6"
-                style="text-transform:uppercase;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:1.3rem;letter-spacing:4px;">
+                    <input type="text" id="roomCodeInput" class="lobby-input" placeholder="Nhập mã phòng (VD: ABC123)"
+                        maxlength="6"
+                        style="text-transform:uppercase;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:1.3rem;letter-spacing:4px;">
+                    <button id="joinRoomBtn" class="lobby-btn lobby-btn-outline">🚪 Tham Gia Phòng</button>
 
-            <button id="joinRoomBtn" class="lobby-btn lobby-btn-outline">🚪 Tham Gia Phòng</button>
+                    <div id="lobbyStatus"></div>
+                </div>
+            </div>
+
+            <!-- ===== ROOM ===== -->
+            <div id="room" class="room">
+                <div class="room-header">
+                    <div class="room-brand">
+                        <div class="room-brand-icon">🎵</div>
+                        <span class="room-brand-name">SyncTune</span>
+                    </div>
+                    <div class="room-info">
+                        <span id="connectionStatus" class="st-status connecting">Đang kết nối...</span>
+                        <span id="roomCodeDisplay" class="room-code" title="Click để copy mã phòng">Room: ---</span>
+                        <span class="room-users">
+                            <span class="online-dot"></span>
+                            <span id="userCount">1</span> online
+                        </span>
+                        <button id="leaveBtn" class="leave-btn">Rời phòng</button>
+                    </div>
+                </div>
+
+                <div class="room-body">
+                    <!-- Left: Player -->
+                    <div class="left-col">
+                        <div class="player-wrap">
+                            <div id="playerPlaceholder" class="player-placeholder">
+                                <i class="ph-bold ph-music-notes"></i>
+                                <span>Thêm bài hát để bắt đầu</span>
+                            </div>
+                            <div id="ytPlayer"></div>
+                        </div>
+
+                        <div class="add-url-row">
+                            <input type="text" id="urlInput" class="add-url-input"
+                                placeholder="Dán link YouTube vào đây...">
+                            <button id="addUrlBtn" class="add-url-btn">+ Thêm</button>
+                        </div>
+
+                        <div class="reactions-row">
+                            <button class="reaction-btn" data-emoji="❤️">❤️</button>
+                            <button class="reaction-btn" data-emoji="🔥">🔥</button>
+                            <button class="reaction-btn" data-emoji="😂">😂</button>
+                            <button class="reaction-btn" data-emoji="🎵">🎵</button>
+                            <button class="reaction-btn" data-emoji="👏">👏</button>
+                            <button class="reaction-btn" data-emoji="😍">😍</button>
+                            <button class="reaction-btn" data-emoji="🤘">🤘</button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Queue + Chat -->
+                    <div class="right-col">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <span>🎶 Danh sách phát</span>
+                                <span id="queueCount" class="count">0</span>
+                            </div>
+                            <div id="queueList" class="queue-list">
+                                <div class="queue-empty">Chưa có bài hát nào.<br>Paste link YouTube để thêm!</div>
+                            </div>
+                        </div>
+
+                        <div class="panel chat-panel">
+                            <div class="panel-header">💬 Chat</div>
+                            <div id="chatMessages" class="chat-messages"></div>
+                            <div class="chat-input-row">
+                                <input type="text" id="chatInput" class="chat-input" placeholder="Nhập tin nhắn..."
+                                    maxlength="200">
+                                <button id="chatSendBtn" class="chat-send-btn">Gửi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- ===== ROOM ===== -->
-    <div id="room" class="room">
-        <div class="room-header">
-            <div class="room-brand">
-                <span class="room-brand-icon">🎵</span>
-                <span class="room-brand-name">SyncTune</span>
-            </div>
-            <div class="room-info">
-                <span id="roomCodeDisplay" class="room-code" title="Click để copy">Room: ---</span>
-                <span class="room-users">
-                    <span class="online-dot"></span>
-                    <span id="userCount">1</span> online
-                </span>
-                <button id="leaveBtn" class="leave-btn">Rời phòng</button>
-            </div>
+    <footer class="footer">
+        <div class="container">
+            <p style="text-align: center; color: var(--color-gray); padding: 24px 0;">© 2024 Nguyễn Văn Hảo. All rights
+                reserved.</p>
         </div>
-
-        <div class="room-body">
-            <!-- Left: Player -->
-            <div class="left-col">
-                <div class="player-wrap">
-                    <div id="playerPlaceholder" class="player-placeholder">
-                        <i class="ph-bold ph-music-notes"></i>
-                        <span>Thêm bài hát để bắt đầu</span>
-                    </div>
-                    <div id="ytPlayer"></div>
-                </div>
-
-                <div class="add-url-row">
-                    <input type="text" id="urlInput" class="add-url-input" placeholder="Dán link YouTube vào đây...">
-                    <button id="addUrlBtn" class="add-url-btn">+ Thêm</button>
-                </div>
-
-                <div class="reactions-row">
-                    <button class="reaction-btn" data-emoji="❤️">❤️</button>
-                    <button class="reaction-btn" data-emoji="🔥">🔥</button>
-                    <button class="reaction-btn" data-emoji="😂">😂</button>
-                    <button class="reaction-btn" data-emoji="🎵">🎵</button>
-                    <button class="reaction-btn" data-emoji="👏">👏</button>
-                    <button class="reaction-btn" data-emoji="😍">😍</button>
-                    <button class="reaction-btn" data-emoji="🤘">🤘</button>
-                </div>
-            </div>
-
-            <!-- Right: Queue + Chat -->
-            <div class="right-col">
-                <div class="panel">
-                    <div class="panel-header">
-                        <span>🎶 Danh sách phát</span>
-                        <span id="queueCount" class="count">0</span>
-                    </div>
-                    <div id="queueList" class="queue-list">
-                        <div class="queue-empty">Chưa có bài hát nào.<br>Paste link YouTube để thêm!</div>
-                    </div>
-                </div>
-
-                <div class="panel chat-panel">
-                    <div class="panel-header">💬 Chat</div>
-                    <div id="chatMessages" class="chat-messages"></div>
-                    <div class="chat-input-row">
-                        <input type="text" id="chatInput" class="chat-input" placeholder="Nhập tin nhắn..."
-                            maxlength="200">
-                        <button id="chatSendBtn" class="chat-send-btn">Gửi</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </footer>
 
     <script src="/js/main.js?v=1.4"></script>
 
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
     <!-- YouTube IFrame API -->
     <script>
-        // Load YouTube IFrame API
-        const tag = document.createElement('script');
+        var ytPlayerReady = false;
+        var ytPlayerObj = null;
+
+        var tag = document.createElement('script');
         tag.src = 'https://www.youtube.com/iframe_api';
         document.head.appendChild(tag);
-
-        let ytPlayerReady = false;
-        let ytPlayerObj = null;
 
         function onYouTubeIframeAPIReady() {
             ytPlayerObj = new YT.Player('ytPlayer', {
                 height: '100%',
                 width: '100%',
-                playerVars: {
-                    autoplay: 0,
-                    controls: 1,
-                    modestbranding: 1,
-                    rel: 0,
-                    fs: 1,
-                },
+                playerVars: { autoplay: 0, controls: 1, modestbranding: 1, rel: 0, fs: 1 },
                 events: {
-                    onReady: () => { ytPlayerReady = true; },
-                    onStateChange: onPlayerStateChange,
+                    onReady: function () { ytPlayerReady = true; console.log('[SyncTune] YouTube player ready'); },
+                    onStateChange: function (e) {
+                        if (e.data === YT.PlayerState.ENDED) { playNext(); }
+                    }
                 }
             });
-        }
-
-        function onPlayerStateChange(event) {
-            // When video ends, play next in queue
-            if (event.data === YT.PlayerState.ENDED) {
-                playNext();
-            }
         }
     </script>
 
     <script>
         // ===== SYNCTUNE APP =====
-        const SUPABASE_URL = 'https://fshfwrvgxvdiyqszrtbc.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzaGZ3cnZneHZkaXlxc3pydGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNjYxMjQsImV4cCI6MjA4OTY0MjEyNH0.yPJeDUH4lVUfnYwWfW2IibRJbtXqmbzOWEZvbsv9a-A';
+        (function () {
+            'use strict';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            var SUPABASE_URL = 'https://fshfwrvgxvdiyqszrtbc.supabase.co';
+            var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzaGZ3cnZneHZkaXlxc3pydGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNjYxMjQsImV4cCI6MjA4OTY0MjEyNH0.yPJeDUH4lVUfnYwWfW2IibRJbtXqmbzOWEZvbsv9a-A';
 
-        // State
-        let channel = null;
-        let currentUser = '';
-        let roomCode = '';
-        let isHost = false;
-        let queue = [];
-        let currentIndex = -1;
-
-        // DOM
-        const lobbyEl = document.getElementById('lobby');
-        const roomEl = document.getElementById('room');
-        const usernameInput = document.getElementById('usernameInput');
-        const roomCodeInput = document.getElementById('roomCodeInput');
-        const roomCodeDisplay = document.getElementById('roomCodeDisplay');
-        const userCountEl = document.getElementById('userCount');
-        const queueListEl = document.getElementById('queueList');
-        const queueCountEl = document.getElementById('queueCount');
-        const urlInput = document.getElementById('urlInput');
-        const chatMessagesEl = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-
-        // ===== UTILITY =====
-        function generateRoomCode() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-            let code = '';
-            for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
-            return code;
-        }
-
-        function extractVideoId(url) {
-            const patterns = [
-                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
-                /^([a-zA-Z0-9_-]{11})$/
-            ];
-            for (const p of patterns) {
-                const m = url.match(p);
-                if (m) return m[1];
+            var sb;
+            try {
+                sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                console.log('[SyncTune] Supabase client created');
+            } catch (err) {
+                console.error('[SyncTune] Failed to create Supabase client:', err);
             }
-            return null;
-        }
 
-        function toast(msg) {
-            const t = document.createElement('div');
-            t.className = 'st-toast';
-            t.textContent = msg;
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 2500);
-        }
+            // State
+            var channel = null;
+            var currentUser = '';
+            var roomCode = '';
+            var isHost = false;
+            var queue = [];
+            var currentIndex = -1;
 
-        function addSystemMessage(text) {
-            const d = document.createElement('div');
-            d.className = 'chat-msg system-msg';
-            d.textContent = text;
-            chatMessagesEl.appendChild(d);
-            chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-        }
+            // DOM refs
+            var lobbyEl = document.getElementById('lobby');
+            var roomEl = document.getElementById('room');
+            var usernameInput = document.getElementById('usernameInput');
+            var roomCodeInput = document.getElementById('roomCodeInput');
+            var roomCodeDisplay = document.getElementById('roomCodeDisplay');
+            var userCountEl = document.getElementById('userCount');
+            var queueListEl = document.getElementById('queueList');
+            var queueCountEl = document.getElementById('queueCount');
+            var urlInput = document.getElementById('urlInput');
+            var chatMessagesEl = document.getElementById('chatMessages');
+            var chatInput = document.getElementById('chatInput');
+            var lobbyStatus = document.getElementById('lobbyStatus');
+            var connectionStatus = document.getElementById('connectionStatus');
 
-        function addChatMessage(user, text) {
-            const d = document.createElement('div');
-            d.className = 'chat-msg';
-            d.innerHTML = `<span class="chat-user">${escHtml(user)}</span>${escHtml(text)}`;
-            chatMessagesEl.appendChild(d);
-            chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-        }
+            // ===== UTILITY =====
+            function generateRoomCode() {
+                var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                var code = '';
+                for (var i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+                return code;
+            }
 
-        function escHtml(s) {
-            const d = document.createElement('div');
-            d.textContent = s;
-            return d.innerHTML;
-        }
+            function extractVideoId(url) {
+                var patterns = [
+                    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+                    /^([a-zA-Z0-9_-]{11})$/
+                ];
+                for (var i = 0; i < patterns.length; i++) {
+                    var m = url.match(patterns[i]);
+                    if (m) return m[1];
+                }
+                return null;
+            }
 
-        // ===== ROOM MANAGEMENT =====
-        function createRoom() {
-            currentUser = usernameInput.value.trim() || 'Guest';
-            roomCode = generateRoomCode();
-            isHost = true;
-            joinChannel();
-        }
+            function toast(msg) {
+                var t = document.createElement('div');
+                t.className = 'st-toast';
+                t.textContent = msg;
+                document.body.appendChild(t);
+                setTimeout(function () { t.remove(); }, 2500);
+            }
 
-        function joinRoom() {
-            currentUser = usernameInput.value.trim() || 'Guest';
-            roomCode = roomCodeInput.value.trim().toUpperCase();
-            if (roomCode.length < 4) { toast('Mã phòng không hợp lệ!'); return; }
-            isHost = false;
-            joinChannel();
-        }
+            function addSystemMessage(text) {
+                var d = document.createElement('div');
+                d.className = 'chat-msg system-msg';
+                d.textContent = text;
+                chatMessagesEl.appendChild(d);
+                chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+            }
 
-        function joinChannel() {
-            // Show room UI
-            lobbyEl.style.display = 'none';
-            roomEl.classList.add('active');
-            roomCodeDisplay.textContent = `Room: ${roomCode}`;
+            function addChatMessage(user, text) {
+                var d = document.createElement('div');
+                d.className = 'chat-msg';
+                d.innerHTML = '<span class="chat-user">' + escHtml(user) + '</span>' + escHtml(text);
+                chatMessagesEl.appendChild(d);
+                chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+            }
 
-            // Create Supabase channel
-            channel = supabase.channel(`synctune-${roomCode}`, {
-                config: { broadcast: { self: true } }
-            });
+            function escHtml(s) {
+                var d = document.createElement('div');
+                d.textContent = s;
+                return d.innerHTML;
+            }
 
-            // Listen for events
-            channel
-                .on('broadcast', { event: 'queue:add' }, ({ payload }) => {
-                    onQueueAdd(payload);
-                })
-                .on('broadcast', { event: 'queue:remove' }, ({ payload }) => {
-                    onQueueRemove(payload);
-                })
-                .on('broadcast', { event: 'playback:sync' }, ({ payload }) => {
-                    onPlaybackSync(payload);
-                })
-                .on('broadcast', { event: 'playback:play' }, ({ payload }) => {
-                    onPlaybackPlay(payload);
-                })
-                .on('broadcast', { event: 'chat:message' }, ({ payload }) => {
-                    addChatMessage(payload.user, payload.text);
-                })
-                .on('broadcast', { event: 'reaction' }, ({ payload }) => {
-                    showFloatingReaction(payload.emoji);
-                })
-                .on('broadcast', { event: 'user:joined' }, ({ payload }) => {
-                    addSystemMessage(`${payload.username} đã tham gia phòng 🎧`);
-                })
-                .on('broadcast', { event: 'queue:full-sync' }, ({ payload }) => {
-                    // Full queue sync for new joiners
-                    queue = payload.queue || [];
-                    currentIndex = payload.currentIndex;
-                    renderQueue();
-                    if (currentIndex >= 0 && queue[currentIndex]) {
-                        loadVideo(queue[currentIndex].videoId, false);
-                    }
-                })
-                .on('broadcast', { event: 'request:sync' }, ({ payload }) => {
-                    // Host responds with full queue state
-                    if (isHost) {
-                        channel.send({
-                            type: 'broadcast',
-                            event: 'queue:full-sync',
-                            payload: { queue, currentIndex }
+            function setConnectionStatus(status, text) {
+                connectionStatus.className = 'st-status ' + status;
+                connectionStatus.textContent = text;
+            }
+
+            // ===== ROOM MANAGEMENT =====
+            function createRoom() {
+                currentUser = usernameInput.value.trim() || 'Guest';
+                roomCode = generateRoomCode();
+                isHost = true;
+                console.log('[SyncTune] Creating room:', roomCode);
+                lobbyStatus.innerHTML = '<span class="st-status connecting">⏳ Đang tạo phòng...</span>';
+                joinChannel();
+            }
+
+            function joinRoom() {
+                currentUser = usernameInput.value.trim() || 'Guest';
+                roomCode = roomCodeInput.value.trim().toUpperCase();
+                if (roomCode.length < 4) { toast('Mã phòng không hợp lệ!'); return; }
+                isHost = false;
+                console.log('[SyncTune] Joining room:', roomCode);
+                lobbyStatus.innerHTML = '<span class="st-status connecting">⏳ Đang tham gia phòng...</span>';
+                joinChannel();
+            }
+
+            function joinChannel() {
+                try {
+                    var channelName = 'synctune-' + roomCode;
+                    console.log('[SyncTune] Creating channel:', channelName);
+
+                    channel = sb.channel(channelName, {
+                        config: { broadcast: { self: true } }
+                    });
+
+                    // Listen for events
+                    channel
+                        .on('broadcast', { event: 'queue:add' }, function (msg) { onQueueAdd(msg.payload); })
+                        .on('broadcast', { event: 'queue:remove' }, function (msg) { onQueueRemove(msg.payload); })
+                        .on('broadcast', { event: 'playback:play' }, function (msg) { onPlaybackPlay(msg.payload); })
+                        .on('broadcast', { event: 'playback:sync' }, function (msg) { onPlaybackSync(msg.payload); })
+                        .on('broadcast', { event: 'chat:message' }, function (msg) { addChatMessage(msg.payload.user, msg.payload.text); })
+                        .on('broadcast', { event: 'reaction' }, function (msg) { showFloatingReaction(msg.payload.emoji); })
+                        .on('broadcast', { event: 'user:joined' }, function (msg) { addSystemMessage(msg.payload.username + ' đã tham gia phòng 🎧'); })
+                        .on('broadcast', { event: 'queue:full-sync' }, function (msg) {
+                            queue = msg.payload.queue || [];
+                            currentIndex = msg.payload.currentIndex;
+                            renderQueue();
+                            if (currentIndex >= 0 && queue[currentIndex]) {
+                                loadVideo(queue[currentIndex].videoId, false);
+                            }
+                        })
+                        .on('broadcast', { event: 'request:sync' }, function () {
+                            if (isHost) {
+                                channel.send({ type: 'broadcast', event: 'queue:full-sync', payload: { queue: queue, currentIndex: currentIndex } });
+                            }
                         });
-                    }
-                })
-                .subscribe((status) => {
-                    if (status === 'SUBSCRIBED') {
-                        // Announce join
-                        channel.send({
-                            type: 'broadcast',
-                            event: 'user:joined',
-                            payload: { username: currentUser }
-                        });
 
-                        // If not host, request current queue state
-                        if (!isHost) {
-                            setTimeout(() => {
-                                channel.send({
-                                    type: 'broadcast',
-                                    event: 'request:sync',
-                                    payload: {}
-                                });
-                            }, 500);
+                    channel.subscribe(function (status) {
+                        console.log('[SyncTune] Channel status:', status);
+
+                        if (status === 'SUBSCRIBED') {
+                            // Switch to room view
+                            lobbyEl.style.display = 'none';
+                            roomEl.classList.add('active');
+                            roomCodeDisplay.textContent = 'Room: ' + roomCode;
+                            setConnectionStatus('connected', '✓ Đã kết nối');
+
+                            // Announce
+                            channel.send({ type: 'broadcast', event: 'user:joined', payload: { username: currentUser } });
+
+                            if (!isHost) {
+                                setTimeout(function () {
+                                    channel.send({ type: 'broadcast', event: 'request:sync', payload: {} });
+                                }, 500);
+                            }
+
+                            addSystemMessage(isHost
+                                ? 'Phòng ' + roomCode + ' đã được tạo! Chia sẻ mã này cho bạn bè.'
+                                : 'Đã tham gia phòng ' + roomCode
+                            );
+                        } else if (status === 'CHANNEL_ERROR') {
+                            setConnectionStatus('error', '✕ Lỗi kết nối');
+                            lobbyStatus.innerHTML = '<span class="st-status error">❌ Lỗi kết nối. Thử lại!</span>';
+                        } else if (status === 'TIMED_OUT') {
+                            setConnectionStatus('error', '✕ Hết thời gian');
+                            lobbyStatus.innerHTML = '<span class="st-status error">❌ Kết nối hết thời gian. Thử lại!</span>';
                         }
+                    });
 
-                        addSystemMessage(isHost
-                            ? `Phòng ${roomCode} đã được tạo! Chia sẻ mã này cho bạn bè.`
-                            : `Đã tham gia phòng ${roomCode}`
-                        );
+                } catch (err) {
+                    console.error('[SyncTune] Error joining channel:', err);
+                    lobbyStatus.innerHTML = '<span class="st-status error">❌ Lỗi: ' + err.message + '</span>';
+                }
+            }
+
+            function leaveRoom() {
+                if (channel) {
+                    sb.removeChannel(channel);
+                    channel = null;
+                }
+                queue = [];
+                currentIndex = -1;
+                roomEl.classList.remove('active');
+                lobbyEl.style.display = 'flex';
+                chatMessagesEl.innerHTML = '';
+                lobbyStatus.innerHTML = '';
+                if (ytPlayerObj && ytPlayerReady) { try { ytPlayerObj.stopVideo(); } catch (e) { } }
+                document.getElementById('playerPlaceholder').style.display = 'flex';
+            }
+
+            // ===== QUEUE =====
+            function addToQueue() {
+                var url = urlInput.value.trim();
+                if (!url) return;
+                var videoId = extractVideoId(url);
+                if (!videoId) { toast('Link YouTube không hợp lệ!'); return; }
+
+                fetch('https://noembed.com/embed?url=https://www.youtube.com/watch?v=' + videoId)
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        var item = {
+                            videoId: videoId,
+                            title: data.title || 'YouTube Video',
+                            thumbnail: 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg',
+                            addedBy: currentUser
+                        };
+                        channel.send({ type: 'broadcast', event: 'queue:add', payload: item });
+                        urlInput.value = '';
+                    })
+                    .catch(function () {
+                        var item = {
+                            videoId: videoId,
+                            title: 'YouTube Video',
+                            thumbnail: 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg',
+                            addedBy: currentUser
+                        };
+                        channel.send({ type: 'broadcast', event: 'queue:add', payload: item });
+                        urlInput.value = '';
+                    });
+            }
+
+            function onQueueAdd(item) {
+                if (queue.some(function (q) { return q.videoId === item.videoId; })) return;
+                queue.push(item);
+                renderQueue();
+                addSystemMessage(item.addedBy + ' đã thêm "' + item.title + '"');
+                if (queue.length === 1 && currentIndex === -1) { playAtIndex(0); }
+            }
+
+            function onQueueRemove(data) {
+                var idx = -1;
+                for (var i = 0; i < queue.length; i++) { if (queue[i].videoId === data.videoId) { idx = i; break; } }
+                if (idx === -1) return;
+                queue.splice(idx, 1);
+                if (idx < currentIndex) currentIndex--;
+                else if (idx === currentIndex) {
+                    if (queue.length > 0) {
+                        currentIndex = Math.min(currentIndex, queue.length - 1);
+                        playAtIndex(currentIndex);
+                    } else {
+                        currentIndex = -1;
+                        if (ytPlayerObj && ytPlayerReady) try { ytPlayerObj.stopVideo(); } catch (e) { }
+                        document.getElementById('playerPlaceholder').style.display = 'flex';
                     }
-                });
-        }
-
-        function leaveRoom() {
-            if (channel) {
-                supabase.removeChannel(channel);
-                channel = null;
+                }
+                renderQueue();
             }
-            queue = [];
-            currentIndex = -1;
-            roomEl.classList.remove('active');
-            lobbyEl.style.display = 'flex';
-            chatMessagesEl.innerHTML = '';
-            if (ytPlayerObj && ytPlayerReady) {
-                ytPlayerObj.stopVideo();
+
+            // ===== PLAYBACK =====
+            window.playAtIndex = function (idx) {
+                if (idx < 0 || idx >= queue.length) return;
+                currentIndex = idx;
+                loadVideo(queue[idx].videoId, true);
+                renderQueue();
+                if (channel) {
+                    channel.send({ type: 'broadcast', event: 'playback:play', payload: { index: idx, videoId: queue[idx].videoId } });
+                }
+            };
+
+            function onPlaybackPlay(data) {
+                currentIndex = data.index;
+                loadVideo(data.videoId, true);
+                renderQueue();
             }
-            document.getElementById('playerPlaceholder').style.display = 'flex';
-        }
 
-        // ===== QUEUE =====
-        function addToQueue() {
-            const url = urlInput.value.trim();
-            if (!url) return;
-            const videoId = extractVideoId(url);
-            if (!videoId) { toast('Link YouTube không hợp lệ!'); return; }
+            function onPlaybackSync(data) {
+                if (!ytPlayerReady) return;
+                try {
+                    var currentVid = ytPlayerObj.getVideoData && ytPlayerObj.getVideoData().video_id;
+                    if (currentVid !== data.videoId) {
+                        ytPlayerObj.loadVideoById(data.videoId, data.time);
+                    } else {
+                        var diff = Math.abs(ytPlayerObj.getCurrentTime() - data.time);
+                        if (diff > 3) ytPlayerObj.seekTo(data.time, true);
+                    }
+                    if (data.playing) ytPlayerObj.playVideo();
+                    else ytPlayerObj.pauseVideo();
+                } catch (e) { console.warn('[SyncTune] Sync error:', e); }
+            }
 
-            // Get video info via noembed
-            fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`)
-                .then(r => r.json())
-                .then(data => {
-                    const item = {
-                        videoId,
-                        title: data.title || `Video ${videoId}`,
-                        thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
-                        addedBy: currentUser
-                    };
+            function loadVideo(videoId, autoplay) {
+                if (!ytPlayerReady) return;
+                document.getElementById('playerPlaceholder').style.display = 'none';
+                if (autoplay) ytPlayerObj.loadVideoById(videoId);
+                else ytPlayerObj.cueVideoById(videoId);
+            }
 
+            window.playNext = function () {
+                if (currentIndex < queue.length - 1) window.playAtIndex(currentIndex + 1);
+            };
+
+            window.removeFromQueue = function (videoId) {
+                channel.send({ type: 'broadcast', event: 'queue:remove', payload: { videoId: videoId } });
+            };
+
+            function renderQueue() {
+                queueCountEl.textContent = queue.length;
+                if (queue.length === 0) {
+                    queueListEl.innerHTML = '<div class="queue-empty">Chưa có bài hát nào.<br>Paste link YouTube để thêm!</div>';
+                    return;
+                }
+                var html = '';
+                for (var i = 0; i < queue.length; i++) {
+                    var item = queue[i];
+                    html += '<div class="queue-item ' + (i === currentIndex ? 'playing' : '') + '" onclick="playAtIndex(' + i + ')">';
+                    html += '<img class="queue-item-thumb" src="' + item.thumbnail + '" alt="" loading="lazy">';
+                    html += '<div class="queue-item-info">';
+                    html += '<div class="queue-item-title">' + escHtml(item.title) + '</div>';
+                    html += '<div class="queue-item-added">' + (i === currentIndex ? '▶ Đang phát' : 'Bởi ' + escHtml(item.addedBy)) + '</div>';
+                    html += '</div>';
+                    html += '<button class="queue-item-remove" onclick="event.stopPropagation();removeFromQueue(\'' + item.videoId + '\')" title="Xóa">✕</button>';
+                    html += '</div>';
+                }
+                queueListEl.innerHTML = html;
+            }
+
+            // ===== CHAT =====
+            function sendChat() {
+                var text = chatInput.value.trim();
+                if (!text || !channel) return;
+                channel.send({ type: 'broadcast', event: 'chat:message', payload: { user: currentUser, text: text } });
+                chatInput.value = '';
+            }
+
+            // ===== REACTIONS =====
+            function showFloatingReaction(emoji) {
+                var el = document.createElement('div');
+                el.className = 'floating-reaction';
+                el.textContent = emoji;
+                el.style.left = (Math.random() * 60 + 20) + '%';
+                el.style.bottom = '20%';
+                document.body.appendChild(el);
+                setTimeout(function () { el.remove(); }, 2100);
+            }
+
+            function sendReaction(emoji) {
+                if (!channel) return;
+                channel.send({ type: 'broadcast', event: 'reaction', payload: { emoji: emoji } });
+            }
+
+            // ===== EVENT LISTENERS =====
+            document.getElementById('createRoomBtn').addEventListener('click', createRoom);
+            document.getElementById('joinRoomBtn').addEventListener('click', joinRoom);
+            document.getElementById('leaveBtn').addEventListener('click', leaveRoom);
+            document.getElementById('addUrlBtn').addEventListener('click', addToQueue);
+            document.getElementById('chatSendBtn').addEventListener('click', sendChat);
+
+            usernameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') createRoom(); });
+            roomCodeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') joinRoom(); });
+            urlInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') addToQueue(); });
+            chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') sendChat(); });
+
+            document.querySelectorAll('.reaction-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () { sendReaction(btn.dataset.emoji); });
+            });
+
+            roomCodeDisplay.addEventListener('click', function () {
+                navigator.clipboard.writeText(roomCode).then(function () { toast('Đã copy mã phòng!'); });
+            });
+
+            // Check URL params
+            var urlParams = new URLSearchParams(window.location.search);
+            var paramRoom = urlParams.get('room');
+            if (paramRoom) roomCodeInput.value = paramRoom.toUpperCase();
+
+            // Periodic sync (host sends playback state every 5s)
+            setInterval(function () {
+                if (!isHost || !channel || !ytPlayerReady || currentIndex < 0) return;
+                try {
+                    var state = ytPlayerObj.getPlayerState();
+                    if (state === undefined) return;
                     channel.send({
                         type: 'broadcast',
-                        event: 'queue:add',
-                        payload: item
+                        event: 'playback:sync',
+                        payload: {
+                            videoId: queue[currentIndex] && queue[currentIndex].videoId,
+                            time: ytPlayerObj.getCurrentTime(),
+                            playing: state === YT.PlayerState.PLAYING
+                        }
                     });
+                } catch (e) { }
+            }, 5000);
 
-                    urlInput.value = '';
-                })
-                .catch(() => {
-                    // Fallback if noembed fails
-                    const item = {
-                        videoId,
-                        title: `YouTube Video`,
-                        thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
-                        addedBy: currentUser
-                    };
-                    channel.send({
-                        type: 'broadcast',
-                        event: 'queue:add',
-                        payload: item
-                    });
-                    urlInput.value = '';
-                });
-        }
-
-        function onQueueAdd(item) {
-            // Avoid duplicates
-            if (queue.some(q => q.videoId === item.videoId)) return;
-            queue.push(item);
-            renderQueue();
-            addSystemMessage(`${item.addedBy} đã thêm "${item.title}"`);
-
-            // Auto-play first song
-            if (queue.length === 1 && currentIndex === -1) {
-                playAtIndex(0);
-            }
-        }
-
-        function removeFromQueue(videoId) {
-            channel.send({
-                type: 'broadcast',
-                event: 'queue:remove',
-                payload: { videoId }
-            });
-        }
-
-        function onQueueRemove({ videoId }) {
-            const idx = queue.findIndex(q => q.videoId === videoId);
-            if (idx === -1) return;
-            queue.splice(idx, 1);
-            if (idx < currentIndex) currentIndex--;
-            else if (idx === currentIndex) {
-                if (queue.length > 0) {
-                    currentIndex = Math.min(currentIndex, queue.length - 1);
-                    playAtIndex(currentIndex);
-                } else {
-                    currentIndex = -1;
-                    if (ytPlayerObj && ytPlayerReady) ytPlayerObj.stopVideo();
-                    document.getElementById('playerPlaceholder').style.display = 'flex';
-                }
-            }
-            renderQueue();
-        }
-
-        function playAtIndex(idx) {
-            if (idx < 0 || idx >= queue.length) return;
-            currentIndex = idx;
-            loadVideo(queue[idx].videoId, true);
-            renderQueue();
-
-            // Broadcast to others
-            if (channel) {
-                channel.send({
-                    type: 'broadcast',
-                    event: 'playback:play',
-                    payload: { index: idx, videoId: queue[idx].videoId }
-                });
-            }
-        }
-
-        function onPlaybackPlay({ index, videoId }) {
-            currentIndex = index;
-            loadVideo(videoId, true);
-            renderQueue();
-        }
-
-        function onPlaybackSync({ videoId, time, playing }) {
-            if (!ytPlayerReady) return;
-            const currentVid = ytPlayerObj.getVideoData?.()?.video_id;
-            if (currentVid !== videoId) {
-                ytPlayerObj.loadVideoById(videoId, time);
-            } else {
-                const diff = Math.abs(ytPlayerObj.getCurrentTime() - time);
-                if (diff > 3) ytPlayerObj.seekTo(time, true);
-            }
-            if (playing) ytPlayerObj.playVideo();
-            else ytPlayerObj.pauseVideo();
-        }
-
-        function loadVideo(videoId, autoplay) {
-            if (!ytPlayerReady) return;
-            document.getElementById('playerPlaceholder').style.display = 'none';
-            if (autoplay) {
-                ytPlayerObj.loadVideoById(videoId);
-            } else {
-                ytPlayerObj.cueVideoById(videoId);
-            }
-        }
-
-        function playNext() {
-            if (currentIndex < queue.length - 1) {
-                playAtIndex(currentIndex + 1);
-            }
-        }
-
-        function renderQueue() {
-            queueCountEl.textContent = queue.length;
-            if (queue.length === 0) {
-                queueListEl.innerHTML = '<div class="queue-empty">Chưa có bài hát nào.<br>Paste link YouTube để thêm!</div>';
-                return;
-            }
-            queueListEl.innerHTML = queue.map((item, i) => `
-        <div class="queue-item ${i === currentIndex ? 'playing' : ''}" onclick="playAtIndex(${i})">
-          <img class="queue-item-thumb" src="${item.thumbnail}" alt="" loading="lazy">
-          <div class="queue-item-info">
-            <div class="queue-item-title">${escHtml(item.title)}</div>
-            <div class="queue-item-added">${i === currentIndex ? '▶ Đang phát' : `Bởi ${escHtml(item.addedBy)}`}</div>
-          </div>
-          <button class="queue-item-remove" onclick="event.stopPropagation();removeFromQueue('${item.videoId}')" title="Xóa">✕</button>
-        </div>
-      `).join('');
-        }
-
-        // ===== CHAT =====
-        function sendChat() {
-            const text = chatInput.value.trim();
-            if (!text || !channel) return;
-            channel.send({
-                type: 'broadcast',
-                event: 'chat:message',
-                payload: { user: currentUser, text }
-            });
-            chatInput.value = '';
-        }
-
-        // ===== REACTIONS =====
-        function showFloatingReaction(emoji) {
-            const el = document.createElement('div');
-            el.className = 'floating-reaction';
-            el.textContent = emoji;
-            el.style.left = (Math.random() * 60 + 20) + '%';
-            el.style.bottom = '20%';
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 2100);
-        }
-
-        function sendReaction(emoji) {
-            if (!channel) return;
-            channel.send({
-                type: 'broadcast',
-                event: 'reaction',
-                payload: { emoji }
-            });
-        }
-
-        // ===== EVENT LISTENERS =====
-        document.getElementById('createRoomBtn').addEventListener('click', createRoom);
-        document.getElementById('joinRoomBtn').addEventListener('click', joinRoom);
-        document.getElementById('leaveBtn').addEventListener('click', leaveRoom);
-        document.getElementById('addUrlBtn').addEventListener('click', addToQueue);
-        document.getElementById('chatSendBtn').addEventListener('click', sendChat);
-
-        // Enter key handlers
-        usernameInput.addEventListener('keydown', e => {
-            if (e.key === 'Enter') createRoom();
-        });
-        roomCodeInput.addEventListener('keydown', e => {
-            if (e.key === 'Enter') joinRoom();
-        });
-        urlInput.addEventListener('keydown', e => {
-            if (e.key === 'Enter') addToQueue();
-        });
-        chatInput.addEventListener('keydown', e => {
-            if (e.key === 'Enter') sendChat();
-        });
-
-        // Reactions
-        document.querySelectorAll('.reaction-btn').forEach(btn => {
-            btn.addEventListener('click', () => sendReaction(btn.dataset.emoji));
-        });
-
-        // Copy room code
-        roomCodeDisplay.addEventListener('click', () => {
-            navigator.clipboard.writeText(roomCode).then(() => toast('Đã copy mã phòng!'));
-        });
-
-        // Check URL params for room code
-        const urlParams = new URLSearchParams(window.location.search);
-        const paramRoom = urlParams.get('room');
-        if (paramRoom) {
-            roomCodeInput.value = paramRoom.toUpperCase();
-        }
-
-        // Periodic sync (host sends playback state every 5s)
-        setInterval(() => {
-            if (!isHost || !channel || !ytPlayerReady || currentIndex < 0) return;
-            const state = ytPlayerObj.getPlayerState?.();
-            if (state === undefined) return;
-            channel.send({
-                type: 'broadcast',
-                event: 'playback:sync',
-                payload: {
-                    videoId: queue[currentIndex]?.videoId,
-                    time: ytPlayerObj.getCurrentTime(),
-                    playing: state === YT.PlayerState.PLAYING,
-                }
-            });
-        }, 5000);
+        })();
     </script>
 </body>
 
