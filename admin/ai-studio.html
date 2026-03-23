@@ -231,6 +231,20 @@
                                 Keyword</button>
                         </div>
                     </div>
+                    <!-- Model Selector -->
+                    <div class="flex justify-center">
+                        <div
+                            class="inline-flex items-center gap-2 bg-white rounded-lg px-4 py-2 shadow-sm border border-slate-200">
+                            <span class="text-slate-500 text-sm font-medium">🧠 Model:</span>
+                            <select id="modelSelect" onchange="switchModel(this.value)"
+                                class="bg-transparent border-none outline-none text-slate-800 font-semibold text-sm cursor-pointer pr-6 appearance-none"
+                                style="background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2364748b%22 stroke-width=%222%22%3E%3Cpath d=%22M6 9l6 6 6-6%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0 center;">
+                                <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro</option>
+                                <option value="gemini-2.5-pro-preview-05-06">Gemini 2.5 Pro</option>
+                                <option value="gemini-2.5-flash-preview-05-20">Gemini 2.5 Flash</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="relative group">
                         <div
                             class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-200">
@@ -420,6 +434,7 @@
         // ============================================================
         const state = {
             apiKey: localStorage.getItem('seo_api_key') || 'AIzaSyC07z_iB_CJvtgm78yUvVBTFwtBhDlNwNg',
+            model: localStorage.getItem('seo_model') || 'gemini-3.1-pro-preview',
             mode: 'url', // 'url' | 'keyword'
             data: null,
             bannerBlob: null
@@ -564,6 +579,17 @@
             }
         }
 
+        function switchModel(model) {
+            state.model = model;
+            localStorage.setItem('seo_model', model);
+        }
+
+        // Restore saved model on load
+        (function initModelSelect() {
+            const sel = document.getElementById('modelSelect');
+            if (sel && state.model) { sel.value = state.model; }
+        })();
+
         function switchView(viewName) {
             ['input', 'loading', 'result'].forEach(v => { views[v].classList.add('hidden'); views[v].classList.remove('flex'); });
             views[viewName].classList.remove('hidden'); views[viewName].classList.add('flex');
@@ -596,8 +622,7 @@
         // AI API CALLS — Gemini 3.1 Pro Preview
         // ============================================================
         async function callAI(prompt) {
-            const GEMINI_MODEL = 'gemini-3.1-pro-preview';
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${state.model}:generateContent?key=${state.apiKey}`;
 
             const response = await fetch(apiUrl, {
                 method: 'POST',
