@@ -1987,6 +1987,8 @@
                 // Save room to DB
                 saveRoomToDB();
                 joinChannel();
+                // Update URL to include room code
+                history.pushState({ room: roomCode }, '', window.location.pathname + '?room=' + roomCode);
             }
 
             function joinRoom() {
@@ -2001,6 +2003,8 @@
                 // Try loading room data from DB
                 loadRoomFromDB();
                 joinChannel();
+                // Update URL to include room code
+                history.pushState({ room: roomCode }, '', window.location.pathname + '?room=' + roomCode);
             }
 
             function joinChannel() {
@@ -2125,6 +2129,8 @@
                 document.getElementById('playerPlaceholder').style.display = 'flex';
                 // Re-subscribe to lobby
                 subscribeLobby();
+                // Remove room code from URL
+                history.pushState({}, '', window.location.pathname);
             }
 
             // ===== QUEUE =====
@@ -3060,10 +3066,26 @@
             loadActiveRoomsFromDB();
             cleanupOldRooms();
 
-            // Check URL params
+            // Check URL params — auto-join if ?room= is present
             var urlParams = new URLSearchParams(window.location.search);
             var paramRoom = urlParams.get('room');
-            if (paramRoom) roomCodeInput.value = paramRoom.toUpperCase();
+            if (paramRoom) {
+                roomCodeInput.value = paramRoom.toUpperCase();
+                // Auto join after short delay to allow lobby to initialize
+                setTimeout(function () {
+                    if (usernameInput.value.trim()) {
+                        joinRoom();
+                    }
+                }, 500);
+            }
+
+            // Handle browser back button
+            window.addEventListener('popstate', function (e) {
+                if (channel && roomCode) {
+                    // User pressed back while in room — leave room
+                    leaveRoom();
+                }
+            });
 
             // Periodic sync (host sends playback state every 5s)
             setInterval(function () {
