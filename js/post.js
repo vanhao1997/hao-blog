@@ -86,7 +86,7 @@ function createRelatedPostCard(post) {
     a.className = 'post-card-link-wrapper';
 
     let imageHtml = '';
-    if (post.featured_image && post.featured_image.startsWith('http')) {
+    if (post.featured_image && post.featured_image.trim()) {
         imageHtml = `<div class="post-card-image" style="background-image: url('${post.featured_image}'); background-size: cover; background-position: center; height: 150px;"></div>`;
     } else {
         imageHtml = `
