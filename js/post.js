@@ -52,7 +52,7 @@ async function loadRelatedPosts(categoryId, currentPostId) {
 
     try {
         const params = {
-            limit: 3,
+            limit: 4,
             is_published: true
         };
 
