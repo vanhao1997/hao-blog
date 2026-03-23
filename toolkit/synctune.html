@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SyncTune — Nghe Nhạc Chung | Nguyễn Văn Hảo</title>
-    <meta name="description" content="Tạo phòng nghe nhạc YouTube & Spotify chung real-time với bạn bè qua SyncTune">
+    <meta name="description" content="Tạo phòng nghe nhạc YouTube chung real-time với bạn bè qua SyncTune">
     <link rel="canonical" href="https://nguyenvanhao.name.vn/toolkit/synctune.html">
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
@@ -286,24 +286,6 @@
             font-size: 3rem;
         }
 
-        /* Spotify embed */
-        .spotify-wrap {
-            border: 2px solid var(--color-border, #e5e7eb);
-            border-radius: 16px;
-            overflow: hidden;
-            display: none;
-            box-shadow: 4px 4px 0 var(--color-border, #e5e7eb);
-        }
-
-        .spotify-wrap.active {
-            display: block;
-        }
-
-        .spotify-wrap iframe {
-            width: 100%;
-            border: none;
-            display: block;
-        }
 
         /* Now playing bar */
         .now-playing {
@@ -343,10 +325,6 @@
             color: #DC2626;
         }
 
-        .badge-spotify {
-            background: #ECFDF5;
-            color: #059669;
-        }
 
         /* Playback controls */
         .playback-controls {
@@ -429,29 +407,6 @@
             display: none;
         }
 
-        /* Spotify connect */
-        .spotify-connect-btn {
-            background: #1DB954;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 100px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.2s;
-            margin-top: 8px;
-        }
-
-        .spotify-connect-btn:hover {
-            background: #1aa34a;
-        }
-
-        .spotify-connect-btn.connected {
-            background: #065F46;
-            cursor: default;
-        }
 
         .ctrl-btn.stop-btn:hover {
             border-color: #DC2626;
@@ -843,6 +798,282 @@
             background: #d1d5db;
             border-radius: 4px;
         }
+
+        /* ===== MINI FLOATING PLAYER (Google Meet style) ===== */
+        .mini-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mini-player.active {
+            display: flex;
+        }
+
+        .mini-player-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 700px;
+            color: #fff;
+            box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.18);
+        }
+
+        .mini-player-track {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .mini-player-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .mini-player-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            opacity: 0.9;
+        }
+
+        .mini-player-controls {
+            display: flex;
+            gap: 4px;
+        }
+
+        .mini-ctrl {
+            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mini-ctrl:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .mini-ctrl.mini-stop:hover {
+            background: rgba(239, 68, 68, 0.5);
+        }
+
+        .mini-player-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .mini-action {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .mini-action:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .mini-action.mini-expand {
+            background: rgba(34, 197, 94, 0.3);
+        }
+
+        .mini-action.mini-expand:hover {
+            background: rgba(34, 197, 94, 0.5);
+        }
+
+        .mini-chat-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        /* Mini chat popup */
+        .mini-chat-popup,
+        .mini-add-popup {
+            display: none;
+            position: absolute;
+            bottom: 60px;
+            right: 20px;
+            width: 320px;
+            background: var(--color-white, #fff);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--color-border, #e5e7eb);
+            overflow: hidden;
+            animation: mini-popup-in 0.2s ease-out;
+        }
+
+        .mini-chat-popup.active,
+        .mini-add-popup.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes mini-popup-in {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mini-chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-bottom: 2px solid var(--color-border, #e5e7eb);
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--color-black, #1F2937);
+        }
+
+        .mini-chat-close {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--color-gray, #6b7280);
+            padding: 4px;
+        }
+
+        .mini-chat-close:hover {
+            color: #ef4444;
+        }
+
+        .mini-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px;
+            max-height: 200px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .mini-chat-input-row {
+            display: flex;
+            gap: 6px;
+            padding: 8px 10px;
+            border-top: 2px solid var(--color-border, #e5e7eb);
+        }
+
+        .mini-chat-input {
+            flex: 1;
+            padding: 8px 10px;
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-family: inherit;
+            outline: none;
+            color: var(--color-black, #1F2937);
+        }
+
+        .mini-chat-input:focus {
+            border-color: var(--color-primary, #22C55E);
+        }
+
+        .mini-chat-send {
+            padding: 8px 12px;
+            background: var(--color-primary, #22C55E);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .mini-chat-send:hover {
+            background: #16a34a;
+        }
+
+        /* Room minimized state */
+        .room.minimized .room-body,
+        .room.minimized .room-header {
+            display: none;
+        }
+
+        .room.minimized {
+            padding: 0;
+        }
+
+        /* Responsive mini player */
+        @media (max-width: 600px) {
+            .mini-player-inner {
+                padding: 8px 12px;
+                gap: 6px;
+                border-radius: 12px 12px 0 0;
+            }
+
+            .mini-player-title {
+                max-width: 80px;
+            }
+
+            .mini-ctrl,
+            .mini-action {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+
+            .mini-chat-popup,
+            .mini-add-popup {
+                width: 280px;
+                right: 8px;
+            }
+        }
     </style>
 </head>
 
@@ -873,7 +1104,7 @@
                 <div class="lobby-card">
                     <div class="lobby-logo">🎵</div>
                     <h1 class="lobby-title">SyncTune</h1>
-                    <p class="lobby-subtitle">Nghe nhạc YouTube & Spotify chung real-time với bạn bè</p>
+                    <p class="lobby-subtitle">Nghe nhạc YouTube chung real-time với bạn bè</p>
 
                     <input type="text" id="usernameInput" class="lobby-input" placeholder="Nhập tên của bạn..."
                         maxlength="20">
@@ -920,8 +1151,7 @@
                             <div id="ytPlayer"></div>
                         </div>
 
-                        <!-- Spotify embed (hidden by default) -->
-                        <div id="spotifyWrap" class="spotify-wrap"></div>
+
 
                         <!-- Now playing info -->
                         <div id="nowPlaying" class="now-playing">
@@ -938,15 +1168,11 @@
                         </div>
 
                         <div class="add-url-row">
-                            <input type="text" id="urlInput" class="add-url-input"
-                                placeholder="Dán link YouTube hoặc Spotify...">
+                            <input type="text" id="urlInput" class="add-url-input" placeholder="Dán link YouTube...">
                             <button id="addUrlBtn" class="add-url-btn">+ Thêm</button>
                         </div>
 
-                        <div style="text-align:center;margin-top:6px;">
-                            <button id="spotifyConnectBtn" class="spotify-connect-btn">🎧 Kết nối Spotify
-                                Premium</button>
-                        </div>
+
 
                         <div class="reactions-row">
                             <button class="reaction-btn" data-emoji="❤️">❤️</button>
@@ -994,11 +1220,56 @@
         </div>
     </footer>
 
+    <!-- ===== MINI FLOATING PLAYER (Google Meet style) ===== -->
+    <div id="miniPlayer" class="mini-player">
+        <div class="mini-player-inner">
+            <div class="mini-player-track">
+                <span class="mini-player-icon">🎵</span>
+                <span id="miniPlayerTitle" class="mini-player-title">Chưa phát bài nào</span>
+            </div>
+            <div class="mini-player-controls">
+                <button id="miniPrevBtn" class="mini-ctrl" title="Trước">⏮</button>
+                <button id="miniStopBtn" class="mini-ctrl mini-stop" title="Dừng">⏹</button>
+                <button id="miniNextBtn" class="mini-ctrl" title="Tiếp">⏭</button>
+            </div>
+            <div class="mini-player-actions">
+                <button id="miniAddBtn" class="mini-action" title="Thêm bài hát">➕</button>
+                <button id="miniChatToggle" class="mini-action" title="Chat">
+                    💬 <span id="miniChatBadge" class="mini-chat-badge" style="display:none;">0</span>
+                </button>
+                <button id="miniExpandBtn" class="mini-action mini-expand" title="Mở rộng">🔼</button>
+            </div>
+        </div>
+        <!-- Mini chat popup -->
+        <div id="miniChatPopup" class="mini-chat-popup">
+            <div class="mini-chat-header">
+                <span>💬 Chat</span>
+                <button id="miniChatClose" class="mini-chat-close">✕</button>
+            </div>
+            <div id="miniChatMessages" class="mini-chat-messages"></div>
+            <div class="mini-chat-input-row">
+                <input type="text" id="miniChatInput" class="mini-chat-input" placeholder="Nhập tin nhắn..."
+                    maxlength="200">
+                <button id="miniChatSend" class="mini-chat-send">Gửi</button>
+            </div>
+        </div>
+        <!-- Mini add URL popup -->
+        <div id="miniAddPopup" class="mini-add-popup">
+            <div class="mini-chat-header">
+                <span>🎵 Thêm bài hát</span>
+                <button id="miniAddClose" class="mini-chat-close">✕</button>
+            </div>
+            <div class="mini-chat-input-row">
+                <input type="text" id="miniUrlInput" class="mini-chat-input" placeholder="Dán link YouTube...">
+                <button id="miniUrlAdd" class="mini-chat-send">+ Thêm</button>
+            </div>
+        </div>
+    </div>
+
     <script src="/js/main.js?v=1.4"></script>
 
     <!-- Supabase JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
     <!-- YouTube IFrame API -->
     <script>
@@ -1031,9 +1302,6 @@
 
             var SUPABASE_URL = 'https://fshfwrvgxvdiyqszrtbc.supabase.co';
             var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzaGZ3cnZneHZkaXlxc3pydGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNjYxMjQsImV4cCI6MjA4OTY0MjEyNH0.yPJeDUH4lVUfnYwWfW2IibRJbtXqmbzOWEZvbsv9a-A';
-            var SPOTIFY_CLIENT_ID = 'b2300dd611e945a4815b75490071b3c4';
-            var SPOTIFY_REDIRECT_URI = window.location.origin + window.location.pathname;
-            var SPOTIFY_SCOPES = 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state';
 
             var sb;
             try {
@@ -1050,12 +1318,9 @@
             var isHost = false;
             var queue = [];
             var currentIndex = -1;
-
-            // Spotify state
-            var spotifyAccessToken = null;
-            var spotifyPlayer = null;
-            var spotifyDeviceId = null;
-            var spotifyConnected = false;
+            var isMinimized = false;
+            var pendingSync = false; // Flag: this client is waiting for initial sync
+            var miniUnreadCount = 0;
 
             // DOM refs
             var lobbyEl = document.getElementById('lobby');
@@ -1071,6 +1336,9 @@
             var chatInput = document.getElementById('chatInput');
             var lobbyStatus = document.getElementById('lobbyStatus');
             var connectionStatus = document.getElementById('connectionStatus');
+            var miniPlayerEl = document.getElementById('miniPlayer');
+            var miniPlayerTitle = document.getElementById('miniPlayerTitle');
+            var miniChatMessagesEl = document.getElementById('miniChatMessages');
 
             // ===== UTILITY =====
             function generateRoomCode() {
@@ -1092,13 +1360,6 @@
                 return null;
             }
 
-            function extractSpotifyId(url) {
-                var m = url.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?track\/([a-zA-Z0-9]+)/);
-                return m ? m[1] : null;
-            }
-
-            function isSpotifyItem(item) { return item && item.platform === 'spotify'; }
-
             function toast(msg) {
                 var t = document.createElement('div');
                 t.className = 'st-toast';
@@ -1113,6 +1374,8 @@
                 d.textContent = text;
                 chatMessagesEl.appendChild(d);
                 chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+                // Mirror to mini chat
+                addMiniChatMsg(null, text, true);
             }
 
             function addChatMessage(user, text) {
@@ -1121,6 +1384,13 @@
                 d.innerHTML = '<span class="chat-user">' + escHtml(user) + '</span>' + escHtml(text);
                 chatMessagesEl.appendChild(d);
                 chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+                // Mirror to mini chat
+                addMiniChatMsg(user, text, false);
+                // If minimized, increment unread
+                if (isMinimized) {
+                    miniUnreadCount++;
+                    updateMiniChatBadge();
+                }
             }
 
             function escHtml(s) {
@@ -1149,22 +1419,20 @@
                     var item = queue[currentIndex];
                     np.classList.add('active');
                     title.textContent = item.title;
-                    if (isSpotifyItem(item)) {
-                        badge.className = 'now-playing-badge badge-spotify';
-                        badge.textContent = 'Spotify';
-                    } else {
-                        badge.className = 'now-playing-badge badge-yt';
-                        badge.textContent = 'YouTube';
-                    }
+                    badge.className = 'now-playing-badge badge-yt';
+                    badge.textContent = 'YouTube';
+                    // Update mini player title
+                    miniPlayerTitle.textContent = item.title;
                 } else {
                     np.classList.remove('active');
+                    miniPlayerTitle.textContent = 'Ch\u01b0a ph\u00e1t b\u00e0i n\u00e0o';
                 }
             }
 
             function shareRoom() {
                 var shareUrl = window.location.origin + window.location.pathname + '?room=' + roomCode;
                 var shareData = {
-                    title: 'SyncTune — Ph\u00f2ng ' + roomCode,
+                    title: 'SyncTune \u2014 Ph\u00f2ng ' + roomCode,
                     text: 'Tham gia nghe nh\u1ea1c chung v\u1edbi m\u00ecnh tr\u00ean SyncTune!',
                     url: shareUrl
                 };
@@ -1177,191 +1445,111 @@
                 }
             }
 
-            // ===== SPOTIFY PKCE AUTH =====
-            function generateRandomString(length) {
-                var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                var values = crypto.getRandomValues(new Uint8Array(length));
-                return Array.from(values).map(function (x) { return possible[x % possible.length]; }).join('');
-            }
-
-            async function generateCodeChallenge(codeVerifier) {
-                var encoder = new TextEncoder();
-                var data = encoder.encode(codeVerifier);
-                var digest = await crypto.subtle.digest('SHA-256', data);
-                return btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
-                    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-            }
-
-            async function startSpotifyAuth() {
-                var codeVerifier = generateRandomString(64);
-                sessionStorage.setItem('spotify_code_verifier', codeVerifier);
-                // Save room state so we can restore after redirect
-                if (roomCode) sessionStorage.setItem('synctune_room', roomCode);
-                if (currentUser) sessionStorage.setItem('synctune_user', currentUser);
-
-                var codeChallenge = await generateCodeChallenge(codeVerifier);
-                var params = new URLSearchParams({
-                    response_type: 'code',
-                    client_id: SPOTIFY_CLIENT_ID,
-                    scope: SPOTIFY_SCOPES,
-                    redirect_uri: SPOTIFY_REDIRECT_URI,
-                    code_challenge_method: 'S256',
-                    code_challenge: codeChallenge
-                });
-                window.location.href = 'https://accounts.spotify.com/authorize?' + params.toString();
-            }
-
-            async function exchangeSpotifyCode(code) {
-                var codeVerifier = sessionStorage.getItem('spotify_code_verifier');
-                if (!codeVerifier) return;
-
-                try {
-                    var resp = await fetch('https://accounts.spotify.com/api/token', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams({
-                            grant_type: 'authorization_code',
-                            code: code,
-                            redirect_uri: SPOTIFY_REDIRECT_URI,
-                            client_id: SPOTIFY_CLIENT_ID,
-                            code_verifier: codeVerifier
-                        })
-                    });
-                    var data = await resp.json();
-                    if (data.access_token) {
-                        spotifyAccessToken = data.access_token;
-                        sessionStorage.setItem('spotify_access_token', data.access_token);
-                        sessionStorage.setItem('spotify_token_expiry', Date.now() + (data.expires_in * 1000));
-                        if (data.refresh_token) sessionStorage.setItem('spotify_refresh_token', data.refresh_token);
-                        console.log('[SyncTune] Spotify auth success');
-                        initSpotifyPlayer();
-                    }
-                } catch (err) {
-                    console.error('[SyncTune] Spotify token exchange error:', err);
-                    toast('L\u1ed7i k\u1ebft n\u1ed1i Spotify!');
+            // ===== MINI PLAYER =====
+            function addMiniChatMsg(user, text, isSystem) {
+                var d = document.createElement('div');
+                d.className = 'chat-msg' + (isSystem ? ' system-msg' : '');
+                if (user) {
+                    d.innerHTML = '<span class="chat-user">' + escHtml(user) + '</span>' + escHtml(text);
+                } else {
+                    d.textContent = text;
                 }
-                // Clean URL
-                var cleanUrl = window.location.origin + window.location.pathname;
-                var savedRoom = sessionStorage.getItem('synctune_room');
-                if (savedRoom) cleanUrl += '?room=' + savedRoom;
-                window.history.replaceState({}, '', cleanUrl);
+                miniChatMessagesEl.appendChild(d);
+                miniChatMessagesEl.scrollTop = miniChatMessagesEl.scrollHeight;
             }
 
-            async function refreshSpotifyToken() {
-                var refreshToken = sessionStorage.getItem('spotify_refresh_token');
-                if (!refreshToken) return false;
-                try {
-                    var resp = await fetch('https://accounts.spotify.com/api/token', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams({
-                            grant_type: 'refresh_token',
-                            refresh_token: refreshToken,
-                            client_id: SPOTIFY_CLIENT_ID
-                        })
-                    });
-                    var data = await resp.json();
-                    if (data.access_token) {
-                        spotifyAccessToken = data.access_token;
-                        sessionStorage.setItem('spotify_access_token', data.access_token);
-                        sessionStorage.setItem('spotify_token_expiry', Date.now() + (data.expires_in * 1000));
-                        if (data.refresh_token) sessionStorage.setItem('spotify_refresh_token', data.refresh_token);
-                        return true;
-                    }
-                } catch (e) { console.error('[SyncTune] Refresh token error:', e); }
-                return false;
-            }
-
-            function initSpotifyPlayer() {
-                if (!spotifyAccessToken || spotifyConnected) return;
-                spotifyPlayer = new Spotify.Player({
-                    name: 'SyncTune Player',
-                    getOAuthToken: function (cb) {
-                        var expiry = parseInt(sessionStorage.getItem('spotify_token_expiry') || '0');
-                        if (Date.now() > expiry - 60000) {
-                            refreshSpotifyToken().then(function () { cb(spotifyAccessToken); });
-                        } else {
-                            cb(spotifyAccessToken);
-                        }
-                    },
-                    volume: 0.5
-                });
-
-                spotifyPlayer.addListener('ready', function (data) {
-                    spotifyDeviceId = data.device_id;
-                    spotifyConnected = true;
-                    console.log('[SyncTune] Spotify device ready:', spotifyDeviceId);
-                    var btn = document.getElementById('spotifyConnectBtn');
-                    btn.textContent = '\u2713 Spotify \u0111\u00e3 k\u1ebft n\u1ed1i';
-                    btn.classList.add('connected');
-                    toast('\u0110\u00e3 k\u1ebft n\u1ed1i Spotify Premium!');
-                });
-
-                spotifyPlayer.addListener('player_state_changed', function (state) {
-                    if (!state) return;
-                    // Auto-next when Spotify track ends
-                    if (state.paused && state.position === 0 && state.track_window.previous_tracks.length > 0) {
-                        window.playNext();
-                    }
-                });
-
-                spotifyPlayer.addListener('not_ready', function () {
-                    spotifyConnected = false;
-                    console.log('[SyncTune] Spotify device offline');
-                });
-
-                spotifyPlayer.addListener('initialization_error', function (e) { console.error('[SyncTune] Spotify init error:', e); });
-                spotifyPlayer.addListener('authentication_error', function (e) { console.error('[SyncTune] Spotify auth error:', e); toast('L\u1ed7i x\u00e1c th\u1ef1c Spotify!'); });
-                spotifyPlayer.addListener('account_error', function (e) { console.error('[SyncTune] Spotify account error:', e); toast('C\u1ea7n Spotify Premium!'); });
-
-                spotifyPlayer.connect();
-            }
-
-            function playSpotifyTrack(trackId) {
-                if (!spotifyConnected || !spotifyDeviceId) return false;
-                fetch('https://api.spotify.com/v1/me/player/play?device_id=' + spotifyDeviceId, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': 'Bearer ' + spotifyAccessToken,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ uris: ['spotify:track:' + trackId] })
-                }).catch(function (e) { console.error('[SyncTune] Spotify play error:', e); });
-                return true;
-            }
-
-            function pauseSpotify() {
-                if (spotifyPlayer) spotifyPlayer.pause();
-            }
-
-            // Spotify SDK callback
-            window.onSpotifyWebPlaybackSDKReady = function () {
-                console.log('[SyncTune] Spotify SDK ready');
-                var token = sessionStorage.getItem('spotify_access_token');
-                var expiry = parseInt(sessionStorage.getItem('spotify_token_expiry') || '0');
-                if (token && Date.now() < expiry) {
-                    spotifyAccessToken = token;
-                    initSpotifyPlayer();
+            function updateMiniChatBadge() {
+                var badge = document.getElementById('miniChatBadge');
+                if (miniUnreadCount > 0) {
+                    badge.style.display = 'flex';
+                    badge.textContent = miniUnreadCount > 99 ? '99+' : miniUnreadCount;
+                } else {
+                    badge.style.display = 'none';
                 }
-            };
+            }
+
+            function toggleMinimize() {
+                isMinimized = !isMinimized;
+                if (isMinimized) {
+                    roomEl.classList.add('minimized');
+                    miniPlayerEl.classList.add('active');
+                    document.querySelector('.st-page').style.paddingBottom = '70px';
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    roomEl.classList.remove('minimized');
+                    miniPlayerEl.classList.remove('active');
+                    document.querySelector('.st-page').style.paddingBottom = '';
+                    // Reset chat badge
+                    miniUnreadCount = 0;
+                    updateMiniChatBadge();
+                    // Close popups
+                    document.getElementById('miniChatPopup').classList.remove('active');
+                    document.getElementById('miniAddPopup').classList.remove('active');
+                }
+            }
+
+            function miniSendChat() {
+                var input = document.getElementById('miniChatInput');
+                var text = input.value.trim();
+                if (!text || !channel) return;
+                channel.send({ type: 'broadcast', event: 'chat:message', payload: { user: currentUser, text: text } });
+                input.value = '';
+            }
+
+            function miniAddUrl() {
+                var input = document.getElementById('miniUrlInput');
+                var url = input.value.trim();
+                if (!url) return;
+                var videoId = extractVideoId(url);
+                if (!videoId) { toast('Link YouTube kh\u00f4ng h\u1ee3p l\u1ec7!'); return; }
+                fetch('https://noembed.com/embed?url=https://www.youtube.com/watch?v=' + videoId)
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        var item = {
+                            videoId: videoId,
+                            platform: 'youtube',
+                            title: data.title || 'YouTube Video',
+                            thumbnail: 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg',
+                            addedBy: currentUser
+                        };
+                        channel.send({ type: 'broadcast', event: 'queue:add', payload: item });
+                        input.value = '';
+                        document.getElementById('miniAddPopup').classList.remove('active');
+                    })
+                    .catch(function () {
+                        var item = {
+                            videoId: videoId,
+                            platform: 'youtube',
+                            title: 'YouTube Video',
+                            thumbnail: 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg',
+                            addedBy: currentUser
+                        };
+                        channel.send({ type: 'broadcast', event: 'queue:add', payload: item });
+                        input.value = '';
+                        document.getElementById('miniAddPopup').classList.remove('active');
+                    });
+            }
 
             // ===== ROOM MANAGEMENT =====
             function createRoom() {
                 currentUser = usernameInput.value.trim() || 'Guest';
                 roomCode = generateRoomCode();
                 isHost = true;
+                pendingSync = false;
                 console.log('[SyncTune] Creating room:', roomCode);
-                lobbyStatus.innerHTML = '<span class="st-status connecting">⏳ Đang tạo phòng...</span>';
+                lobbyStatus.innerHTML = '<span class="st-status connecting">\u23f3 \u0110ang t\u1ea1o ph\u00f2ng...</span>';
                 joinChannel();
             }
 
             function joinRoom() {
                 currentUser = usernameInput.value.trim() || 'Guest';
                 roomCode = roomCodeInput.value.trim().toUpperCase();
-                if (roomCode.length < 4) { toast('Mã phòng không hợp lệ!'); return; }
+                if (roomCode.length < 4) { toast('M\u00e3 ph\u00f2ng kh\u00f4ng h\u1ee3p l\u1ec7!'); return; }
                 isHost = false;
+                pendingSync = true; // Mark that we need to receive initial state
                 console.log('[SyncTune] Joining room:', roomCode);
-                lobbyStatus.innerHTML = '<span class="st-status connecting">⏳ Đang tham gia phòng...</span>';
+                lobbyStatus.innerHTML = '<span class="st-status connecting">\u23f3 \u0110ang tham gia ph\u00f2ng...</span>';
                 joinChannel();
             }
 
@@ -1382,14 +1570,27 @@
                         .on('broadcast', { event: 'playback:sync' }, function (msg) { onPlaybackSync(msg.payload); })
                         .on('broadcast', { event: 'chat:message' }, function (msg) { addChatMessage(msg.payload.user, msg.payload.text); })
                         .on('broadcast', { event: 'reaction' }, function (msg) { showFloatingReaction(msg.payload.emoji); })
-                        .on('broadcast', { event: 'user:joined' }, function (msg) { addSystemMessage(msg.payload.username + ' đã tham gia phòng 🎧'); })
+                        .on('broadcast', { event: 'user:joined' }, function (msg) { addSystemMessage(msg.payload.username + ' \u0111\u00e3 tham gia ph\u00f2ng \ud83c\udfa7'); })
                         .on('broadcast', { event: 'queue:full-sync' }, function (msg) {
+                            // Only the person who REQUESTED sync (pendingSync) should load the video.
+                            // All other users just update queue data silently.
+                            var oldQueue = queue.slice();
+                            var oldIndex = currentIndex;
                             queue = msg.payload.queue || [];
                             currentIndex = msg.payload.currentIndex;
                             renderQueue();
-                            if (currentIndex >= 0 && queue[currentIndex]) {
-                                loadVideo(queue[currentIndex].videoId, false);
+                            updateNowPlaying();
+                            updateControlButtons();
+
+                            if (pendingSync) {
+                                // I just joined — load the current video without autoplay
+                                pendingSync = false;
+                                if (currentIndex >= 0 && queue[currentIndex]) {
+                                    loadVideo(queue[currentIndex].videoId, false);
+                                }
                             }
+                            // For existing users: do NOT touch the video player at all.
+                            // The queue and currentIndex are updated but playback continues uninterrupted.
                         })
                         .on('broadcast', { event: 'request:sync' }, function () {
                             if (isHost) {
@@ -1405,7 +1606,7 @@
                             lobbyEl.style.display = 'none';
                             roomEl.classList.add('active');
                             roomCodeDisplay.textContent = 'Room: ' + roomCode;
-                            setConnectionStatus('connected', '✓ Đã kết nối');
+                            setConnectionStatus('connected', '\u2713 \u0110\u00e3 k\u1ebft n\u1ed1i');
 
                             // Announce
                             channel.send({ type: 'broadcast', event: 'user:joined', payload: { username: currentUser } });
@@ -1417,21 +1618,21 @@
                             }
 
                             addSystemMessage(isHost
-                                ? 'Phòng ' + roomCode + ' đã được tạo! Chia sẻ mã này cho bạn bè.'
-                                : 'Đã tham gia phòng ' + roomCode
+                                ? 'Ph\u00f2ng ' + roomCode + ' \u0111\u00e3 \u0111\u01b0\u1ee3c t\u1ea1o! Chia s\u1ebb m\u00e3 n\u00e0y cho b\u1ea1n b\u00e8.'
+                                : '\u0110\u00e3 tham gia ph\u00f2ng ' + roomCode
                             );
                         } else if (status === 'CHANNEL_ERROR') {
-                            setConnectionStatus('error', '✕ Lỗi kết nối');
-                            lobbyStatus.innerHTML = '<span class="st-status error">❌ Lỗi kết nối. Thử lại!</span>';
+                            setConnectionStatus('error', '\u2715 L\u1ed7i k\u1ebft n\u1ed1i');
+                            lobbyStatus.innerHTML = '<span class="st-status error">\u274c L\u1ed7i k\u1ebft n\u1ed1i. Th\u1eed l\u1ea1i!</span>';
                         } else if (status === 'TIMED_OUT') {
-                            setConnectionStatus('error', '✕ Hết thời gian');
-                            lobbyStatus.innerHTML = '<span class="st-status error">❌ Kết nối hết thời gian. Thử lại!</span>';
+                            setConnectionStatus('error', '\u2715 H\u1ebft th\u1eddi gian');
+                            lobbyStatus.innerHTML = '<span class="st-status error">\u274c K\u1ebft n\u1ed1i h\u1ebft th\u1eddi gian. Th\u1eed l\u1ea1i!</span>';
                         }
                     });
 
                 } catch (err) {
                     console.error('[SyncTune] Error joining channel:', err);
-                    lobbyStatus.innerHTML = '<span class="st-status error">❌ Lỗi: ' + err.message + '</span>';
+                    lobbyStatus.innerHTML = '<span class="st-status error">\u274c L\u1ed7i: ' + err.message + '</span>';
                 }
             }
 
@@ -1442,10 +1643,15 @@
                 }
                 queue = [];
                 currentIndex = -1;
+                isMinimized = false;
                 roomEl.classList.remove('active');
+                roomEl.classList.remove('minimized');
+                miniPlayerEl.classList.remove('active');
                 lobbyEl.style.display = 'flex';
                 chatMessagesEl.innerHTML = '';
+                miniChatMessagesEl.innerHTML = '';
                 lobbyStatus.innerHTML = '';
+                document.querySelector('.st-page').style.paddingBottom = '';
                 if (ytPlayerObj && ytPlayerReady) { try { ytPlayerObj.stopVideo(); } catch (e) { } }
                 document.getElementById('playerPlaceholder').style.display = 'flex';
             }
@@ -1455,39 +1661,8 @@
                 var url = urlInput.value.trim();
                 if (!url) return;
 
-                // Check Spotify first
-                var spotifyId = extractSpotifyId(url);
-                if (spotifyId) {
-                    fetch('https://open.spotify.com/oembed?url=https://open.spotify.com/track/' + spotifyId)
-                        .then(function (r) { return r.json(); })
-                        .then(function (data) {
-                            var item = {
-                                videoId: spotifyId,
-                                platform: 'spotify',
-                                title: data.title || 'Spotify Track',
-                                thumbnail: data.thumbnail_url || '',
-                                addedBy: currentUser
-                            };
-                            channel.send({ type: 'broadcast', event: 'queue:add', payload: item });
-                            urlInput.value = '';
-                        })
-                        .catch(function () {
-                            var item = {
-                                videoId: spotifyId,
-                                platform: 'spotify',
-                                title: 'Spotify Track',
-                                thumbnail: '',
-                                addedBy: currentUser
-                            };
-                            channel.send({ type: 'broadcast', event: 'queue:add', payload: item });
-                            urlInput.value = '';
-                        });
-                    return;
-                }
-
-                // YouTube
                 var videoId = extractVideoId(url);
-                if (!videoId) { toast('Link YouTube hoặc Spotify không hợp lệ!'); return; }
+                if (!videoId) { toast('Link YouTube kh\u00f4ng h\u1ee3p l\u1ec7!'); return; }
 
                 fetch('https://noembed.com/embed?url=https://www.youtube.com/watch?v=' + videoId)
                     .then(function (r) { return r.json(); })
@@ -1519,7 +1694,7 @@
                 if (queue.some(function (q) { return q.videoId === item.videoId; })) return;
                 queue.push(item);
                 renderQueue();
-                addSystemMessage(item.addedBy + ' đã thêm "' + item.title + '"');
+                addSystemMessage(item.addedBy + ' \u0111\u00e3 th\u00eam "' + item.title + '"');
                 if (queue.length === 1 && currentIndex === -1) { playAtIndex(0); }
             }
 
@@ -1548,32 +1723,8 @@
                 currentIndex = idx;
                 var item = queue[idx];
 
-                if (isSpotifyItem(item)) {
-                    // Try Spotify SDK first, fallback to embed
-                    document.getElementById('playerPlaceholder').style.display = 'none';
-                    document.querySelector('.player-wrap').style.display = 'none';
-                    if (ytPlayerObj && ytPlayerReady) try { ytPlayerObj.stopVideo(); } catch (e) { }
-
-                    if (spotifyConnected && playSpotifyTrack(item.videoId)) {
-                        // Full playback via SDK
-                        var spotifyWrap = document.getElementById('spotifyWrap');
-                        spotifyWrap.innerHTML = '<div style="padding:20px;text-align:center;font-size:0.9rem;color:#1DB954;"><strong>\u25b6 \u0110ang ph\u00e1t qua Spotify Premium</strong><br><span style="color:#6b7280;">' + escHtml(item.title) + '</span></div>';
-                        spotifyWrap.classList.add('active');
-                    } else {
-                        // Fallback to embed iframe
-                        var spotifyWrap = document.getElementById('spotifyWrap');
-                        spotifyWrap.innerHTML = '<iframe src="https://open.spotify.com/embed/track/' + item.videoId + '?utm_source=generator&theme=0" height="152" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
-                        spotifyWrap.classList.add('active');
-                    }
-                } else {
-                    // Show YouTube, hide Spotify
-                    var spotifyEl = document.getElementById('spotifyWrap');
-                    spotifyEl.classList.remove('active');
-                    spotifyEl.innerHTML = '';
-                    document.querySelector('.player-wrap').style.display = 'block';
-                    pauseSpotify();
-                    loadVideo(item.videoId, true);
-                }
+                document.querySelector('.player-wrap').style.display = 'block';
+                loadVideo(item.videoId, true);
 
                 updateNowPlaying();
                 updateControlButtons();
@@ -1588,27 +1739,8 @@
                 var item = queue[currentIndex];
                 if (!item) return;
 
-                if (isSpotifyItem(item)) {
-                    document.getElementById('playerPlaceholder').style.display = 'none';
-                    document.querySelector('.player-wrap').style.display = 'none';
-                    if (ytPlayerObj && ytPlayerReady) try { ytPlayerObj.stopVideo(); } catch (e) { }
-
-                    if (spotifyConnected && playSpotifyTrack(item.videoId)) {
-                        var spotifyWrap = document.getElementById('spotifyWrap');
-                        spotifyWrap.innerHTML = '<div style="padding:20px;text-align:center;font-size:0.9rem;color:#1DB954;"><strong>\u25b6 \u0110ang ph\u00e1t qua Spotify Premium</strong><br><span style="color:#6b7280;">' + escHtml(item.title) + '</span></div>';
-                        spotifyWrap.classList.add('active');
-                    } else {
-                        var spotifyWrap = document.getElementById('spotifyWrap');
-                        spotifyWrap.innerHTML = '<iframe src="https://open.spotify.com/embed/track/' + item.videoId + '?utm_source=generator&theme=0" height="152" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
-                        spotifyWrap.classList.add('active');
-                    }
-                } else {
-                    document.getElementById('spotifyWrap').classList.remove('active');
-                    document.getElementById('spotifyWrap').innerHTML = '';
-                    document.querySelector('.player-wrap').style.display = 'block';
-                    pauseSpotify();
-                    loadVideo(data.videoId, true);
-                }
+                document.querySelector('.player-wrap').style.display = 'block';
+                loadVideo(data.videoId, true);
 
                 updateNowPlaying();
                 updateControlButtons();
@@ -1647,7 +1779,6 @@
 
             window.stopPlayback = function () {
                 if (ytPlayerObj && ytPlayerReady) try { ytPlayerObj.pauseVideo(); } catch (e) { }
-                pauseSpotify();
                 toast('\u0110\u00e3 d\u1eebng ph\u00e1t');
             };
 
@@ -1659,9 +1790,7 @@
                 }
                 if (fromIdx <= 0 || fromIdx === currentIndex || fromIdx === currentIndex + 1) return;
                 var item = queue.splice(fromIdx, 1)[0];
-                // Adjust currentIndex if needed
                 if (fromIdx < currentIndex) currentIndex--;
-                // Insert right after current
                 queue.splice(currentIndex + 1, 0, item);
                 renderQueue();
                 updateControlButtons();
@@ -1678,21 +1807,19 @@
             function renderQueue() {
                 queueCountEl.textContent = queue.length;
                 if (queue.length === 0) {
-                    queueListEl.innerHTML = '<div class="queue-empty">Ch\u01b0a c\u00f3 b\u00e0i h\u00e1t n\u00e0o.<br>Paste link YouTube ho\u1eb7c Spotify!</div>';
+                    queueListEl.innerHTML = '<div class="queue-empty">Ch\u01b0a c\u00f3 b\u00e0i h\u00e1t n\u00e0o.<br>Paste link YouTube \u0111\u1ec3 th\u00eam!</div>';
                     return;
                 }
                 var html = '';
                 for (var i = 0; i < queue.length; i++) {
                     var item = queue[i];
-                    var platformIcon = isSpotifyItem(item) ? '\ud83c\udfa7' : '\u25b6';
-                    var thumbSrc = item.thumbnail || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2236%22%3E%3Crect width=%2248%22 height=%2236%22 fill=%22%231DB954%22 rx=%224%22/%3E%3Ctext x=%2224%22 y=%2224%22 font-size=%2216%22 text-anchor=%22middle%22 fill=%22white%22%3E%E2%99%AB%3C/text%3E%3C/svg%3E';
+                    var thumbSrc = item.thumbnail || 'https://img.youtube.com/vi/' + item.videoId + '/mqdefault.jpg';
                     html += '<div class="queue-item ' + (i === currentIndex ? 'playing' : '') + '" onclick="playAtIndex(' + i + ')">';
                     html += '<img class="queue-item-thumb" src="' + thumbSrc + '" alt="" loading="lazy">';
                     html += '<div class="queue-item-info">';
                     html += '<div class="queue-item-title">' + escHtml(item.title) + '</div>';
-                    html += '<div class="queue-item-added">' + (i === currentIndex ? platformIcon + ' \u0110ang ph\u00e1t' : 'B\u1edfi ' + escHtml(item.addedBy)) + '</div>';
+                    html += '<div class="queue-item-added">' + (i === currentIndex ? '\u25b6 \u0110ang ph\u00e1t' : 'B\u1edfi ' + escHtml(item.addedBy)) + '</div>';
                     html += '</div>';
-                    // Priority button (only for items NOT currently playing and NOT right after current)
                     if (i !== currentIndex && i !== currentIndex + 1 && currentIndex >= 0) {
                         html += '<button class="queue-item-priority" onclick="event.stopPropagation();prioritizeItem(\'' + item.videoId + '\')" title="\u01afu ti\u00ean ph\u00e1t ti\u1ebfp">\u2b06</button>';
                     }
@@ -1736,10 +1863,6 @@
             document.getElementById('prevBtn').addEventListener('click', function () { window.playPrev(); });
             document.getElementById('nextBtn').addEventListener('click', function () { window.playNext(); });
             document.getElementById('stopBtn').addEventListener('click', function () { window.stopPlayback(); });
-            document.getElementById('spotifyConnectBtn').addEventListener('click', function () {
-                if (spotifyConnected) return;
-                startSpotifyAuth();
-            });
 
             usernameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') createRoom(); });
             roomCodeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') joinRoom(); });
@@ -1754,21 +1877,61 @@
                 navigator.clipboard.writeText(roomCode).then(function () { toast('\u0110\u00e3 copy m\u00e3 ph\u00f2ng!'); });
             });
 
-            // Check URL params & Spotify callback
+            // === MINI PLAYER EVENT LISTENERS ===
+            // Minimize button (in room header, add new one)
+            var minimizeBtn = document.createElement('button');
+            minimizeBtn.className = 'share-btn';
+            minimizeBtn.textContent = '\ud83d\udd3d Thu nh\u1ecf';
+            minimizeBtn.id = 'minimizeBtn';
+            minimizeBtn.style.marginLeft = '4px';
+            document.querySelector('.room-info').appendChild(minimizeBtn);
+            minimizeBtn.addEventListener('click', toggleMinimize);
+
+            // Mini player controls
+            document.getElementById('miniPrevBtn').addEventListener('click', function () { window.playPrev(); });
+            document.getElementById('miniStopBtn').addEventListener('click', function () { window.stopPlayback(); });
+            document.getElementById('miniNextBtn').addEventListener('click', function () { window.playNext(); });
+            document.getElementById('miniExpandBtn').addEventListener('click', toggleMinimize);
+
+            // Mini chat toggle
+            document.getElementById('miniChatToggle').addEventListener('click', function () {
+                var popup = document.getElementById('miniChatPopup');
+                var addPopup = document.getElementById('miniAddPopup');
+                addPopup.classList.remove('active');
+                popup.classList.toggle('active');
+                if (popup.classList.contains('active')) {
+                    miniUnreadCount = 0;
+                    updateMiniChatBadge();
+                    miniChatMessagesEl.scrollTop = miniChatMessagesEl.scrollHeight;
+                }
+            });
+            document.getElementById('miniChatClose').addEventListener('click', function () {
+                document.getElementById('miniChatPopup').classList.remove('active');
+            });
+            document.getElementById('miniChatSend').addEventListener('click', miniSendChat);
+            document.getElementById('miniChatInput').addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') miniSendChat();
+            });
+
+            // Mini add URL toggle
+            document.getElementById('miniAddBtn').addEventListener('click', function () {
+                var popup = document.getElementById('miniAddPopup');
+                var chatPopup = document.getElementById('miniChatPopup');
+                chatPopup.classList.remove('active');
+                popup.classList.toggle('active');
+            });
+            document.getElementById('miniAddClose').addEventListener('click', function () {
+                document.getElementById('miniAddPopup').classList.remove('active');
+            });
+            document.getElementById('miniUrlAdd').addEventListener('click', miniAddUrl);
+            document.getElementById('miniUrlInput').addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') miniAddUrl();
+            });
+
+            // Check URL params
             var urlParams = new URLSearchParams(window.location.search);
             var paramRoom = urlParams.get('room');
             if (paramRoom) roomCodeInput.value = paramRoom.toUpperCase();
-
-            // Handle Spotify OAuth callback
-            var spotifyCode = urlParams.get('code');
-            if (spotifyCode) {
-                exchangeSpotifyCode(spotifyCode);
-                // Restore room state after OAuth redirect
-                var savedUser = sessionStorage.getItem('synctune_user');
-                var savedRoom = sessionStorage.getItem('synctune_room');
-                if (savedUser) usernameInput.value = savedUser;
-                if (savedRoom) roomCodeInput.value = savedRoom;
-            }
 
             // Periodic sync (host sends playback state every 5s)
             setInterval(function () {
