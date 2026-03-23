@@ -8,7 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;700;800&family=Roboto:wght@400;700;900&family=Montserrat:wght@400;700;800;900&family=Playfair+Display:wght@400;700;800;900&family=Lora:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;700;800&family=Be+Vietnam+Pro:wght@400;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
     <style>
@@ -267,6 +268,65 @@
             color: var(--text-secondary);
         }
 
+        .font-btn {
+            padding: 0.5rem 0.4rem;
+            background: white;
+            border: 2px solid var(--glass-border);
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .font-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .font-btn.active {
+            border-color: var(--accent-primary);
+            background: rgba(96, 165, 250, 0.1);
+            color: var(--accent-primary);
+        }
+
+        .custom-font-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .custom-font-row input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            outline: none;
+            background: white;
+        }
+
+        .custom-font-row input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .custom-font-row button {
+            padding: 0.5rem 1rem;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
         .section-title {
             font-size: 0.7rem;
             text-transform: uppercase;
@@ -345,6 +405,15 @@
                                 <div class="btn-grid" id="patternGrid"></div>
                             </div>
 
+                            <div class="input-group">
+                                <div class="section-title">🔤 Font chữ</div>
+                                <div class="btn-grid" id="fontGrid"></div>
+                                <div class="custom-font-row">
+                                    <input type="text" id="customFontInput" placeholder="Nhập tên Google Font..." />
+                                    <button onclick="loadCustomFont()">Tải font</button>
+                                </div>
+                            </div>
+
                             <div class="actions">
                                 <button class="btn-action btn-shuffle" id="btnShuffle" title="Ngẫu nhiên vị trí icon">
                                     Shuffle</button>
@@ -385,7 +454,21 @@
         let currentTemplateIndex = 0;
         let currentTheme = 'blue';
         let currentPattern = 'grid';
+        let currentFont = 'DM Sans';
         let iconPositions = [];
+
+        // Available fonts (preloaded via Google Fonts link)
+        const availableFonts = [
+            { name: 'DM Sans', label: 'DM Sans' },
+            { name: 'Inter', label: 'Inter' },
+            { name: 'Roboto', label: 'Roboto' },
+            { name: 'Montserrat', label: 'Montserrat' },
+            { name: 'Playfair Display', label: 'Playfair' },
+            { name: 'Lora', label: 'Lora' },
+            { name: 'Oswald', label: 'Oswald' },
+            { name: 'Raleway', label: 'Raleway' },
+            { name: 'Be Vietnam Pro', label: 'Be Vietnam' },
+        ];
 
         // Templates per category
         const templates = {
@@ -510,6 +593,69 @@
             });
         }
 
+        function buildFontButtons() {
+            const grid = document.getElementById('fontGrid');
+            grid.innerHTML = '';
+            availableFonts.forEach(font => {
+                const btn = document.createElement('button');
+                btn.className = 'font-btn' + (font.name === currentFont ? ' active' : '');
+                btn.style.fontFamily = `'${font.name}', sans-serif`;
+                btn.textContent = font.label;
+                btn.title = font.name;
+                btn.onclick = () => {
+                    currentFont = font.name;
+                    document.querySelectorAll('#fontGrid .font-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    draw();
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        async function loadCustomFont() {
+            const input = document.getElementById('customFontInput');
+            const fontName = input.value.trim();
+            if (!fontName) { showToast('Vui lòng nhập tên font', 'error'); return; }
+
+            // Check if font already loaded
+            if (availableFonts.some(f => f.name.toLowerCase() === fontName.toLowerCase())) {
+                currentFont = availableFonts.find(f => f.name.toLowerCase() === fontName.toLowerCase()).name;
+                buildFontButtons();
+                draw();
+                showToast(`✅ Đã chọn font ${fontName}`, 'success');
+                return;
+            }
+
+            // Load from Google Fonts
+            const encodedName = fontName.replace(/\s+/g, '+');
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = `https://fonts.googleapis.com/css2?family=${encodedName}:wght@400;700;800;900&display=swap`;
+            document.head.appendChild(link);
+
+            showToast(`⏳ Đang tải font "${fontName}"...`, 'info');
+
+            // Wait for font to load
+            try {
+                await document.fonts.load(`800 48px '${fontName}'`);
+                // Add to available fonts list
+                availableFonts.push({ name: fontName, label: fontName });
+                currentFont = fontName;
+                buildFontButtons();
+                draw();
+                input.value = '';
+                showToast(`✅ Đã tải font "${fontName}"!`, 'success');
+            } catch (err) {
+                showToast(`❌ Không tìm thấy font "${fontName}" trên Google Fonts`, 'error');
+            }
+        }
+
+        // Allow Enter key in custom font input
+        document.getElementById('customFontInput')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') loadCustomFont();
+        });
+
+        // Category tabs
         document.querySelectorAll('.category-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
@@ -553,7 +699,7 @@
 
             const contentMargin = margin + 50;
             const catText = categoryLabels[currentCategory];
-            ctx.font = 'bold 20px DM Sans';
+            ctx.font = `bold 20px '${currentFont}', sans-serif`;
             const catMetrics = ctx.measureText(catText);
             const catPadX = 18, catPadY = 9;
             const catX = contentMargin, catY = margin + 50;
@@ -576,7 +722,7 @@
             const title = document.getElementById('inputTitle').value;
             const fontSize = 75; // Increased size
             const lineHeight = fontSize * 1.2;
-            ctx.font = `800 ${fontSize}px DM Sans`;
+            ctx.font = `800 ${fontSize}px '${currentFont}', sans-serif`;
             ctx.fillStyle = theme.text;
             ctx.textBaseline = 'top';
             ctx.textAlign = 'left'; // Keep left align or change to center if desired? User said "center (height)". Left align usually looks better for long titles.
@@ -617,7 +763,7 @@
             });
 
             // Footer
-            ctx.font = '500 24px DM Sans';
+            ctx.font = `500 24px '${currentFont}', sans-serif`;
             ctx.fillStyle = theme.subText;
             ctx.textBaseline = 'bottom';
             ctx.textAlign = 'left';
@@ -732,6 +878,7 @@
             buildTemplateButtons();
             buildThemeButtons();
             buildPatternButtons();
+            buildFontButtons();
             draw();
         });
     </script>
