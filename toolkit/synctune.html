@@ -2576,11 +2576,14 @@
 
             function extractArtistTrack(title) {
                 if (!title) return { artist: '', track: title || '' };
-                // Remove common suffixes
+                // Remove common suffixes and noise
                 var cleaned = title
-                    .replace(/\s*\(\s*(Official\s*(Music\s*)?Video|Lyric\s*Video|Audio|MV|4K\s*Remaster|Visualizer|Live|HD|HQ)\s*\)/gi, '')
-                    .replace(/\s*\[\s*(Official\s*(Music\s*)?Video|Lyric\s*Video|Audio|MV|4K\s*Remaster|Visualizer|Live|HD|HQ)\s*\]/gi, '')
-                    .replace(/\s*\|.*$/, '')
+                    .replace(/\s*\(\s*(Official\s*(Music\s*)?Video|Lyric\s*Video|Audio|MV|4K\s*Remaster|Visualizer|Live|HD|HQ|Lyrics?|Karaoke|Cover|Remix|Acoustic|Unplugged|Piano\s*Version)\s*\)/gi, '')
+                    .replace(/\s*\[\s*(Official\s*(Music\s*)?Video|Lyric\s*Video|Audio|MV|4K\s*Remaster|Visualizer|Live|HD|HQ|Lyrics?|Karaoke|Cover|Remix)\s*\]/gi, '')
+                    .replace(/\s*\|\s*.*$/, '')
+                    .replace(/\s*(ft\.?|feat\.?|featuring|prod\.?\s*by|x\s)\s*.*/gi, '')
+                    .replace(/\s*#\w+/g, '')
+                    .replace(/\s+/g, ' ')
                     .trim();
                 // Try "Artist - Track" or "Artist — Track" or "Artist – Track"
                 var separators = [' - ', ' \u2014 ', ' \u2013 ', ' : '];
@@ -2625,67 +2628,112 @@
                 var parsed = extractArtistTrack(title);
                 console.log('[SyncTune Lyrics] Searching:', parsed);
 
-                // Build search URL
+                // Strategy: try LRCLIB first (synced), then lyrics.ovh (plain), then give up
+                tryLRCLIB(parsed, title)
+                    .then(function (result) {
+                        if (result) return result;
+                        // Fallback: try lyrics.ovh (powered by Musixmatch)
+                        return tryLyricsOvh(parsed, title);
+                    })
+                    .then(function (result) {
+                        if (!result) {
+                            body.innerHTML = '<div class="lyrics-empty">\ud83c\udfb5 Kh\u00f4ng t\u00ecm th\u1ea5y l\u1eddi b\u00e0i h\u00e1t</div>';
+                            status.textContent = '';
+                            return;
+                        }
+                        if (result.type === 'synced') {
+                            lyricsData = result.lines;
+                            status.textContent = '\u2022 \u0110\u1ed3ng b\u1ed9';
+                            renderLyricsLines();
+                            startLyricsSync();
+                            console.log('[SyncTune Lyrics] Synced from', result.source, ':', result.lines.length, 'lines');
+                        } else {
+                            status.textContent = '\u2022 Kh\u00f4ng \u0111\u1ed3ng b\u1ed9';
+                            var html = '';
+                            for (var k = 0; k < result.lines.length; k++) {
+                                html += '<div class="lyrics-line passed">' + escHtml(result.lines[k]) + '</div>';
+                            }
+                            body.innerHTML = html;
+                            console.log('[SyncTune Lyrics] Plain from', result.source, ':', result.lines.length, 'lines');
+                        }
+                    })
+                    .catch(function (err) {
+                        console.warn('[SyncTune Lyrics] Error:', err);
+                        body.innerHTML = '<div class="lyrics-empty">L\u1ed7i khi t\u00ecm l\u1eddi b\u00e0i h\u00e1t</div>';
+                    });
+            }
+
+            // === Source 1: LRCLIB (free, synced LRC) ===
+            function tryLRCLIB(parsed, fullTitle) {
                 var url = 'https://lrclib.net/api/search?';
                 if (parsed.artist && parsed.track) {
                     url += 'track_name=' + encodeURIComponent(parsed.track) + '&artist_name=' + encodeURIComponent(parsed.artist);
                 } else {
                     url += 'track_name=' + encodeURIComponent(parsed.track);
                 }
-
-                fetch(url, { headers: { 'User-Agent': 'SyncTune/1.0 (https://nguyenvanhao.name.vn)' } })
+                return fetch(url, { headers: { 'User-Agent': 'SyncTune/1.0 (https://nguyenvanhao.name.vn)' } })
                     .then(function (res) { return res.json(); })
                     .then(function (data) {
                         if (!data || data.length === 0) {
-                            // Try fallback: search with full title
+                            // Fallback: search with full title
                             if (parsed.artist) {
-                                return fetch('https://lrclib.net/api/search?track_name=' + encodeURIComponent(title))
+                                return fetch('https://lrclib.net/api/search?track_name=' + encodeURIComponent(fullTitle),
+                                    { headers: { 'User-Agent': 'SyncTune/1.0' } })
                                     .then(function (r) { return r.json(); });
                             }
-                            return [];
+                            // Try with just track name (without artist)
+                            return fetch('https://lrclib.net/api/search?track_name=' + encodeURIComponent(parsed.track),
+                                { headers: { 'User-Agent': 'SyncTune/1.0' } })
+                                .then(function (r) { return r.json(); });
                         }
                         return data;
                     })
                     .then(function (data) {
-                        if (!data || data.length === 0) {
-                            body.innerHTML = '<div class="lyrics-empty">\ud83c\udfb5 Kh\u00f4ng t\u00ecm th\u1ea5y l\u1eddi b\u00e0i h\u00e1t</div>';
-                            status.textContent = '';
-                            return;
-                        }
-                        // Find the best result with synced lyrics
+                        if (!data || data.length === 0) return null;
+                        // Find best result with synced lyrics
                         var best = null;
                         for (var i = 0; i < data.length; i++) {
                             if (data[i].syncedLyrics) { best = data[i]; break; }
                         }
                         if (!best) {
-                            // Fallback to plain lyrics
+                            // Accept plain lyrics from LRCLIB
                             for (var j = 0; j < data.length; j++) {
                                 if (data[j].plainLyrics) { best = data[j]; break; }
                             }
                         }
-                        if (!best) {
-                            body.innerHTML = '<div class="lyrics-empty">\ud83c\udfb5 Kh\u00f4ng t\u00ecm th\u1ea5y l\u1eddi b\u00e0i h\u00e1t</div>';
-                            return;
-                        }
+                        if (!best) return null;
                         if (best.syncedLyrics) {
-                            lyricsData = parseLRC(best.syncedLyrics);
-                            status.textContent = '\u2022 \u0110\u1ed3ng b\u1ed9';
-                            renderLyricsLines();
-                            startLyricsSync();
+                            return { type: 'synced', lines: parseLRC(best.syncedLyrics), source: 'LRCLIB' };
                         } else if (best.plainLyrics) {
-                            status.textContent = '\u2022 Kh\u00f4ng \u0111\u1ed3ng b\u1ed9';
-                            var plainLines = best.plainLyrics.split('\n').filter(function (l) { return l.trim(); });
-                            var html = '';
-                            for (var k = 0; k < plainLines.length; k++) {
-                                html += '<div class="lyrics-line passed">' + escHtml(plainLines[k]) + '</div>';
-                            }
-                            body.innerHTML = html;
+                            var pl = best.plainLyrics.split('\n').filter(function (l) { return l.trim(); });
+                            return { type: 'plain', lines: pl, source: 'LRCLIB' };
                         }
-                        console.log('[SyncTune Lyrics] Found:', best.trackName, '-', best.artistName, '(' + lyricsData.length + ' synced lines)');
+                        return null;
                     })
-                    .catch(function (err) {
-                        console.warn('[SyncTune Lyrics] Error:', err);
-                        body.innerHTML = '<div class="lyrics-empty">L\u1ed7i khi t\u00ecm l\u1eddi b\u00e0i h\u00e1t</div>';
+                    .catch(function (e) {
+                        console.warn('[LRCLIB] Error:', e);
+                        return null;
+                    });
+            }
+
+            // === Source 2: lyrics.ovh (powered by Lyrics.ovh / public API) ===
+            function tryLyricsOvh(parsed, fullTitle) {
+                if (!parsed.artist || !parsed.track) return Promise.resolve(null);
+                var url = 'https://api.lyrics.ovh/v1/' + encodeURIComponent(parsed.artist) + '/' + encodeURIComponent(parsed.track);
+                return fetch(url)
+                    .then(function (res) {
+                        if (!res.ok) return null;
+                        return res.json();
+                    })
+                    .then(function (data) {
+                        if (!data || !data.lyrics) return null;
+                        var lines = data.lyrics.split('\n').filter(function (l) { return l.trim(); });
+                        if (lines.length < 2) return null;
+                        return { type: 'plain', lines: lines, source: 'lyrics.ovh' };
+                    })
+                    .catch(function (e) {
+                        console.warn('[lyrics.ovh] Error:', e);
+                        return null;
                     });
             }
 
