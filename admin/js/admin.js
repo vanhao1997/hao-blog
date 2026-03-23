@@ -359,13 +359,35 @@ async function loadImages() {
     }
 }
 
-// Delete Image
-async function deleteImage(id) {
-    if (!confirm('Bạn có chắc muốn xóa ảnh này?')) return;
+// Delete Image — shows styled confirmation popup
+function deleteImage(id) {
+    // Remove any existing confirm popups
+    document.querySelectorAll('.delete-confirm-popup').forEach(p => p.remove());
+
+    const popup = document.createElement('div');
+    popup.className = 'delete-confirm-popup';
+    popup.innerHTML = `
+        <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9998;display:flex;align-items:center;justify-content:center;">
+            <div style="background:#fff;border-radius:16px;padding:32px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                <div style="font-size:3rem;margin-bottom:12px;">🗑️</div>
+                <h3 style="font-size:1.2rem;font-weight:700;color:#1f2937;margin-bottom:8px;">Xác nhận xóa ảnh?</h3>
+                <p style="color:#6b7280;font-size:0.9rem;margin-bottom:24px;">Hành động này không thể hoàn tác. Ảnh sẽ bị xóa vĩnh viễn.</p>
+                <div style="display:flex;gap:12px;justify-content:center;">
+                    <button onclick="this.closest('.delete-confirm-popup').remove()" style="padding:10px 24px;border-radius:8px;border:1px solid #d1d5db;background:#fff;color:#374151;font-weight:600;cursor:pointer;font-size:0.9rem;">❌ Hủy</button>
+                    <button onclick="executeDeleteImage('${id}');this.closest('.delete-confirm-popup').remove()" style="padding:10px 24px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-weight:600;cursor:pointer;font-size:0.9rem;">🗑️ Xóa luôn</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(popup);
+}
+
+// Actually delete the image
+async function executeDeleteImage(id) {
     try {
         await API.deleteImage(id);
         loadImages();
-        showToast('Đã xóa ảnh', 'success');
+        showToast('Đã xóa ảnh thành công!', 'success');
     } catch (error) {
         showToast('Lỗi: ' + error.message, 'error');
     }
@@ -559,6 +581,7 @@ window.executeDeletePost = executeDeletePost;
 window.publishNow = publishNow;
 window.loadImages = loadImages;
 window.deleteImage = deleteImage;
+window.executeDeleteImage = executeDeleteImage;
 window.uploadImageFile = uploadImageFile;
 window.slugify = slugify;
 window.prettifyFilename = prettifyFilename;
