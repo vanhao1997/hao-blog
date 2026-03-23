@@ -552,8 +552,231 @@
             flex: 1;
             overflow-y: auto;
             padding: 8px;
-            min-height: 100px;
-            max-height: 240px;
+            min-height: 160px;
+            max-height: 500px;
+        }
+
+        .queue-item-number {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: var(--color-border, #e5e7eb);
+            color: var(--color-black, #1F2937);
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .queue-item.playing .queue-item-number {
+            background: var(--color-primary, #22C55E);
+            color: #fff;
+        }
+
+        .queue-item-thumb {
+            width: 56px;
+            height: 42px;
+        }
+
+        /* Feature Request */
+        .feature-popup {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 340px;
+            max-height: 400px;
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 16px;
+            box-shadow: 6px 6px 0 var(--color-border, #e5e7eb);
+            z-index: 100;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .feature-popup.active {
+            display: flex;
+        }
+
+        .feature-popup-header {
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--color-border, #e5e7eb);
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .feature-popup-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+
+        .feature-input-row {
+            display: flex;
+            gap: 6px;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--color-border, #e5e7eb);
+        }
+
+        .feature-input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .feature-input:focus {
+            border-color: var(--color-primary, #22C55E);
+        }
+
+        .feature-send {
+            padding: 8px 14px;
+            background: var(--color-primary, #22C55E);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .feature-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px;
+            max-height: 260px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            background: #f9fafb;
+            border: 1px solid var(--color-border, #e5e7eb);
+        }
+
+        .feature-item-text {
+            flex: 1;
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+
+        .feature-item-user {
+            font-weight: 700;
+            color: var(--color-primary, #22C55E);
+            font-size: 0.75rem;
+        }
+
+        .feature-votes {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .feature-vote-btn {
+            padding: 3px 8px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border, #e5e7eb);
+            background: #fff;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: 0.2s;
+        }
+
+        .feature-vote-btn:hover {
+            background: #f0fdf4;
+            border-color: #22C55E;
+        }
+
+        .feature-vote-btn.voted {
+            background: #dcfce7;
+            border-color: #22C55E;
+            font-weight: 700;
+        }
+
+        /* Active Rooms on Lobby */
+        .lobby-rooms {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .lobby-rooms-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--color-muted, #6B7280);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .lobby-rooms-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .lobby-room-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .lobby-room-card:hover {
+            border-color: var(--color-primary, #22C55E);
+            transform: translateY(-1px);
+        }
+
+        .lobby-room-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lobby-room-host {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--color-black, #1F2937);
+        }
+
+        .lobby-room-song {
+            font-size: 0.75rem;
+            color: var(--color-muted, #6B7280);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .lobby-room-users {
+            padding: 3px 10px;
+            background: #dcfce7;
+            color: #16a34a;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
         }
 
         .queue-item {
@@ -577,8 +800,8 @@
         }
 
         .queue-item-thumb {
-            width: 48px;
-            height: 36px;
+            width: 56px;
+            height: 42px;
             border-radius: 8px;
             object-fit: cover;
             background: #f3f4f6;
@@ -1084,6 +1307,150 @@
                 right: 8px;
             }
         }
+
+        /* ===== LYRICS PANEL ===== */
+        .lyrics-panel {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-radius: 16px;
+            margin: 8px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .lyrics-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .lyrics-header span {
+            color: #e0e0e0;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .lyrics-header .lyrics-status {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+        }
+
+        .lyrics-close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #aaa;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .lyrics-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .lyrics-body {
+            padding: 16px 20px;
+            max-height: 220px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            text-align: center;
+        }
+
+        .lyrics-body::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .lyrics-body::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        .lyrics-line {
+            padding: 6px 12px;
+            margin: 2px 0;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            transition: all 0.35s ease;
+            cursor: default;
+        }
+
+        .lyrics-line.active {
+            font-size: 1.15rem;
+            font-weight: 700;
+            transform: scale(1.02);
+            background-image: linear-gradient(90deg, #22C55E var(--lyrics-progress, 0%), rgba(255, 255, 255, 0.3) var(--lyrics-progress, 0%));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.3));
+        }
+
+        .lyrics-line.passed {
+            color: #22C55E;
+            opacity: 0.6;
+        }
+
+        .lyrics-line.upcoming {
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .lyrics-empty {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .lyrics-loading {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .lyrics-loading .dots::after {
+            content: '';
+            animation: lyricsDots 1.5s steps(3) infinite;
+        }
+
+        @keyframes lyricsDots {
+            0% {
+                content: '.';
+            }
+
+            33% {
+                content: '..';
+            }
+
+            66% {
+                content: '...';
+            }
+        }
+
+        .ctrl-btn.lyrics-btn {
+            background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+            color: #fff;
+            border-color: #7C3AED;
+        }
+
+        .ctrl-btn.lyrics-btn:hover {
+            background: linear-gradient(135deg, #7C3AED, #5B21B6);
+        }
+
+        .ctrl-btn.lyrics-btn.active {
+            background: linear-gradient(135deg, #6D28D9, #4C1D95);
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+        }
     </style>
 </head>
 
@@ -1108,6 +1475,7 @@
 
     <div class="st-page">
         <div class="container">
+            <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
 
             <!-- ===== LOBBY ===== -->
             <div id="lobby" class="lobby">
@@ -1118,6 +1486,8 @@
 
                     <input type="text" id="usernameInput" class="lobby-input" placeholder="Nhập tên của bạn..."
                         maxlength="20">
+                    <input type="text" id="roomNameInput" class="lobby-input" placeholder="Đặt tên phòng (tuỳ chọn)..."
+                        maxlength="40" style="font-size:0.95rem;">
                     <button id="createRoomBtn" class="lobby-btn lobby-btn-primary">🎧 Tạo Phòng Mới</button>
 
                     <div class="lobby-divider">hoặc</div>
@@ -1128,6 +1498,12 @@
                     <button id="joinRoomBtn" class="lobby-btn lobby-btn-outline">🚪 Tham Gia Phòng</button>
 
                     <div id="lobbyStatus"></div>
+
+                    <!-- Active rooms -->
+                    <div id="lobbyRooms" class="lobby-rooms" style="display:none;">
+                        <div class="lobby-rooms-title">🎧 Phòng đang mở</div>
+                        <div id="lobbyRoomsList" class="lobby-rooms-list"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1139,6 +1515,8 @@
                         <span class="room-brand-name">SyncTune</span>
                     </div>
                     <div class="room-info">
+                        <span id="roomNameDisplay"
+                            style="font-weight:700;color:var(--color-black,#1F2937);font-size:1rem;"></span>
                         <span id="connectionStatus" class="st-status connecting">Đang kết nối...</span>
                         <span id="roomCodeDisplay" class="room-code" title="Click để copy mã phòng">Room: ---</span>
                         <button id="shareBtn" class="share-btn">📤 Chia sẻ</button>
@@ -1147,6 +1525,24 @@
                             <span id="userCount">1</span> online
                         </span>
                         <button id="leaveBtn" class="leave-btn">Rời phòng</button>
+                        <div style="position:relative;display:inline-block;">
+                            <button id="featureBtn" class="share-btn" style="margin-left:4px;">💡 Góp ý</button>
+                            <div id="featurePopup" class="feature-popup">
+                                <div class="feature-popup-header">
+                                    <span>💡 Góp ý tính năng</span>
+                                    <button id="featureClose" class="feature-popup-close">×</button>
+                                </div>
+                                <div class="feature-input-row">
+                                    <input class="feature-input" id="featureInput" placeholder="Mô tả tính năng..."
+                                        maxlength="200">
+                                    <button class="feature-send" id="featureSend">Gửi</button>
+                                </div>
+                                <div class="feature-list" id="featureList">
+                                    <div style="text-align:center;opacity:0.5;font-size:0.8rem;padding:20px;">Chưa có
+                                        góp ý nào</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1170,11 +1566,24 @@
                             <span id="nowPlayingBadge" class="now-playing-badge badge-yt">YouTube</span>
                         </div>
 
+                        <!-- Lyrics Panel -->
+                        <div id="lyricsPanel" class="lyrics-panel" style="display:none;">
+                            <div class="lyrics-header">
+                                <span>🎤 Lời bài hát <span id="lyricsStatus" class="lyrics-status"></span></span>
+                                <button id="closeLyricsBtn" class="lyrics-close-btn" title="Đóng">✕</button>
+                            </div>
+                            <div class="lyrics-body" id="lyricsBody">
+                                <div class="lyrics-empty">Bật nhạc để hiển thị lời bài hát</div>
+                            </div>
+                        </div>
+
                         <!-- Playback controls -->
                         <div class="playback-controls">
                             <button id="prevBtn" class="ctrl-btn" disabled>⏮ Trước</button>
                             <button id="stopBtn" class="ctrl-btn stop-btn">⏸ Dừng</button>
                             <button id="nextBtn" class="ctrl-btn" disabled>Tiếp ⏭</button>
+                            <button id="lyricsToggleBtn" class="ctrl-btn lyrics-btn" title="Hiển thị lời bài hát">🎤
+                                Lời</button>
                             <button id="pipBtn" class="ctrl-btn pip-btn" title="Thu nhỏ cửa sổ nổi">📌 Thu nhỏ</button>
                         </div>
 
@@ -1301,6 +1710,16 @@
                     onReady: function () { ytPlayerReady = true; console.log('[SyncTune] YouTube player ready'); },
                     onStateChange: function (e) {
                         if (e.data === YT.PlayerState.ENDED) { playNext(); }
+                        // Sync stop button text with player state
+                        var btn = document.getElementById('stopBtn');
+                        var miniBtn = document.getElementById('miniStopBtn');
+                        if (e.data === YT.PlayerState.PLAYING) {
+                            if (btn) btn.innerHTML = '\u23f8 D\u1eebng';
+                            if (miniBtn) miniBtn.textContent = '\u23f8';
+                        } else if (e.data === YT.PlayerState.PAUSED) {
+                            if (btn) btn.innerHTML = '\u25b6 Ph\u00e1t';
+                            if (miniBtn) miniBtn.textContent = '\u25b6';
+                        }
                     }
                 }
             });
@@ -1325,14 +1744,19 @@
 
             // State
             var channel = null;
+            var lobbyChannel = null;
             var currentUser = '';
             var roomCode = '';
+            var roomName = '';
             var isHost = false;
             var queue = [];
             var currentIndex = -1;
             var isMinimized = false;
-            var pendingSync = false; // Flag: this client is waiting for initial sync
+            var pendingSync = false;
             var miniUnreadCount = 0;
+            var featureRequests = [];
+            var lobbyRooms = {};
+            var lobbyHeartbeatTimer = null;
 
             // DOM refs
             var lobbyEl = document.getElementById('lobby');
@@ -1553,10 +1977,15 @@
             function createRoom() {
                 currentUser = usernameInput.value.trim() || 'Guest';
                 roomCode = generateRoomCode();
+                roomName = document.getElementById('roomNameInput').value.trim();
                 isHost = true;
                 pendingSync = false;
-                console.log('[SyncTune] Creating room:', roomCode);
+                console.log('[SyncTune] Creating room:', roomCode, roomName ? '(' + roomName + ')' : '');
                 lobbyStatus.innerHTML = '<span class="st-status connecting">\u23f3 \u0110ang t\u1ea1o ph\u00f2ng...</span>';
+                // Unsubscribe lobby when entering room
+                if (lobbyChannel) { try { sb.removeChannel(lobbyChannel); } catch (e) { } lobbyChannel = null; }
+                // Save room to DB
+                saveRoomToDB();
                 joinChannel();
             }
 
@@ -1565,9 +1994,12 @@
                 roomCode = roomCodeInput.value.trim().toUpperCase();
                 if (roomCode.length < 4) { toast('M\u00e3 ph\u00f2ng kh\u00f4ng h\u1ee3p l\u1ec7!'); return; }
                 isHost = false;
-                pendingSync = true; // Mark that we need to receive initial state
+                pendingSync = true;
                 console.log('[SyncTune] Joining room:', roomCode);
                 lobbyStatus.innerHTML = '<span class="st-status connecting">\u23f3 \u0110ang tham gia ph\u00f2ng...</span>';
+                if (lobbyChannel) { try { sb.removeChannel(lobbyChannel); } catch (e) { } lobbyChannel = null; }
+                // Try loading room data from DB
+                loadRoomFromDB();
                 joinChannel();
             }
 
@@ -1577,7 +2009,7 @@
                     console.log('[SyncTune] Creating channel:', channelName);
 
                     channel = sb.channel(channelName, {
-                        config: { broadcast: { self: true } }
+                        config: { broadcast: { self: true }, presence: { key: currentUser + '-' + Math.random().toString(36).substr(2, 5) } }
                     });
 
                     // Listen for events
@@ -1589,9 +2021,10 @@
                         .on('broadcast', { event: 'chat:message' }, function (msg) { addChatMessage(msg.payload.user, msg.payload.text); })
                         .on('broadcast', { event: 'reaction' }, function (msg) { showFloatingReaction(msg.payload.emoji); })
                         .on('broadcast', { event: 'user:joined' }, function (msg) { addSystemMessage(msg.payload.username + ' \u0111\u00e3 tham gia ph\u00f2ng \ud83c\udfa7'); })
+                        .on('broadcast', { event: 'user:left' }, function (msg) { addSystemMessage(msg.payload.username + ' \u0111\u00e3 r\u1eddi ph\u00f2ng \ud83d\udc4b'); })
+                        .on('broadcast', { event: 'feature:add' }, function (msg) { onFeatureAdd(msg.payload); })
+                        .on('broadcast', { event: 'feature:vote' }, function (msg) { onFeatureVote(msg.payload); })
                         .on('broadcast', { event: 'queue:full-sync' }, function (msg) {
-                            // Only the person who REQUESTED sync (pendingSync) should load the video.
-                            // All other users just update queue data silently.
                             var oldQueue = queue.slice();
                             var oldIndex = currentIndex;
                             queue = msg.payload.queue || [];
@@ -1599,21 +2032,23 @@
                             renderQueue();
                             updateNowPlaying();
                             updateControlButtons();
-
                             if (pendingSync) {
-                                // I just joined — load the current video without autoplay
                                 pendingSync = false;
                                 if (currentIndex >= 0 && queue[currentIndex]) {
                                     loadVideo(queue[currentIndex].videoId, false);
                                 }
                             }
-                            // For existing users: do NOT touch the video player at all.
-                            // The queue and currentIndex are updated but playback continues uninterrupted.
                         })
                         .on('broadcast', { event: 'request:sync' }, function () {
                             if (isHost) {
                                 channel.send({ type: 'broadcast', event: 'queue:full-sync', payload: { queue: queue, currentIndex: currentIndex } });
                             }
+                        })
+                        .on('presence', { event: 'sync' }, function () {
+                            var state = channel.presenceState();
+                            var count = 0;
+                            Object.keys(state).forEach(function (k) { count += state[k].length; });
+                            userCountEl.textContent = count || 1;
                         });
 
                     channel.subscribe(function (status) {
@@ -1624,7 +2059,11 @@
                             lobbyEl.style.display = 'none';
                             roomEl.classList.add('active');
                             roomCodeDisplay.textContent = 'Room: ' + roomCode;
+                            document.getElementById('roomNameDisplay').textContent = roomName || '';
                             setConnectionStatus('connected', '\u2713 \u0110\u00e3 k\u1ebft n\u1ed1i');
+
+                            // Track presence
+                            channel.track({ username: currentUser });
 
                             // Announce
                             channel.send({ type: 'broadcast', event: 'user:joined', payload: { username: currentUser } });
@@ -1639,6 +2078,9 @@
                                 ? 'Ph\u00f2ng ' + roomCode + ' \u0111\u00e3 \u0111\u01b0\u1ee3c t\u1ea1o! Chia s\u1ebb m\u00e3 n\u00e0y cho b\u1ea1n b\u00e8.'
                                 : '\u0110\u00e3 tham gia ph\u00f2ng ' + roomCode
                             );
+
+                            // Host: start lobby heartbeat
+                            if (isHost) startLobbyHeartbeat();
                         } else if (status === 'CHANNEL_ERROR') {
                             setConnectionStatus('error', '\u2715 L\u1ed7i k\u1ebft n\u1ed1i');
                             lobbyStatus.innerHTML = '<span class="st-status error">\u274c L\u1ed7i k\u1ebft n\u1ed1i. Th\u1eed l\u1ea1i!</span>';
@@ -1656,12 +2098,21 @@
 
             function leaveRoom() {
                 if (channel) {
-                    sb.removeChannel(channel);
-                    channel = null;
+                    // Broadcast leave before disconnecting
+                    try {
+                        channel.send({ type: 'broadcast', event: 'user:left', payload: { username: currentUser } });
+                        channel.untrack();
+                    } catch (e) { }
+                    setTimeout(function () {
+                        if (channel) { sb.removeChannel(channel); channel = null; }
+                    }, 200);
                 }
+                stopLobbyHeartbeat();
                 queue = [];
                 currentIndex = -1;
                 isMinimized = false;
+                featureRequests = [];
+                roomName = '';
                 roomEl.classList.remove('active');
                 roomEl.classList.remove('minimized');
                 miniPlayerEl.classList.remove('active');
@@ -1672,6 +2123,8 @@
                 document.querySelector('.st-page').style.paddingBottom = '';
                 if (ytPlayerObj && ytPlayerReady) { try { ytPlayerObj.stopVideo(); } catch (e) { } }
                 document.getElementById('playerPlaceholder').style.display = 'flex';
+                // Re-subscribe to lobby
+                subscribeLobby();
             }
 
             // ===== QUEUE =====
@@ -1785,6 +2238,9 @@
                 document.getElementById('playerPlaceholder').style.display = 'none';
                 if (autoplay) ytPlayerObj.loadVideoById(videoId);
                 else ytPlayerObj.cueVideoById(videoId);
+                // Fetch lyrics for this video
+                var song = queue[currentIndex];
+                if (song) fetchAndRenderLyrics(song.title);
             }
 
             window.playNext = function () {
@@ -1848,6 +2304,7 @@
                     var item = queue[i];
                     var thumbSrc = item.thumbnail || 'https://img.youtube.com/vi/' + item.videoId + '/mqdefault.jpg';
                     html += '<div class="queue-item ' + (i === currentIndex ? 'playing' : '') + '" onclick="playAtIndex(' + i + ')">';
+                    html += '<span class="queue-item-number">' + (i + 1) + '</span>';
                     html += '<img class="queue-item-thumb" src="' + thumbSrc + '" alt="" loading="lazy">';
                     html += '<div class="queue-item-info">';
                     html += '<div class="queue-item-title">' + escHtml(item.title) + '</div>';
@@ -1860,6 +2317,8 @@
                     html += '</div>';
                 }
                 queueListEl.innerHTML = html;
+                // Persist room data to DB
+                debounceRoomSave();
             }
 
             // ===== CHAT =====
@@ -1868,6 +2327,85 @@
                 if (!text || !channel) return;
                 channel.send({ type: 'broadcast', event: 'chat:message', payload: { user: currentUser, text: text } });
                 chatInput.value = '';
+            }
+
+            // ===== ROOM DB PERSISTENCE (72h) =====
+            var roomSaveTimer = null;
+            function debounceRoomSave() {
+                if (roomSaveTimer) clearTimeout(roomSaveTimer);
+                roomSaveTimer = setTimeout(function () { saveRoomToDB(); }, 2000);
+            }
+
+            function saveRoomToDB() {
+                if (!roomCode) return;
+                var songTitle = '';
+                if (currentIndex >= 0 && queue[currentIndex]) songTitle = queue[currentIndex].title;
+                sb.from('synctune_rooms').upsert({
+                    room_code: roomCode,
+                    host_name: currentUser,
+                    room_name: roomName || '',
+                    queue: queue,
+                    current_index: currentIndex,
+                    feature_requests: featureRequests,
+                    current_song: songTitle,
+                    user_count: parseInt(userCountEl.textContent) || 1,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'room_code' }).then(function (res) {
+                    if (res.error) console.warn('[SyncTune] DB save error:', res.error);
+                    else console.log('[SyncTune] Room saved to DB');
+                });
+            }
+
+            function loadRoomFromDB() {
+                if (!roomCode) return;
+                sb.from('synctune_rooms').select('*').eq('room_code', roomCode).single().then(function (res) {
+                    if (res.data) {
+                        console.log('[SyncTune] Room data loaded from DB:', res.data);
+                        if (res.data.room_name) {
+                            roomName = res.data.room_name;
+                            var nameEl = document.getElementById('roomNameDisplay');
+                            if (nameEl) nameEl.textContent = roomName;
+                        }
+                        if (res.data.queue && res.data.queue.length > 0 && queue.length === 0) {
+                            queue = res.data.queue;
+                            currentIndex = res.data.current_index || 0;
+                            featureRequests = res.data.feature_requests || [];
+                            renderQueue();
+                            renderFeatures();
+                            updateNowPlaying();
+                            updateControlButtons();
+                        }
+                    }
+                });
+            }
+
+            function loadActiveRoomsFromDB() {
+                var cutoff = new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString();
+                sb.from('synctune_rooms').select('room_code, host_name, room_name, current_song, user_count, updated_at')
+                    .gt('updated_at', cutoff)
+                    .order('updated_at', { ascending: false })
+                    .limit(20)
+                    .then(function (res) {
+                        if (res.data && res.data.length > 0) {
+                            res.data.forEach(function (r) {
+                                lobbyRooms[r.room_code] = {
+                                    code: r.room_code,
+                                    host: r.host_name,
+                                    name: r.room_name || '',
+                                    song: r.current_song || '',
+                                    userCount: r.user_count || 0,
+                                    ts: new Date(r.updated_at).getTime()
+                                };
+                            });
+                            renderLobbyRooms();
+                        }
+                    });
+            }
+
+            function cleanupOldRooms() {
+                sb.rpc('cleanup_old_synctune_rooms').then(function (res) {
+                    if (res.error) console.warn('[SyncTune] Cleanup error:', res.error);
+                });
             }
 
             // ===== REACTIONS =====
@@ -2092,6 +2630,340 @@
                 channel.send({ type: 'broadcast', event: 'reaction', payload: { emoji: emoji } });
             }
 
+            // ===== FEATURE REQUEST SYSTEM =====
+            function onFeatureAdd(data) {
+                featureRequests.push({ id: data.id, text: data.text, user: data.user, upvotes: [], downvotes: [] });
+                renderFeatures();
+            }
+
+            function onFeatureVote(data) {
+                var fr = featureRequests.find(function (f) { return f.id === data.id; });
+                if (!fr) return;
+                // Remove previous vote
+                fr.upvotes = fr.upvotes.filter(function (u) { return u !== data.user; });
+                fr.downvotes = fr.downvotes.filter(function (u) { return u !== data.user; });
+                if (data.vote === 'up') fr.upvotes.push(data.user);
+                else if (data.vote === 'down') fr.downvotes.push(data.user);
+                renderFeatures();
+            }
+
+            function renderFeatures() {
+                var list = document.getElementById('featureList');
+                if (featureRequests.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;opacity:0.5;font-size:0.8rem;padding:20px;">Ch\u01b0a c\u00f3 g\u00f3p \u00fd n\u00e0o</div>';
+                    return;
+                }
+                list.innerHTML = '';
+                featureRequests.forEach(function (fr) {
+                    var el = document.createElement('div');
+                    el.className = 'feature-item';
+                    var upActive = fr.upvotes.indexOf(currentUser) !== -1 ? ' voted' : '';
+                    var downActive = fr.downvotes.indexOf(currentUser) !== -1 ? ' voted' : '';
+                    el.innerHTML = '<div class="feature-item-text"><div class="feature-item-user">' + escHtml(fr.user) + '</div>' + escHtml(fr.text) + '</div>' +
+                        '<div class="feature-votes">' +
+                        '<button class="feature-vote-btn' + upActive + '" data-id="' + fr.id + '" data-vote="up">\u2705 ' + fr.upvotes.length + '</button>' +
+                        '<button class="feature-vote-btn' + downActive + '" data-id="' + fr.id + '" data-vote="down">\u274c ' + fr.downvotes.length + '</button>' +
+                        '</div>';
+                    list.appendChild(el);
+                });
+                // Wire vote buttons
+                list.querySelectorAll('.feature-vote-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        if (!channel) return;
+                        channel.send({ type: 'broadcast', event: 'feature:vote', payload: { id: btn.dataset.id, vote: btn.dataset.vote, user: currentUser } });
+                    });
+                });
+            }
+
+            function submitFeature() {
+                var input = document.getElementById('featureInput');
+                var text = input.value.trim();
+                if (!text || !channel) return;
+                var id = Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
+                channel.send({ type: 'broadcast', event: 'feature:add', payload: { id: id, text: text, user: currentUser } });
+                input.value = '';
+            }
+
+            // ===== LOBBY ROOMS =====
+            function subscribeLobby() {
+                if (lobbyChannel) { try { sb.removeChannel(lobbyChannel); } catch (e) { } }
+                lobbyChannel = sb.channel('synctune-lobby', { config: { broadcast: { self: true } } });
+                lobbyChannel
+                    .on('broadcast', { event: 'room:active' }, function (msg) {
+                        var d = msg.payload;
+                        lobbyRooms[d.code] = { code: d.code, host: d.host, name: d.name || '', song: d.song || '', userCount: d.userCount || 1, ts: Date.now() };
+                        renderLobbyRooms();
+                    })
+                    .on('broadcast', { event: 'room:closed' }, function (msg) {
+                        delete lobbyRooms[msg.payload.code];
+                        renderLobbyRooms();
+                    })
+                    .subscribe();
+            }
+
+            function renderLobbyRooms() {
+                var container = document.getElementById('lobbyRooms');
+                var list = document.getElementById('lobbyRoomsList');
+                // Clean stale rooms (>72h)
+                var now = Date.now();
+                var ttl72h = 72 * 60 * 60 * 1000;
+                Object.keys(lobbyRooms).forEach(function (k) {
+                    if (now - lobbyRooms[k].ts > ttl72h) delete lobbyRooms[k];
+                });
+                var keys = Object.keys(lobbyRooms);
+                if (keys.length === 0) {
+                    container.style.display = 'none';
+                    return;
+                }
+                container.style.display = 'block';
+                list.innerHTML = '';
+                keys.forEach(function (k) {
+                    var r = lobbyRooms[k];
+                    var card = document.createElement('div');
+                    card.className = 'lobby-room-card';
+                    var displayName = r.name ? escHtml(r.name) : '\ud83c\udfa7 ' + escHtml(r.host);
+                    card.innerHTML = '<div class="lobby-room-info"><div class="lobby-room-host">' + displayName + '</div>' +
+                        '<div class="lobby-room-song">' + (r.song ? escHtml(r.song) : 'Ch\u01b0a ph\u00e1t b\u00e0i n\u00e0o') + '</div></div>' +
+                        '<span class="lobby-room-users">' + r.userCount + ' online</span>';
+                    card.addEventListener('click', function () {
+                        roomCodeInput.value = r.code;
+                        toast('\u0110\u00e3 ch\u1ecdn ph\u00f2ng ' + r.code + ' \u2014 nh\u1ea5n Tham Gia!');
+                    });
+                    list.appendChild(card);
+                });
+            }
+
+            function startLobbyHeartbeat() {
+                sendLobbyHeartbeat();
+                lobbyHeartbeatTimer = setInterval(sendLobbyHeartbeat, 30000);
+            }
+
+            function stopLobbyHeartbeat() {
+                if (lobbyHeartbeatTimer) { clearInterval(lobbyHeartbeatTimer); lobbyHeartbeatTimer = null; }
+                // Notify lobby that room is closed
+                if (lobbyChannel && roomCode) {
+                    try { lobbyChannel.send({ type: 'broadcast', event: 'room:closed', payload: { code: roomCode } }); } catch (e) { }
+                }
+            }
+
+            function sendLobbyHeartbeat() {
+                if (!lobbyChannel || !roomCode) return;
+                var songTitle = '';
+                if (currentIndex >= 0 && queue[currentIndex]) songTitle = queue[currentIndex].title;
+                var state = channel ? channel.presenceState() : {};
+                var count = 0;
+                Object.keys(state).forEach(function (k) { count += state[k].length; });
+                lobbyChannel.send({
+                    type: 'broadcast', event: 'room:active',
+                    payload: { code: roomCode, host: currentUser, name: roomName || '', song: songTitle, userCount: count || 1 }
+                });
+            }
+
+            // ===== LYRICS / KARAOKE ENGINE =====
+            var lyricsData = []; // [{time: seconds, text: '...'}, ...]
+            var lyricsSyncTimer = null;
+            var lyricsVisible = false;
+            var currentLyricIndex = -1;
+
+            function extractArtistTrack(title) {
+                if (!title) return { artist: '', track: title || '' };
+                // Remove common suffixes
+                var cleaned = title
+                    .replace(/\s*\(\s*(Official\s*(Music\s*)?Video|Lyric\s*Video|Audio|MV|4K\s*Remaster|Visualizer|Live|HD|HQ)\s*\)/gi, '')
+                    .replace(/\s*\[\s*(Official\s*(Music\s*)?Video|Lyric\s*Video|Audio|MV|4K\s*Remaster|Visualizer|Live|HD|HQ)\s*\]/gi, '')
+                    .replace(/\s*\|.*$/, '')
+                    .trim();
+                // Try "Artist - Track" or "Artist — Track" or "Artist – Track"
+                var separators = [' - ', ' \u2014 ', ' \u2013 ', ' : '];
+                for (var i = 0; i < separators.length; i++) {
+                    var idx = cleaned.indexOf(separators[i]);
+                    if (idx > 0) {
+                        return {
+                            artist: cleaned.substring(0, idx).trim(),
+                            track: cleaned.substring(idx + separators[i].length).trim()
+                        };
+                    }
+                }
+                return { artist: '', track: cleaned };
+            }
+
+            function parseLRC(lrcString) {
+                if (!lrcString) return [];
+                var lines = lrcString.split('\n');
+                var result = [];
+                for (var i = 0; i < lines.length; i++) {
+                    var match = lines[i].match(/^\[(\d{2}):(\d{2})[.:](\d{2})\]\s?(.*)$/);
+                    if (match) {
+                        var time = parseInt(match[1]) * 60 + parseInt(match[2]) + parseInt(match[3]) / 100;
+                        var text = match[4].trim();
+                        if (text) result.push({ time: time, text: text });
+                    }
+                }
+                result.sort(function (a, b) { return a.time - b.time; });
+                return result;
+            }
+
+            function fetchAndRenderLyrics(title) {
+                stopLyricsSync();
+                lyricsData = [];
+                currentLyricIndex = -1;
+                var body = document.getElementById('lyricsBody');
+                var status = document.getElementById('lyricsStatus');
+                if (!body) return;
+                body.innerHTML = '<div class="lyrics-loading">\u0110ang t\u00ecm l\u1eddi b\u00e0i h\u00e1t<span class="dots"></span></div>';
+                status.textContent = '';
+
+                var parsed = extractArtistTrack(title);
+                console.log('[SyncTune Lyrics] Searching:', parsed);
+
+                // Build search URL
+                var url = 'https://lrclib.net/api/search?';
+                if (parsed.artist && parsed.track) {
+                    url += 'track_name=' + encodeURIComponent(parsed.track) + '&artist_name=' + encodeURIComponent(parsed.artist);
+                } else {
+                    url += 'track_name=' + encodeURIComponent(parsed.track);
+                }
+
+                fetch(url, { headers: { 'User-Agent': 'SyncTune/1.0 (https://nguyenvanhao.name.vn)' } })
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        if (!data || data.length === 0) {
+                            // Try fallback: search with full title
+                            if (parsed.artist) {
+                                return fetch('https://lrclib.net/api/search?track_name=' + encodeURIComponent(title))
+                                    .then(function (r) { return r.json(); });
+                            }
+                            return [];
+                        }
+                        return data;
+                    })
+                    .then(function (data) {
+                        if (!data || data.length === 0) {
+                            body.innerHTML = '<div class="lyrics-empty">\ud83c\udfb5 Kh\u00f4ng t\u00ecm th\u1ea5y l\u1eddi b\u00e0i h\u00e1t</div>';
+                            status.textContent = '';
+                            return;
+                        }
+                        // Find the best result with synced lyrics
+                        var best = null;
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].syncedLyrics) { best = data[i]; break; }
+                        }
+                        if (!best) {
+                            // Fallback to plain lyrics
+                            for (var j = 0; j < data.length; j++) {
+                                if (data[j].plainLyrics) { best = data[j]; break; }
+                            }
+                        }
+                        if (!best) {
+                            body.innerHTML = '<div class="lyrics-empty">\ud83c\udfb5 Kh\u00f4ng t\u00ecm th\u1ea5y l\u1eddi b\u00e0i h\u00e1t</div>';
+                            return;
+                        }
+                        if (best.syncedLyrics) {
+                            lyricsData = parseLRC(best.syncedLyrics);
+                            status.textContent = '\u2022 \u0110\u1ed3ng b\u1ed9';
+                            renderLyricsLines();
+                            startLyricsSync();
+                        } else if (best.plainLyrics) {
+                            status.textContent = '\u2022 Kh\u00f4ng \u0111\u1ed3ng b\u1ed9';
+                            var plainLines = best.plainLyrics.split('\n').filter(function (l) { return l.trim(); });
+                            var html = '';
+                            for (var k = 0; k < plainLines.length; k++) {
+                                html += '<div class="lyrics-line passed">' + escHtml(plainLines[k]) + '</div>';
+                            }
+                            body.innerHTML = html;
+                        }
+                        console.log('[SyncTune Lyrics] Found:', best.trackName, '-', best.artistName, '(' + lyricsData.length + ' synced lines)');
+                    })
+                    .catch(function (err) {
+                        console.warn('[SyncTune Lyrics] Error:', err);
+                        body.innerHTML = '<div class="lyrics-empty">L\u1ed7i khi t\u00ecm l\u1eddi b\u00e0i h\u00e1t</div>';
+                    });
+            }
+
+            function renderLyricsLines() {
+                var body = document.getElementById('lyricsBody');
+                if (!body || lyricsData.length === 0) return;
+                var html = '';
+                for (var i = 0; i < lyricsData.length; i++) {
+                    html += '<div class="lyrics-line upcoming" id="lyric-' + i + '">' + escHtml(lyricsData[i].text) + '</div>';
+                }
+                body.innerHTML = html;
+            }
+
+            function startLyricsSync() {
+                stopLyricsSync();
+                if (lyricsData.length === 0) return;
+                lyricsSyncTimer = setInterval(function () {
+                    if (!ytPlayerObj || !ytPlayerReady) return;
+                    try {
+                        var currentTime = ytPlayerObj.getCurrentTime();
+                        if (typeof currentTime !== 'number') return;
+                        // Find the current line
+                        var newIndex = -1;
+                        for (var i = lyricsData.length - 1; i >= 0; i--) {
+                            if (currentTime >= lyricsData[i].time) {
+                                newIndex = i;
+                                break;
+                            }
+                        }
+                        // Calculate progress within current line (0-100%)
+                        var progress = 0;
+                        if (newIndex >= 0) {
+                            var lineStart = lyricsData[newIndex].time;
+                            var lineEnd = (newIndex < lyricsData.length - 1) ? lyricsData[newIndex + 1].time : lineStart + 5;
+                            var duration = lineEnd - lineStart;
+                            if (duration > 0) {
+                                progress = Math.min(100, Math.max(0, ((currentTime - lineStart) / duration) * 100));
+                            }
+                        }
+                        if (newIndex !== currentLyricIndex) {
+                            currentLyricIndex = newIndex;
+                            highlightLyricLine(newIndex, progress);
+                        } else if (newIndex >= 0) {
+                            // Update progress on same line
+                            var activeLine = document.getElementById('lyric-' + newIndex);
+                            if (activeLine) activeLine.style.setProperty('--lyrics-progress', progress + '%');
+                        }
+                    } catch (e) { }
+                }, 50);
+            }
+
+            function stopLyricsSync() {
+                if (lyricsSyncTimer) { clearInterval(lyricsSyncTimer); lyricsSyncTimer = null; }
+            }
+
+            function highlightLyricLine(index, progress) {
+                var body = document.getElementById('lyricsBody');
+                if (!body) return;
+                var lines = body.querySelectorAll('.lyrics-line');
+                for (var i = 0; i < lines.length; i++) {
+                    lines[i].classList.remove('active', 'passed', 'upcoming');
+                    lines[i].style.removeProperty('--lyrics-progress');
+                    if (i < index) lines[i].classList.add('passed');
+                    else if (i === index) {
+                        lines[i].classList.add('active');
+                        lines[i].style.setProperty('--lyrics-progress', (progress || 0) + '%');
+                    }
+                    else lines[i].classList.add('upcoming');
+                }
+                // Scroll active line into view
+                var activeLine = document.getElementById('lyric-' + index);
+                if (activeLine) {
+                    activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            function toggleLyricsPanel() {
+                var panel = document.getElementById('lyricsPanel');
+                var btn = document.getElementById('lyricsToggleBtn');
+                if (!panel) return;
+                lyricsVisible = !lyricsVisible;
+                panel.style.display = lyricsVisible ? 'block' : 'none';
+                btn.classList.toggle('active', lyricsVisible);
+                if (lyricsVisible && lyricsData.length > 0) startLyricsSync();
+                else if (!lyricsVisible) stopLyricsSync();
+            }
+
             // ===== EVENT LISTENERS =====
             document.getElementById('createRoomBtn').addEventListener('click', createRoom);
             document.getElementById('joinRoomBtn').addEventListener('click', joinRoom);
@@ -2104,11 +2976,13 @@
             document.getElementById('stopBtn').addEventListener('click', function () { window.togglePlayPause(); });
             document.getElementById('pipBtn').addEventListener('click', togglePictureInPicture);
             document.getElementById('miniPipBtn').addEventListener('click', togglePictureInPicture);
+            document.getElementById('lyricsToggleBtn').addEventListener('click', toggleLyricsPanel);
+            document.getElementById('closeLyricsBtn').addEventListener('click', toggleLyricsPanel);
 
-            usernameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') createRoom(); });
-            roomCodeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') joinRoom(); });
-            urlInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') addToQueue(); });
-            chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') sendChat(); });
+            usernameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.isComposing) createRoom(); });
+            roomCodeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.isComposing) joinRoom(); });
+            urlInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.isComposing) addToQueue(); });
+            chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.isComposing) sendChat(); });
 
             document.querySelectorAll('.reaction-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () { sendReaction(btn.dataset.emoji); });
@@ -2151,7 +3025,7 @@
             });
             document.getElementById('miniChatSend').addEventListener('click', miniSendChat);
             document.getElementById('miniChatInput').addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') miniSendChat();
+                if (e.key === 'Enter' && !e.isComposing) miniSendChat();
             });
 
             // Mini add URL toggle
@@ -2166,8 +3040,25 @@
             });
             document.getElementById('miniUrlAdd').addEventListener('click', miniAddUrl);
             document.getElementById('miniUrlInput').addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') miniAddUrl();
+                if (e.key === 'Enter' && !e.isComposing) miniAddUrl();
             });
+
+            // Feature request listeners
+            document.getElementById('featureBtn').addEventListener('click', function () {
+                document.getElementById('featurePopup').classList.toggle('active');
+            });
+            document.getElementById('featureClose').addEventListener('click', function () {
+                document.getElementById('featurePopup').classList.remove('active');
+            });
+            document.getElementById('featureSend').addEventListener('click', submitFeature);
+            document.getElementById('featureInput').addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && !e.isComposing) submitFeature();
+            });
+
+            // Subscribe to lobby on page load
+            subscribeLobby();
+            loadActiveRoomsFromDB();
+            cleanupOldRooms();
 
             // Check URL params
             var urlParams = new URLSearchParams(window.location.search);
@@ -2191,6 +3082,9 @@
                     });
                 } catch (e) { }
             }, 5000);
+
+            // Clean stale lobby rooms every 30s
+            setInterval(function () { renderLobbyRooms(); }, 30000);
 
         })();
     </script>
