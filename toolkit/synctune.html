@@ -1173,9 +1173,9 @@
                         <!-- Playback controls -->
                         <div class="playback-controls">
                             <button id="prevBtn" class="ctrl-btn" disabled>⏮ Trước</button>
-                            <button id="stopBtn" class="ctrl-btn stop-btn">⏹ Dừng</button>
+                            <button id="stopBtn" class="ctrl-btn stop-btn">⏸ Dừng</button>
                             <button id="nextBtn" class="ctrl-btn" disabled>Tiếp ⏭</button>
-                            <button id="pipBtn" class="ctrl-btn pip-btn" title="Picture-in-Picture">📌 PiP</button>
+                            <button id="pipBtn" class="ctrl-btn pip-btn" title="Thu nhỏ cửa sổ nổi">📌 Thu nhỏ</button>
                         </div>
 
                         <div class="add-url-row">
@@ -1388,6 +1388,8 @@
                 chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
                 // Mirror to mini chat
                 addMiniChatMsg(null, text, true);
+                // Mirror to PiP
+                addPipChatMsg(null, text, true);
             }
 
             function addChatMessage(user, text) {
@@ -1398,6 +1400,8 @@
                 chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
                 // Mirror to mini chat
                 addMiniChatMsg(user, text, false);
+                // Mirror to PiP
+                addPipChatMsg(user, text, false);
                 // If minimized, increment unread
                 if (isMinimized) {
                     miniUnreadCount++;
@@ -1791,9 +1795,24 @@
                 if (currentIndex > 0) window.playAtIndex(currentIndex - 1);
             };
 
-            window.stopPlayback = function () {
-                if (ytPlayerObj && ytPlayerReady) try { ytPlayerObj.pauseVideo(); } catch (e) { }
-                toast('\u0110\u00e3 d\u1eebng ph\u00e1t');
+            window.togglePlayPause = function () {
+                if (!ytPlayerObj || !ytPlayerReady) return;
+                try {
+                    var state = ytPlayerObj.getPlayerState();
+                    var btn = document.getElementById('stopBtn');
+                    var miniBtn = document.getElementById('miniStopBtn');
+                    if (state === YT.PlayerState.PLAYING) {
+                        ytPlayerObj.pauseVideo();
+                        btn.innerHTML = '\u25b6 Ph\u00e1t';
+                        if (miniBtn) miniBtn.textContent = '\u25b6';
+                        updatePipPlayButton(false);
+                    } else {
+                        ytPlayerObj.playVideo();
+                        btn.innerHTML = '\u23f8 D\u1eebng';
+                        if (miniBtn) miniBtn.textContent = '\u23f8';
+                        updatePipPlayButton(true);
+                    }
+                } catch (e) { }
             };
 
             window.prioritizeItem = function (videoId) {
@@ -1867,7 +1886,7 @@
 
             function togglePictureInPicture() {
                 if (!('documentPictureInPicture' in window)) {
-                    toast('Tr\u00ecnh duy\u1ec7t kh\u00f4ng h\u1ed7 tr\u1ee3 Picture-in-Picture! C\u1ea7n Chrome 116+');
+                    toast('Tr\u00ecnh duy\u1ec7t kh\u00f4ng h\u1ed7 tr\u1ee3! C\u1ea7n Chrome 116+');
                     return;
                 }
                 if (documentPictureInPicture.window) {
@@ -1885,61 +1904,167 @@
             async function openPipWindow() {
                 try {
                     var item = queue[currentIndex];
-                    var pw = await documentPictureInPicture.requestWindow({ width: 380, height: 180 });
+                    var pw = await documentPictureInPicture.requestWindow({ width: 380, height: 420 });
                     pipWindowRef = pw;
 
-                    // Inject styles
                     var style = pw.document.createElement('style');
                     style.textContent = [
                         '* { margin:0; padding:0; box-sizing:border-box; }',
                         '@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");',
-                        'body { font-family:Inter,system-ui,sans-serif; background:linear-gradient(135deg,#1f2937 0%,#111827 100%); color:#fff; display:flex; flex-direction:column; height:100vh; overflow:hidden; user-select:none; }',
-                        '.pip-body { flex:1; display:flex; align-items:center; gap:14px; padding:16px 20px; }',
-                        '.pip-thumb { width:72px; height:54px; object-fit:cover; border-radius:10px; flex-shrink:0; border:2px solid rgba(255,255,255,0.1); }',
+                        'body { font-family:Inter,system-ui,sans-serif; background:#1f2937; color:#fff; display:flex; flex-direction:column; height:100vh; overflow:hidden; }',
+                        '.pip-header { display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.08); flex-shrink:0; }',
+                        '.pip-thumb { width:48px; height:36px; object-fit:cover; border-radius:6px; flex-shrink:0; }',
                         '.pip-info { flex:1; min-width:0; }',
-                        '.pip-title { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:3px; }',
-                        '.pip-sub { font-size:11px; opacity:0.5; display:flex; align-items:center; gap:4px; }',
-                        '.pip-dot { width:6px; height:6px; border-radius:50%; background:#22C55E; animation:pulse 1.5s infinite; }',
-                        '@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }',
-                        '.pip-controls { display:flex; justify-content:center; gap:10px; padding:10px 20px 14px; }',
-                        '.pip-btn { background:rgba(255,255,255,0.1); border:none; color:#fff; width:42px; height:42px; border-radius:50%; cursor:pointer; font-size:17px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }',
-                        '.pip-btn:hover { background:rgba(255,255,255,0.25); transform:scale(1.08); }',
-                        '.pip-btn.stop:hover { background:rgba(239,68,68,0.5); }',
-                        '.pip-btn.play { background:rgba(34,197,94,0.3); width:48px; height:48px; font-size:20px; }',
-                        '.pip-btn.play:hover { background:rgba(34,197,94,0.5); }'
+                        '.pip-title { font-size:12px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }',
+                        '.pip-sub { font-size:10px; opacity:0.4; }',
+                        '.pip-controls { display:flex; justify-content:center; gap:8px; padding:8px; border-bottom:1px solid rgba(255,255,255,0.08); flex-shrink:0; }',
+                        '.pip-btn { background:rgba(255,255,255,0.08); border:none; color:#fff; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:15px; transition:0.2s; display:flex; align-items:center; justify-content:center; }',
+                        '.pip-btn:hover { background:rgba(255,255,255,0.2); }',
+                        '.pip-btn.play { background:rgba(34,197,94,0.25); width:42px; height:42px; font-size:18px; }',
+                        '.pip-btn.play:hover { background:rgba(34,197,94,0.45); }',
+                        '.pip-chat { flex:1; overflow-y:auto; padding:8px 12px; display:flex; flex-direction:column; gap:3px; font-size:11px; }',
+                        '.pip-chat-msg { padding:3px 0; line-height:1.4; opacity:0.85; }',
+                        '.pip-chat-msg.system { opacity:0.5; font-style:italic; font-size:10px; }',
+                        '.pip-chat-user { font-weight:700; color:#22C55E; margin-right:4px; }',
+                        '.pip-input-row { display:flex; gap:4px; padding:6px 10px; border-top:1px solid rgba(255,255,255,0.08); flex-shrink:0; }',
+                        '.pip-input { flex:1; padding:6px 8px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:8px; color:#fff; font-size:11px; font-family:inherit; outline:none; }',
+                        '.pip-input:focus { border-color:#22C55E; }',
+                        '.pip-send { padding:6px 10px; background:#22C55E; color:#fff; border:none; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap; }',
+                        '.pip-send:hover { background:#16a34a; }',
+                        '.pip-section-label { font-size:10px; font-weight:700; opacity:0.4; padding:4px 10px 2px; text-transform:uppercase; letter-spacing:0.5px; flex-shrink:0; }',
+                        '.pip-chat::-webkit-scrollbar { width:3px; }',
+                        '.pip-chat::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:3px; }'
                     ].join('\n');
                     pw.document.head.appendChild(style);
 
-                    // Build UI
-                    var body = pw.document.createElement('div');
-                    body.className = 'pip-body';
-                    body.innerHTML = '<img class="pip-thumb" id="pipThumb" src="' + (item.thumbnail || '') + '" alt="">' +
+                    // Header with track info
+                    var header = pw.document.createElement('div');
+                    header.className = 'pip-header';
+                    header.innerHTML = '<img class="pip-thumb" id="pipThumb" src="' + (item.thumbnail || '') + '">' +
                         '<div class="pip-info"><div class="pip-title" id="pipTitle">' + escHtml(item.title) + '</div>' +
-                        '<div class="pip-sub"><span class="pip-dot"></span> SyncTune</div></div>';
+                        '<div class="pip-sub">SyncTune \u2022 Room ' + roomCode + '</div></div>';
 
+                    // Controls
                     var controls = pw.document.createElement('div');
                     controls.className = 'pip-controls';
                     controls.innerHTML = '<button class="pip-btn" id="pipPrev">\u23ee</button>' +
-                        '<button class="pip-btn play" id="pipPlayPause">\u23f9</button>' +
+                        '<button class="pip-btn play" id="pipPlayPause">\u23f8</button>' +
                         '<button class="pip-btn" id="pipNext">\u23ed</button>';
 
-                    pw.document.body.appendChild(body);
+                    // Chat section
+                    var chatLabel = pw.document.createElement('div');
+                    chatLabel.className = 'pip-section-label';
+                    chatLabel.textContent = '\ud83d\udcac Chat';
+
+                    var chatArea = pw.document.createElement('div');
+                    chatArea.className = 'pip-chat';
+                    chatArea.id = 'pipChat';
+                    // Copy existing chat messages
+                    var existingMsgs = chatMessagesEl.querySelectorAll('.chat-msg');
+                    existingMsgs.forEach(function (m) {
+                        var d = pw.document.createElement('div');
+                        d.className = 'pip-chat-msg' + (m.classList.contains('system-msg') ? ' system' : '');
+                        d.innerHTML = m.innerHTML;
+                        chatArea.appendChild(d);
+                    });
+
+                    var chatInputRow = pw.document.createElement('div');
+                    chatInputRow.className = 'pip-input-row';
+                    chatInputRow.innerHTML = '<input class="pip-input" id="pipChatInput" placeholder="Nh\u1eadp tin nh\u1eafn..." maxlength="200">' +
+                        '<button class="pip-send" id="pipChatSend">G\u1eedi</button>';
+
+                    // Add URL section
+                    var urlLabel = pw.document.createElement('div');
+                    urlLabel.className = 'pip-section-label';
+                    urlLabel.textContent = '\ud83c\udfb5 Th\u00eam b\u00e0i h\u00e1t';
+
+                    var urlInputRow = pw.document.createElement('div');
+                    urlInputRow.className = 'pip-input-row';
+                    urlInputRow.innerHTML = '<input class="pip-input" id="pipUrlInput" placeholder="D\u00e1n link YouTube...">' +
+                        '<button class="pip-send" id="pipUrlAdd">+ Th\u00eam</button>';
+
+                    // Assemble
+                    pw.document.body.appendChild(header);
                     pw.document.body.appendChild(controls);
+                    pw.document.body.appendChild(chatLabel);
+                    pw.document.body.appendChild(chatArea);
+                    pw.document.body.appendChild(chatInputRow);
+                    pw.document.body.appendChild(urlLabel);
+                    pw.document.body.appendChild(urlInputRow);
+
+                    // Scroll chat to bottom
+                    chatArea.scrollTop = chatArea.scrollHeight;
 
                     // Wire controls
                     pw.document.getElementById('pipPrev').addEventListener('click', function () { window.playPrev(); });
-                    pw.document.getElementById('pipPlayPause').addEventListener('click', function () { window.stopPlayback(); });
+                    pw.document.getElementById('pipPlayPause').addEventListener('click', function () { window.togglePlayPause(); });
                     pw.document.getElementById('pipNext').addEventListener('click', function () { window.playNext(); });
 
-                    // On PiP close
+                    // Wire chat
+                    pw.document.getElementById('pipChatSend').addEventListener('click', function () { pipSendChat(); });
+                    pw.document.getElementById('pipChatInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') pipSendChat(); });
+
+                    // Wire add URL
+                    pw.document.getElementById('pipUrlAdd').addEventListener('click', function () { pipAddUrl(); });
+                    pw.document.getElementById('pipUrlInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') pipAddUrl(); });
+
                     pw.addEventListener('pagehide', function () { pipWindowRef = null; });
 
-                    toast('\ud83d\udccc PiP \u0111\u00e3 b\u1eadt \u2014 thu nh\u1ecf tr\u00ecnh duy\u1ec7t v\u00e0 ti\u1ebfp t\u1ee5c nghe!');
+                    toast('\ud83d\udccc C\u1eeda s\u1ed5 n\u1ed5i \u0111\u00e3 b\u1eadt!');
                 } catch (e) {
                     console.error('[SyncTune] PiP error:', e);
-                    toast('Kh\u00f4ng th\u1ec3 m\u1edf PiP: ' + e.message);
+                    toast('Kh\u00f4ng th\u1ec3 m\u1edf c\u1eeda s\u1ed5 n\u1ed5i: ' + e.message);
                     pipWindowRef = null;
                 }
+            }
+
+            function pipSendChat() {
+                if (!pipWindowRef || !channel) return;
+                var input = pipWindowRef.document.getElementById('pipChatInput');
+                if (!input) return;
+                var text = input.value.trim();
+                if (!text) return;
+                channel.send({ type: 'broadcast', event: 'chat:message', payload: { user: currentUser, text: text } });
+                input.value = '';
+            }
+
+            function pipAddUrl() {
+                if (!pipWindowRef || !channel) return;
+                var input = pipWindowRef.document.getElementById('pipUrlInput');
+                if (!input) return;
+                var url = input.value.trim();
+                if (!url) return;
+                var videoId = extractVideoId(url);
+                if (!videoId) { toast('Link YouTube kh\u00f4ng h\u1ee3p l\u1ec7!'); return; }
+                fetch('https://noembed.com/embed?url=https://www.youtube.com/watch?v=' + videoId)
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        var item = { videoId: videoId, platform: 'youtube', title: data.title || 'YouTube Video', thumbnail: 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg', addedBy: currentUser };
+                        channel.send({ type: 'broadcast', event: 'queue:add', payload: item });
+                        input.value = '';
+                    })
+                    .catch(function () {
+                        var item = { videoId: videoId, platform: 'youtube', title: 'YouTube Video', thumbnail: 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg', addedBy: currentUser };
+                        channel.send({ type: 'broadcast', event: 'queue:add', payload: item });
+                        input.value = '';
+                    });
+            }
+
+            function addPipChatMsg(user, text, isSystem) {
+                if (!pipWindowRef) return;
+                try {
+                    var chatArea = pipWindowRef.document.getElementById('pipChat');
+                    if (!chatArea) return;
+                    var d = pipWindowRef.document.createElement('div');
+                    d.className = 'pip-chat-msg' + (isSystem ? ' system' : '');
+                    if (user) {
+                        d.innerHTML = '<span class="pip-chat-user">' + escHtml(user) + '</span>' + escHtml(text);
+                    } else {
+                        d.textContent = text;
+                    }
+                    chatArea.appendChild(d);
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                } catch (e) { }
             }
 
             function updatePipContent() {
@@ -1951,6 +2076,14 @@
                     var thumbEl = pipWindowRef.document.getElementById('pipThumb');
                     if (titleEl) titleEl.textContent = item.title;
                     if (thumbEl) thumbEl.src = item.thumbnail || 'https://img.youtube.com/vi/' + item.videoId + '/mqdefault.jpg';
+                } catch (e) { }
+            }
+
+            function updatePipPlayButton(isPlaying) {
+                if (!pipWindowRef) return;
+                try {
+                    var btn = pipWindowRef.document.getElementById('pipPlayPause');
+                    if (btn) btn.textContent = isPlaying ? '\u23f8' : '\u25b6';
                 } catch (e) { }
             }
 
@@ -1968,7 +2101,7 @@
             document.getElementById('shareBtn').addEventListener('click', shareRoom);
             document.getElementById('prevBtn').addEventListener('click', function () { window.playPrev(); });
             document.getElementById('nextBtn').addEventListener('click', function () { window.playNext(); });
-            document.getElementById('stopBtn').addEventListener('click', function () { window.stopPlayback(); });
+            document.getElementById('stopBtn').addEventListener('click', function () { window.togglePlayPause(); });
             document.getElementById('pipBtn').addEventListener('click', togglePictureInPicture);
             document.getElementById('miniPipBtn').addEventListener('click', togglePictureInPicture);
 
@@ -1986,18 +2119,18 @@
             });
 
             // === MINI PLAYER EVENT LISTENERS ===
-            // Minimize button (in room header, add new one)
+            // Thu nhỏ button (in room header) - uses PiP
             var minimizeBtn = document.createElement('button');
             minimizeBtn.className = 'share-btn';
-            minimizeBtn.textContent = '\ud83d\udd3d Thu nh\u1ecf';
+            minimizeBtn.textContent = '\ud83d\udccc Thu nh\u1ecf';
             minimizeBtn.id = 'minimizeBtn';
             minimizeBtn.style.marginLeft = '4px';
             document.querySelector('.room-info').appendChild(minimizeBtn);
-            minimizeBtn.addEventListener('click', toggleMinimize);
+            minimizeBtn.addEventListener('click', togglePictureInPicture);
 
             // Mini player controls
             document.getElementById('miniPrevBtn').addEventListener('click', function () { window.playPrev(); });
-            document.getElementById('miniStopBtn').addEventListener('click', function () { window.stopPlayback(); });
+            document.getElementById('miniStopBtn').addEventListener('click', function () { window.togglePlayPause(); });
             document.getElementById('miniNextBtn').addEventListener('click', function () { window.playNext(); });
             document.getElementById('miniExpandBtn').addEventListener('click', toggleMinimize);
 
