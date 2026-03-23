@@ -580,134 +580,6 @@
             height: 42px;
         }
 
-        /* Feature Request */
-        .feature-popup {
-            display: none;
-            position: absolute;
-            top: 50px;
-            right: 0;
-            width: 340px;
-            max-height: 400px;
-            background: var(--color-white, #fff);
-            border: 2px solid var(--color-border, #e5e7eb);
-            border-radius: 16px;
-            box-shadow: 6px 6px 0 var(--color-border, #e5e7eb);
-            z-index: 100;
-            overflow: hidden;
-            flex-direction: column;
-        }
-
-        .feature-popup.active {
-            display: flex;
-        }
-
-        .feature-popup-header {
-            padding: 12px 16px;
-            border-bottom: 2px solid var(--color-border, #e5e7eb);
-            font-weight: 700;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .feature-popup-close {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 2px 6px;
-        }
-
-        .feature-input-row {
-            display: flex;
-            gap: 6px;
-            padding: 10px 12px;
-            border-bottom: 1px solid var(--color-border, #e5e7eb);
-        }
-
-        .feature-input {
-            flex: 1;
-            padding: 8px 10px;
-            border: 2px solid var(--color-border, #e5e7eb);
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-family: inherit;
-            outline: none;
-        }
-
-        .feature-input:focus {
-            border-color: var(--color-primary, #22C55E);
-        }
-
-        .feature-send {
-            padding: 8px 14px;
-            background: var(--color-primary, #22C55E);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: inherit;
-            white-space: nowrap;
-        }
-
-        .feature-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 12px;
-            max-height: 260px;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            padding: 8px 10px;
-            border-radius: 10px;
-            margin-bottom: 6px;
-            background: #f9fafb;
-            border: 1px solid var(--color-border, #e5e7eb);
-        }
-
-        .feature-item-text {
-            flex: 1;
-            font-size: 0.82rem;
-            line-height: 1.4;
-        }
-
-        .feature-item-user {
-            font-weight: 700;
-            color: var(--color-primary, #22C55E);
-            font-size: 0.75rem;
-        }
-
-        .feature-votes {
-            display: flex;
-            gap: 4px;
-            flex-shrink: 0;
-        }
-
-        .feature-vote-btn {
-            padding: 3px 8px;
-            border-radius: 8px;
-            border: 1px solid var(--color-border, #e5e7eb);
-            background: #fff;
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: 0.2s;
-        }
-
-        .feature-vote-btn:hover {
-            background: #f0fdf4;
-            border-color: #22C55E;
-        }
-
-        .feature-vote-btn.voted {
-            background: #dcfce7;
-            border-color: #22C55E;
-            font-weight: 700;
-        }
 
         /* Active Rooms on Lobby */
         .lobby-rooms {
@@ -1475,7 +1347,7 @@
 
     <div class="st-page">
         <div class="container">
-            <a href="/toolkit/" class="back-link">← Quay lại Toolkit</a>
+            <a href="/toolkit/" class="back-link" id="backToToolkit">← Quay lại Toolkit</a>
 
             <!-- ===== LOBBY ===== -->
             <div id="lobby" class="lobby">
@@ -1525,24 +1397,7 @@
                             <span id="userCount">1</span> online
                         </span>
                         <button id="leaveBtn" class="leave-btn">Rời phòng</button>
-                        <div style="position:relative;display:inline-block;">
-                            <button id="featureBtn" class="share-btn" style="margin-left:4px;">💡 Góp ý</button>
-                            <div id="featurePopup" class="feature-popup">
-                                <div class="feature-popup-header">
-                                    <span>💡 Góp ý tính năng</span>
-                                    <button id="featureClose" class="feature-popup-close">×</button>
-                                </div>
-                                <div class="feature-input-row">
-                                    <input class="feature-input" id="featureInput" placeholder="Mô tả tính năng..."
-                                        maxlength="200">
-                                    <button class="feature-send" id="featureSend">Gửi</button>
-                                </div>
-                                <div class="feature-list" id="featureList">
-                                    <div style="text-align:center;opacity:0.5;font-size:0.8rem;padding:20px;">Chưa có
-                                        góp ý nào</div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
 
@@ -1754,7 +1609,7 @@
             var isMinimized = false;
             var pendingSync = false;
             var miniUnreadCount = 0;
-            var featureRequests = [];
+
             var lobbyRooms = {};
             var lobbyHeartbeatTimer = null;
 
@@ -2026,8 +1881,7 @@
                         .on('broadcast', { event: 'reaction' }, function (msg) { showFloatingReaction(msg.payload.emoji); })
                         .on('broadcast', { event: 'user:joined' }, function (msg) { addSystemMessage(msg.payload.username + ' \u0111\u00e3 tham gia ph\u00f2ng \ud83c\udfa7'); })
                         .on('broadcast', { event: 'user:left' }, function (msg) { addSystemMessage(msg.payload.username + ' \u0111\u00e3 r\u1eddi ph\u00f2ng \ud83d\udc4b'); })
-                        .on('broadcast', { event: 'feature:add' }, function (msg) { onFeatureAdd(msg.payload); })
-                        .on('broadcast', { event: 'feature:vote' }, function (msg) { onFeatureVote(msg.payload); })
+
                         .on('broadcast', { event: 'queue:full-sync' }, function (msg) {
                             var oldQueue = queue.slice();
                             var oldIndex = currentIndex;
@@ -2062,6 +1916,7 @@
                             // Switch to room view
                             lobbyEl.style.display = 'none';
                             roomEl.classList.add('active');
+                            document.getElementById('backToToolkit').style.display = 'none';
                             roomCodeDisplay.textContent = 'Room: ' + roomCode;
                             document.getElementById('roomNameDisplay').textContent = roomName || '';
                             setConnectionStatus('connected', '\u2713 \u0110\u00e3 k\u1ebft n\u1ed1i');
@@ -2115,12 +1970,13 @@
                 queue = [];
                 currentIndex = -1;
                 isMinimized = false;
-                featureRequests = [];
+
                 roomName = '';
                 roomEl.classList.remove('active');
                 roomEl.classList.remove('minimized');
                 miniPlayerEl.classList.remove('active');
                 lobbyEl.style.display = 'flex';
+                document.getElementById('backToToolkit').style.display = '';
                 chatMessagesEl.innerHTML = '';
                 miniChatMessagesEl.innerHTML = '';
                 lobbyStatus.innerHTML = '';
@@ -2352,7 +2208,7 @@
                     room_name: roomName || '',
                     queue: queue,
                     current_index: currentIndex,
-                    feature_requests: featureRequests,
+
                     current_song: songTitle,
                     user_count: parseInt(userCountEl.textContent) || 1,
                     updated_at: new Date().toISOString()
@@ -2375,9 +2231,9 @@
                         if (res.data.queue && res.data.queue.length > 0 && queue.length === 0) {
                             queue = res.data.queue;
                             currentIndex = res.data.current_index || 0;
-                            featureRequests = res.data.feature_requests || [];
+
                             renderQueue();
-                            renderFeatures();
+
                             updateNowPlaying();
                             updateControlButtons();
                         }
@@ -2636,59 +2492,6 @@
                 channel.send({ type: 'broadcast', event: 'reaction', payload: { emoji: emoji } });
             }
 
-            // ===== FEATURE REQUEST SYSTEM =====
-            function onFeatureAdd(data) {
-                featureRequests.push({ id: data.id, text: data.text, user: data.user, upvotes: [], downvotes: [] });
-                renderFeatures();
-            }
-
-            function onFeatureVote(data) {
-                var fr = featureRequests.find(function (f) { return f.id === data.id; });
-                if (!fr) return;
-                // Remove previous vote
-                fr.upvotes = fr.upvotes.filter(function (u) { return u !== data.user; });
-                fr.downvotes = fr.downvotes.filter(function (u) { return u !== data.user; });
-                if (data.vote === 'up') fr.upvotes.push(data.user);
-                else if (data.vote === 'down') fr.downvotes.push(data.user);
-                renderFeatures();
-            }
-
-            function renderFeatures() {
-                var list = document.getElementById('featureList');
-                if (featureRequests.length === 0) {
-                    list.innerHTML = '<div style="text-align:center;opacity:0.5;font-size:0.8rem;padding:20px;">Ch\u01b0a c\u00f3 g\u00f3p \u00fd n\u00e0o</div>';
-                    return;
-                }
-                list.innerHTML = '';
-                featureRequests.forEach(function (fr) {
-                    var el = document.createElement('div');
-                    el.className = 'feature-item';
-                    var upActive = fr.upvotes.indexOf(currentUser) !== -1 ? ' voted' : '';
-                    var downActive = fr.downvotes.indexOf(currentUser) !== -1 ? ' voted' : '';
-                    el.innerHTML = '<div class="feature-item-text"><div class="feature-item-user">' + escHtml(fr.user) + '</div>' + escHtml(fr.text) + '</div>' +
-                        '<div class="feature-votes">' +
-                        '<button class="feature-vote-btn' + upActive + '" data-id="' + fr.id + '" data-vote="up">\u2705 ' + fr.upvotes.length + '</button>' +
-                        '<button class="feature-vote-btn' + downActive + '" data-id="' + fr.id + '" data-vote="down">\u274c ' + fr.downvotes.length + '</button>' +
-                        '</div>';
-                    list.appendChild(el);
-                });
-                // Wire vote buttons
-                list.querySelectorAll('.feature-vote-btn').forEach(function (btn) {
-                    btn.addEventListener('click', function () {
-                        if (!channel) return;
-                        channel.send({ type: 'broadcast', event: 'feature:vote', payload: { id: btn.dataset.id, vote: btn.dataset.vote, user: currentUser } });
-                    });
-                });
-            }
-
-            function submitFeature() {
-                var input = document.getElementById('featureInput');
-                var text = input.value.trim();
-                if (!text || !channel) return;
-                var id = Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
-                channel.send({ type: 'broadcast', event: 'feature:add', payload: { id: id, text: text, user: currentUser } });
-                input.value = '';
-            }
 
             // ===== LOBBY ROOMS =====
             function subscribeLobby() {
@@ -3049,17 +2852,7 @@
                 if (e.key === 'Enter' && !e.isComposing) miniAddUrl();
             });
 
-            // Feature request listeners
-            document.getElementById('featureBtn').addEventListener('click', function () {
-                document.getElementById('featurePopup').classList.toggle('active');
-            });
-            document.getElementById('featureClose').addEventListener('click', function () {
-                document.getElementById('featurePopup').classList.remove('active');
-            });
-            document.getElementById('featureSend').addEventListener('click', submitFeature);
-            document.getElementById('featureInput').addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' && !e.isComposing) submitFeature();
-            });
+
 
             // Subscribe to lobby on page load
             subscribeLobby();
