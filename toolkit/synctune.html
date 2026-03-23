@@ -2628,12 +2628,15 @@
                 var parsed = extractArtistTrack(title);
                 console.log('[SyncTune Lyrics] Searching:', parsed);
 
-                // Strategy: try LRCLIB first (synced), then lyrics.ovh (plain), then give up
+                // Strategy: try LRCLIB first (synced), then lyrics.ovh (plain), then Genius
                 tryLRCLIB(parsed, title)
                     .then(function (result) {
                         if (result) return result;
-                        // Fallback: try lyrics.ovh (powered by Musixmatch)
                         return tryLyricsOvh(parsed, title);
+                    })
+                    .then(function (result) {
+                        if (result) return result;
+                        return tryGenius(parsed, title);
                     })
                     .then(function (result) {
                         if (!result) {
@@ -2665,55 +2668,54 @@
 
             // === Source 1: LRCLIB (free, synced LRC) ===
             function tryLRCLIB(parsed, fullTitle) {
-                var url = 'https://lrclib.net/api/search?';
-                if (parsed.artist && parsed.track) {
-                    url += 'track_name=' + encodeURIComponent(parsed.track) + '&artist_name=' + encodeURIComponent(parsed.artist);
-                } else {
-                    url += 'track_name=' + encodeURIComponent(parsed.track);
+                // Strategy: try artist+track → track only → q=fullTitle
+                function lrcFetch(params) {
+                    return fetch('https://lrclib.net/api/search?' + params)
+                        .then(function (res) { return res.json(); })
+                        .catch(function () { return []; });
                 }
-                return fetch(url, { headers: { 'User-Agent': 'SyncTune/1.0 (https://nguyenvanhao.name.vn)' } })
-                    .then(function (res) { return res.json(); })
-                    .then(function (data) {
-                        if (!data || data.length === 0) {
-                            // Fallback: search with full title
-                            if (parsed.artist) {
-                                return fetch('https://lrclib.net/api/search?track_name=' + encodeURIComponent(fullTitle),
-                                    { headers: { 'User-Agent': 'SyncTune/1.0' } })
-                                    .then(function (r) { return r.json(); });
-                            }
-                            // Try with just track name (without artist)
-                            return fetch('https://lrclib.net/api/search?track_name=' + encodeURIComponent(parsed.track),
-                                { headers: { 'User-Agent': 'SyncTune/1.0' } })
-                                .then(function (r) { return r.json(); });
+                function findBest(data) {
+                    if (!data || data.length === 0) return null;
+                    var best = null;
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].syncedLyrics) { best = data[i]; break; }
+                    }
+                    if (!best) {
+                        for (var j = 0; j < data.length; j++) {
+                            if (data[j].plainLyrics) { best = data[j]; break; }
                         }
-                        return data;
-                    })
-                    .then(function (data) {
-                        if (!data || data.length === 0) return null;
-                        // Find best result with synced lyrics
-                        var best = null;
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].syncedLyrics) { best = data[i]; break; }
-                        }
-                        if (!best) {
-                            // Accept plain lyrics from LRCLIB
-                            for (var j = 0; j < data.length; j++) {
-                                if (data[j].plainLyrics) { best = data[j]; break; }
-                            }
-                        }
-                        if (!best) return null;
-                        if (best.syncedLyrics) {
-                            return { type: 'synced', lines: parseLRC(best.syncedLyrics), source: 'LRCLIB' };
-                        } else if (best.plainLyrics) {
-                            var pl = best.plainLyrics.split('\n').filter(function (l) { return l.trim(); });
-                            return { type: 'plain', lines: pl, source: 'LRCLIB' };
-                        }
-                        return null;
-                    })
-                    .catch(function (e) {
-                        console.warn('[LRCLIB] Error:', e);
-                        return null;
+                    }
+                    if (!best) return null;
+                    if (best.syncedLyrics) {
+                        return { type: 'synced', lines: parseLRC(best.syncedLyrics), source: 'LRCLIB' };
+                    } else if (best.plainLyrics) {
+                        var pl = best.plainLyrics.split('\n').filter(function (l) { return l.trim(); });
+                        return { type: 'plain', lines: pl, source: 'LRCLIB' };
+                    }
+                    return null;
+                }
+
+                // Step 1: artist + track (most precise)
+                var p1 = (parsed.artist && parsed.track)
+                    ? lrcFetch('track_name=' + encodeURIComponent(parsed.track) + '&artist_name=' + encodeURIComponent(parsed.artist))
+                    : Promise.resolve([]);
+
+                return p1.then(function (data) {
+                    var r = findBest(data);
+                    if (r) return r;
+                    // Step 2: track name only
+                    return lrcFetch('track_name=' + encodeURIComponent(parsed.track)).then(function (data2) {
+                        var r2 = findBest(data2);
+                        if (r2) return r2;
+                        // Step 3: q= general search with full YouTube title
+                        return lrcFetch('q=' + encodeURIComponent(fullTitle)).then(function (data3) {
+                            return findBest(data3);
+                        });
                     });
+                }).catch(function (e) {
+                    console.warn('[LRCLIB] Error:', e);
+                    return null;
+                });
             }
 
             // === Source 2: lyrics.ovh (powered by Lyrics.ovh / public API) ===
@@ -2733,6 +2735,64 @@
                     })
                     .catch(function (e) {
                         console.warn('[lyrics.ovh] Error:', e);
+                        return null;
+                    });
+            }
+
+            // === Source 3: Genius (browser-side, not blocked by Cloudflare) ===
+            function tryGenius(parsed, fullTitle) {
+                var q = (parsed.artist && parsed.track) ? parsed.artist + ' ' + parsed.track : fullTitle;
+                return fetch('https://genius.com/api/search/multi?q=' + encodeURIComponent(q))
+                    .then(function (res) {
+                        if (!res.ok) return null;
+                        return res.json();
+                    })
+                    .then(function (data) {
+                        if (!data || !data.response) return null;
+                        var sections = data.response.sections || [];
+                        var songUrl = null;
+                        for (var i = 0; i < sections.length; i++) {
+                            if (sections[i].type === 'song' && sections[i].hits && sections[i].hits.length > 0) {
+                                songUrl = sections[i].hits[0].result && sections[i].hits[0].result.url;
+                                break;
+                            }
+                        }
+                        if (!songUrl) {
+                            for (var j = 0; j < sections.length; j++) {
+                                if (sections[j].type === 'top_hit' && sections[j].hits) {
+                                    for (var k = 0; k < sections[j].hits.length; k++) {
+                                        if (sections[j].hits[k].type === 'song' && sections[j].hits[k].result) {
+                                            songUrl = sections[j].hits[k].result.url;
+                                            break;
+                                        }
+                                    }
+                                    if (songUrl) break;
+                                }
+                            }
+                        }
+                        if (!songUrl) return null;
+                        console.log('[Genius] Found:', songUrl);
+                        // Scrape lyrics from Genius page
+                        return fetch(songUrl).then(function (r) { return r.text(); }).then(function (html) {
+                            var containers = [];
+                            var regex = /data-lyrics-container="true"[^>]*>([\s\S]*?)<\/div>/g;
+                            var m;
+                            while ((m = regex.exec(html)) !== null) containers.push(m[1]);
+                            if (containers.length === 0) return null;
+                            var lyrics = containers.join('\n')
+                                .replace(/<br\s*\/?>/gi, '\n')
+                                .replace(/<\/?(a|span|i|b|em|strong|div|inread-ad)[^>]*>/gi, '')
+                                .replace(/<[^>]+>/g, '')
+                                .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+                                .replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&#39;/g, "'")
+                                .replace(/&nbsp;/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+                            if (lyrics.length < 20) return null;
+                            var lines = lyrics.split('\n').filter(function (l) { return l.trim(); });
+                            return { type: 'plain', lines: lines, source: 'Genius' };
+                        });
+                    })
+                    .catch(function (e) {
+                        console.warn('[Genius] Error:', e);
                         return null;
                     });
             }
