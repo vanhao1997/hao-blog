@@ -413,6 +413,16 @@
             color: #DC2626;
         }
 
+        .ctrl-btn.pip-btn {
+            border-color: #8B5CF6;
+            color: #8B5CF6;
+        }
+
+        .ctrl-btn.pip-btn:hover {
+            background: #8B5CF6;
+            color: #fff;
+        }
+
         /* Add URL */
         .add-url-row {
             display: flex;
@@ -1165,6 +1175,7 @@
                             <button id="prevBtn" class="ctrl-btn" disabled>⏮ Trước</button>
                             <button id="stopBtn" class="ctrl-btn stop-btn">⏹ Dừng</button>
                             <button id="nextBtn" class="ctrl-btn" disabled>Tiếp ⏭</button>
+                            <button id="pipBtn" class="ctrl-btn pip-btn" title="Picture-in-Picture">📌 PiP</button>
                         </div>
 
                         <div class="add-url-row">
@@ -1237,6 +1248,7 @@
                 <button id="miniChatToggle" class="mini-action" title="Chat">
                     💬 <span id="miniChatBadge" class="mini-chat-badge" style="display:none;">0</span>
                 </button>
+                <button id="miniPipBtn" class="mini-action" title="Picture-in-Picture">📌</button>
                 <button id="miniExpandBtn" class="mini-action mini-expand" title="Mở rộng">🔼</button>
             </div>
         </div>
@@ -1423,6 +1435,8 @@
                     badge.textContent = 'YouTube';
                     // Update mini player title
                     miniPlayerTitle.textContent = item.title;
+                    // Update PiP window if open
+                    updatePipContent();
                 } else {
                     np.classList.remove('active');
                     miniPlayerTitle.textContent = 'Ch\u01b0a ph\u00e1t b\u00e0i n\u00e0o';
@@ -1848,6 +1862,98 @@
                 setTimeout(function () { el.remove(); }, 2100);
             }
 
+            // ===== PICTURE-IN-PICTURE =====
+            var pipWindowRef = null;
+
+            function togglePictureInPicture() {
+                if (!('documentPictureInPicture' in window)) {
+                    toast('Tr\u00ecnh duy\u1ec7t kh\u00f4ng h\u1ed7 tr\u1ee3 Picture-in-Picture! C\u1ea7n Chrome 116+');
+                    return;
+                }
+                if (documentPictureInPicture.window) {
+                    documentPictureInPicture.window.close();
+                    pipWindowRef = null;
+                    return;
+                }
+                if (currentIndex < 0 || !queue[currentIndex]) {
+                    toast('Ch\u01b0a c\u00f3 b\u00e0i h\u00e1t \u0111ang ph\u00e1t!');
+                    return;
+                }
+                openPipWindow();
+            }
+
+            async function openPipWindow() {
+                try {
+                    var item = queue[currentIndex];
+                    var pw = await documentPictureInPicture.requestWindow({ width: 380, height: 180 });
+                    pipWindowRef = pw;
+
+                    // Inject styles
+                    var style = pw.document.createElement('style');
+                    style.textContent = [
+                        '* { margin:0; padding:0; box-sizing:border-box; }',
+                        '@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");',
+                        'body { font-family:Inter,system-ui,sans-serif; background:linear-gradient(135deg,#1f2937 0%,#111827 100%); color:#fff; display:flex; flex-direction:column; height:100vh; overflow:hidden; user-select:none; }',
+                        '.pip-body { flex:1; display:flex; align-items:center; gap:14px; padding:16px 20px; }',
+                        '.pip-thumb { width:72px; height:54px; object-fit:cover; border-radius:10px; flex-shrink:0; border:2px solid rgba(255,255,255,0.1); }',
+                        '.pip-info { flex:1; min-width:0; }',
+                        '.pip-title { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:3px; }',
+                        '.pip-sub { font-size:11px; opacity:0.5; display:flex; align-items:center; gap:4px; }',
+                        '.pip-dot { width:6px; height:6px; border-radius:50%; background:#22C55E; animation:pulse 1.5s infinite; }',
+                        '@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }',
+                        '.pip-controls { display:flex; justify-content:center; gap:10px; padding:10px 20px 14px; }',
+                        '.pip-btn { background:rgba(255,255,255,0.1); border:none; color:#fff; width:42px; height:42px; border-radius:50%; cursor:pointer; font-size:17px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }',
+                        '.pip-btn:hover { background:rgba(255,255,255,0.25); transform:scale(1.08); }',
+                        '.pip-btn.stop:hover { background:rgba(239,68,68,0.5); }',
+                        '.pip-btn.play { background:rgba(34,197,94,0.3); width:48px; height:48px; font-size:20px; }',
+                        '.pip-btn.play:hover { background:rgba(34,197,94,0.5); }'
+                    ].join('\n');
+                    pw.document.head.appendChild(style);
+
+                    // Build UI
+                    var body = pw.document.createElement('div');
+                    body.className = 'pip-body';
+                    body.innerHTML = '<img class="pip-thumb" id="pipThumb" src="' + (item.thumbnail || '') + '" alt="">' +
+                        '<div class="pip-info"><div class="pip-title" id="pipTitle">' + escHtml(item.title) + '</div>' +
+                        '<div class="pip-sub"><span class="pip-dot"></span> SyncTune</div></div>';
+
+                    var controls = pw.document.createElement('div');
+                    controls.className = 'pip-controls';
+                    controls.innerHTML = '<button class="pip-btn" id="pipPrev">\u23ee</button>' +
+                        '<button class="pip-btn play" id="pipPlayPause">\u23f9</button>' +
+                        '<button class="pip-btn" id="pipNext">\u23ed</button>';
+
+                    pw.document.body.appendChild(body);
+                    pw.document.body.appendChild(controls);
+
+                    // Wire controls
+                    pw.document.getElementById('pipPrev').addEventListener('click', function () { window.playPrev(); });
+                    pw.document.getElementById('pipPlayPause').addEventListener('click', function () { window.stopPlayback(); });
+                    pw.document.getElementById('pipNext').addEventListener('click', function () { window.playNext(); });
+
+                    // On PiP close
+                    pw.addEventListener('pagehide', function () { pipWindowRef = null; });
+
+                    toast('\ud83d\udccc PiP \u0111\u00e3 b\u1eadt \u2014 thu nh\u1ecf tr\u00ecnh duy\u1ec7t v\u00e0 ti\u1ebfp t\u1ee5c nghe!');
+                } catch (e) {
+                    console.error('[SyncTune] PiP error:', e);
+                    toast('Kh\u00f4ng th\u1ec3 m\u1edf PiP: ' + e.message);
+                    pipWindowRef = null;
+                }
+            }
+
+            function updatePipContent() {
+                if (!pipWindowRef) return;
+                try {
+                    var item = queue[currentIndex];
+                    if (!item) return;
+                    var titleEl = pipWindowRef.document.getElementById('pipTitle');
+                    var thumbEl = pipWindowRef.document.getElementById('pipThumb');
+                    if (titleEl) titleEl.textContent = item.title;
+                    if (thumbEl) thumbEl.src = item.thumbnail || 'https://img.youtube.com/vi/' + item.videoId + '/mqdefault.jpg';
+                } catch (e) { }
+            }
+
             function sendReaction(emoji) {
                 if (!channel) return;
                 channel.send({ type: 'broadcast', event: 'reaction', payload: { emoji: emoji } });
@@ -1863,6 +1969,8 @@
             document.getElementById('prevBtn').addEventListener('click', function () { window.playPrev(); });
             document.getElementById('nextBtn').addEventListener('click', function () { window.playNext(); });
             document.getElementById('stopBtn').addEventListener('click', function () { window.stopPlayback(); });
+            document.getElementById('pipBtn').addEventListener('click', togglePictureInPicture);
+            document.getElementById('miniPipBtn').addEventListener('click', togglePictureInPicture);
 
             usernameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') createRoom(); });
             roomCodeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') joinRoom(); });
