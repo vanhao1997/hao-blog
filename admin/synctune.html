@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý SyncTune Rooms - Admin</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/css/admin.css">
+    <style>
+        .room-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .room-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .room-actions .btn {
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            border-radius: 8px;
+        }
+
+        .btn-copy {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+        }
+
+        .btn-copy:hover {
+            background: #dbeafe;
+        }
+
+        .btn-edit {
+            background: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
+
+        .btn-edit:hover {
+            background: #fde68a;
+        }
+
+        .btn-delete {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+
+        .queue-badge {
+            display: inline-block;
+            background: #f3f4f6;
+            color: #374151;
+            padding: 2px 8px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .room-name-cell {
+            max-width: 180px;
+        }
+
+        .room-name-cell .room-code {
+            font-family: monospace;
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 0.95rem;
+        }
+
+        .room-name-cell .room-label {
+            color: #6b7280;
+            font-size: 0.8rem;
+            margin-top: 2px;
+        }
+
+        .time-ago {
+            color: #9ca3af;
+            font-size: 0.8rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1f2937;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: #16a34a;
+        }
+
+        .toast.error {
+            background: #dc2626;
+        }
+
+        /* Rename Modal */
+        .rename-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .rename-modal.active {
+            display: flex;
+        }
+
+        .rename-modal .modal-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .rename-modal h3 {
+            margin: 0 0 16px;
+            font-size: 1.1rem;
+        }
+
+        .rename-modal input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .rename-modal input:focus {
+            outline: none;
+            border-color: #22C55E;
+        }
+
+        .rename-modal .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .rename-modal .btn-cancel {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .rename-modal .btn-save {
+            background: #22C55E;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .rename-modal .btn-save:hover {
+            background: #16a34a;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <a href="/admin/index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
+            <nav class="admin-nav">
+                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
+                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
+                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
+                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
+                <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
+                <a href="/admin/synctune.html" class="nav-item active">🎵 SyncTune</a>
+                <div class="nav-divider"></div>
+                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>🎵 Quản lý SyncTune Rooms</h1>
+                <button class="btn btn-primary" onclick="loadRooms()">🔄 Làm mới</button>
+            </header>
+
+            <div class="admin-content">
+                <!-- Stats -->
+                <div class="room-stats" id="roomStats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalRooms">-</div>
+                        <div class="stat-label">Tổng số phòng</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalSongs">-</div>
+                        <div class="stat-label">Tổng bài hát</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalUsers">-</div>
+                        <div class="stat-label">Tổng người dùng</div>
+                    </div>
+                </div>
+
+                <!-- Rooms Table -->
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Phòng</th>
+                                <th>Host</th>
+                                <th>Bài hát</th>
+                                <th>Người</th>
+                                <th>Cập nhật</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="roomsTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px;">Đang tải...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Rename Modal -->
+    <div class="rename-modal" id="renameModal">
+        <div class="modal-box">
+            <h3>✏️ Đổi tên phòng</h3>
+            <input type="hidden" id="renameRoomCode">
+            <input type="text" id="renameInput" placeholder="Nhập tên mới cho phòng..." maxlength="40">
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeRenameModal()">Huỷ</button>
+                <button class="btn-save" onclick="saveRename()">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/api.js"></script>
+    <script src="/admin/js/admin.js?v=20260323c"></script>
+    <script>
+        const SUPABASE_URL = 'https://fshfwrvgxvdiyqszrtbc.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzaGZ3cnZneHZkaXlxc3pydGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNjYxMjQsImV4cCI6MjA4OTY0MjEyNH0.yPJeDUH4lVUfnYwWfW2IibRJbtXqmbzOWEZvbsv9a-A';
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let rooms = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            await loadRooms();
+        });
+
+        async function loadRooms() {
+            try {
+                const { data, error } = await sb
+                    .from('synctune_rooms')
+                    .select('*')
+                    .order('updated_at', { ascending: false });
+
+                if (error) throw error;
+                rooms = data || [];
+                renderStats();
+                renderTable();
+            } catch (e) {
+                console.error('Load rooms error:', e);
+                showToast('Lỗi tải danh sách phòng', 'error');
+            }
+        }
+
+        function renderStats() {
+            document.getElementById('totalRooms').textContent = rooms.length;
+            let totalSongs = 0;
+            let totalUsers = 0;
+            rooms.forEach(r => {
+                const q = r.queue || [];
+                totalSongs += Array.isArray(q) ? q.length : 0;
+                totalUsers += r.user_count || 0;
+            });
+            document.getElementById('totalSongs').textContent = totalSongs;
+            document.getElementById('totalUsers').textContent = totalUsers;
+        }
+
+        function timeAgo(dateStr) {
+            if (!dateStr) return '—';
+            const diff = Date.now() - new Date(dateStr).getTime();
+            const mins = Math.floor(diff / 60000);
+            if (mins < 1) return 'Vừa xong';
+            if (mins < 60) return mins + ' phút trước';
+            const hours = Math.floor(mins / 60);
+            if (hours < 24) return hours + ' giờ trước';
+            const days = Math.floor(hours / 24);
+            return days + ' ngày trước';
+        }
+
+        function escHtml(s) {
+            const d = document.createElement('div');
+            d.textContent = s || '';
+            return d.innerHTML;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('roomsTable');
+            if (rooms.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#9ca3af;">Chưa có phòng nào</td></tr>';
+                return;
+            }
+            let html = '';
+            rooms.forEach(r => {
+                const queueLen = Array.isArray(r.queue) ? r.queue.length : 0;
+                const roomLink = 'https://nguyenvanhao.name.vn/toolkit/synctune.html?room=' + r.room_code;
+                html += `<tr>
+                    <td class="room-name-cell">
+                        <div class="room-code">${escHtml(r.room_code)}</div>
+                        <div class="room-label">${escHtml(r.room_name) || '<i style="opacity:0.4">Chưa đặt tên</i>'}</div>
+                    </td>
+                    <td>${escHtml(r.host_name)}</td>
+                    <td><span class="queue-badge">🎵 ${queueLen}</span></td>
+                    <td>${r.user_count || 0}</td>
+                    <td><span class="time-ago">${timeAgo(r.updated_at)}</span></td>
+                    <td>
+                        <div class="room-actions">
+                            <button class="btn btn-copy" onclick="copyLink('${r.room_code}')" title="Copy link phòng">🔗 Link</button>
+                            <button class="btn btn-edit" onclick="openRenameModal('${r.room_code}', '${escHtml(r.room_name || '')}')" title="Đổi tên">✏️ Tên</button>
+                            <button class="btn btn-delete" onclick="deleteRoom('${r.room_code}')" title="Xoá phòng">🗑️ Xoá</button>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // Copy room link
+        function copyLink(code) {
+            const link = 'https://nguyenvanhao.name.vn/toolkit/synctune.html?room=' + code;
+            navigator.clipboard.writeText(link).then(() => {
+                showToast('Đã copy link phòng ' + code, 'success');
+            }).catch(() => {
+                // Fallback
+                const input = document.createElement('input');
+                input.value = link;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast('Đã copy link phòng ' + code, 'success');
+            });
+        }
+
+        // Rename modal
+        function openRenameModal(code, currentName) {
+            document.getElementById('renameRoomCode').value = code;
+            document.getElementById('renameInput').value = currentName;
+            document.getElementById('renameModal').classList.add('active');
+            document.getElementById('renameInput').focus();
+        }
+
+        function closeRenameModal() {
+            document.getElementById('renameModal').classList.remove('active');
+        }
+
+        async function saveRename() {
+            const code = document.getElementById('renameRoomCode').value;
+            const newName = document.getElementById('renameInput').value.trim();
+            try {
+                const { error } = await sb
+                    .from('synctune_rooms')
+                    .update({ room_name: newName, updated_at: new Date().toISOString() })
+                    .eq('room_code', code);
+                if (error) throw error;
+                showToast('Đã đổi tên phòng ' + code, 'success');
+                closeRenameModal();
+                await loadRooms();
+            } catch (e) {
+                console.error('Rename error:', e);
+                showToast('Lỗi đổi tên: ' + e.message, 'error');
+            }
+        }
+
+        // Delete room
+        async function deleteRoom(code) {
+            if (!confirm('Bạn chắc chắn muốn xoá phòng ' + code + '?\nHành động này không thể hoàn tác.')) return;
+            try {
+                const { error } = await sb
+                    .from('synctune_rooms')
+                    .delete()
+                    .eq('room_code', code);
+                if (error) throw error;
+                showToast('Đã xoá phòng ' + code, 'success');
+                await loadRooms();
+            } catch (e) {
+                console.error('Delete error:', e);
+                showToast('Lỗi xoá: ' + e.message, 'error');
+            }
+        }
+
+        // Toast
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + (type || '') + ' show';
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => { t.classList.remove('show'); }, 3000);
+        }
+
+        // Enter key in rename input
+        document.getElementById('renameInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') saveRename();
+            if (e.key === 'Escape') closeRenameModal();
+        });
+    </script>
+</body>
+
+</html>
