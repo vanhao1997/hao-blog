@@ -105,24 +105,29 @@ async function loadAllPosts() {
             return;
         }
 
-        tbody.innerHTML = posts.map(post => `
+        tbody.innerHTML = posts.map(post => {
+            const slug = post.slug || '';
+            const pid = post.id;
+            const isPub = post.is_published == 1;
+            return `
       <tr>
         <td><strong>${escapeHtml(post.title)}</strong></td>
         <td>${escapeHtml(post.category_name || '-')}</td>
-        <td><span class="status-badge ${post.is_published == 1 ? 'published' : 'draft'}">${post.is_published == 1 ? 'Đã xuất bản' : 'Bản nháp'}</span></td>
+        <td><span class="status-badge ${isPub ? 'published' : 'draft'}">${isPub ? 'Đã xuất bản' : 'Bản nháp'}</span></td>
         <td>${formatDate(post.created_at)}</td>
         <td>
-          <div class="action-btns" style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button class="action-btn edit" onclick="editPost('${post.id}')" title="Sửa" style="font-size:0.8rem;">✏️ Sửa</button>
-            ${post.is_published == 1
-                ? `<button class="action-btn" onclick="publishNow('${post.id}', false)" title="Gỡ xuống" style="font-size:0.8rem;background:#f59e0b;color:#fff;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;">📥 Gỡ</button>`
-                : `<button class="action-btn" onclick="publishNow('${post.id}', true)" title="Đăng ngay" style="font-size:0.8rem;background:#22c55e;color:#fff;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;">🚀 Đăng</button>`
-            }
-            <button class="action-btn delete" onclick="deletePost('${post.id}')" title="Xóa" style="font-size:0.8rem;">🗑️</button>
+          <div class="action-btns" style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;">
+            <a href="/blog/${slug}" target="_blank" title="Xem trước" style="font-size:0.78rem;background:#6366f1;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:3px;">👁️ Xem</a>
+            <button onclick="editPost('${pid}')" title="Chỉnh sửa" style="font-size:0.78rem;background:#3b82f6;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">✏️ Sửa</button>
+            ${isPub
+                    ? `<button onclick="publishNow('${pid}', false)" title="Gỡ xuống" style="font-size:0.78rem;background:#f59e0b;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">📥 Gỡ</button>`
+                    : `<button onclick="publishNow('${pid}', true)" title="Đăng ngay" style="font-size:0.78rem;background:#22c55e;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">🚀 Đăng</button>`
+                }
+            <button onclick="confirmDeletePost('${pid}')" title="Xóa" style="font-size:0.78rem;background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">🗑️ Xóa</button>
           </div>
         </td>
-      </tr>
-    `).join('');
+      </tr>`;
+        }).join('');
     } catch (error) {
         console.error('Error loading posts:', error);
         tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: #ef4444;">Lỗi tải dữ liệu: ${error.message}</td></tr>`;
@@ -265,17 +270,44 @@ async function editPost(id) {
     window.location.href = `/admin/post-editor.html?id=${id}`;
 }
 
-// Delete post
-async function deletePost(id) {
-    if (!confirm('Bạn có chắc muốn xóa bài viết này?')) return;
+// Confirm Delete Post — shows styled confirmation popup
+function confirmDeletePost(id, btnEl) {
+    // Remove any existing confirm popups
+    document.querySelectorAll('.delete-confirm-popup').forEach(p => p.remove());
 
+    const popup = document.createElement('div');
+    popup.className = 'delete-confirm-popup';
+    popup.innerHTML = `
+        <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9998;display:flex;align-items:center;justify-content:center;">
+            <div style="background:#fff;border-radius:16px;padding:32px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
+                <h3 style="font-size:1.2rem;font-weight:700;color:#1f2937;margin-bottom:8px;">Xác nhận xóa bài viết?</h3>
+                <p style="color:#6b7280;font-size:0.9rem;margin-bottom:24px;">Hành động này không thể hoàn tác. Bài viết sẽ bị xóa vĩnh viễn.</p>
+                <div style="display:flex;gap:12px;justify-content:center;">
+                    <button onclick="this.closest('.delete-confirm-popup').remove()" style="padding:10px 24px;border-radius:8px;border:1px solid #d1d5db;background:#fff;color:#374151;font-weight:600;cursor:pointer;font-size:0.9rem;">❌ Hủy</button>
+                    <button onclick="executeDeletePost('${id}');this.closest('.delete-confirm-popup').remove()" style="padding:10px 24px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-weight:600;cursor:pointer;font-size:0.9rem;">🗑️ Xóa luôn</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(popup);
+}
+
+// Actually delete the post
+async function executeDeletePost(id) {
     try {
         await API.deletePost(id);
-        loadAllPosts();
-        showToast('Đã xóa bài viết', 'success');
+        await loadAllPosts();
+        showToast('🗑️ Đã xóa bài viết thành công!', 'success');
     } catch (error) {
-        showToast('Lỗi: ' + error.message, 'error');
+        console.error('Delete error:', error);
+        showToast('Lỗi xóa: ' + error.message, 'error');
     }
+}
+
+// Legacy deletePost wrapper (just calls confirmDeletePost)
+function deletePost(id) {
+    confirmDeletePost(id);
 }
 
 // Quick publish/unpublish from list
@@ -522,6 +554,8 @@ window.saveCategory = saveCategory;
 window.deleteCategory = deleteCategory;
 window.savePost = savePost;
 window.deletePost = deletePost;
+window.confirmDeletePost = confirmDeletePost;
+window.executeDeletePost = executeDeletePost;
 window.publishNow = publishNow;
 window.loadImages = loadImages;
 window.uploadImageFile = uploadImageFile;
