@@ -558,6 +558,7 @@ window.confirmDeletePost = confirmDeletePost;
 window.executeDeletePost = executeDeletePost;
 window.publishNow = publishNow;
 window.loadImages = loadImages;
+window.deleteImage = deleteImage;
 window.uploadImageFile = uploadImageFile;
 window.slugify = slugify;
 window.prettifyFilename = prettifyFilename;
