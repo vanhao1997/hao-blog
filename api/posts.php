@@ -119,6 +119,8 @@ switch($method) {
                 $baseSlug = $data->slug ?? strtolower(str_replace(' ', '-', $data->title));
                 $slug = generateUniqueSlug($db, $baseSlug);
                 $published_at = $data->is_published ? date('Y-m-d H:i:s') : null;
+                // Convert empty category_id to null to avoid FK constraint violation
+                $categoryId = (!empty($data->category_id)) ? $data->category_id : null;
 
                 $stmt->execute([
                     $data->title,
@@ -126,7 +128,7 @@ switch($method) {
                     $data->excerpt ?? '',
                     $data->content ?? '',
                     $data->featured_image ?? '',
-                    $data->category_id ?? null,
+                    $categoryId,
                     $data->is_published ? 1 : 0,
                     $data->read_time ?? '5 phút đọc',
                     $published_at
@@ -169,7 +171,7 @@ switch($method) {
                 if (isset($data->excerpt)) { $fields[] = "excerpt = ?"; $params[] = $data->excerpt; }
                 if (isset($data->content)) { $fields[] = "content = ?"; $params[] = $data->content; }
                 if (isset($data->featured_image)) { $fields[] = "featured_image = ?"; $params[] = $data->featured_image; }
-                if (isset($data->category_id)) { $fields[] = "category_id = ?"; $params[] = $data->category_id; }
+                if (isset($data->category_id)) { $fields[] = "category_id = ?"; $params[] = ($data->category_id !== '' && $data->category_id !== null) ? $data->category_id : null; }
                 if (isset($data->is_published)) { 
                     $fields[] = "is_published = ?"; 
                     $params[] = $data->is_published ? 1 : 0; 
