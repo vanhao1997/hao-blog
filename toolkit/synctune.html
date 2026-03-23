@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SyncTune — Nghe Nhạc Chung | Nguyễn Văn Hảo</title>
-    <meta name="description" content="Tạo phòng nghe nhạc YouTube chung real-time với bạn bè qua SyncTune">
+    <meta name="description" content="Tạo phòng nghe nhạc YouTube & Spotify chung real-time với bạn bè qua SyncTune">
     <link rel="canonical" href="https://nguyenvanhao.name.vn/toolkit/synctune.html">
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2322C55E'/%3E%3Ctext x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
@@ -284,6 +284,122 @@
 
         .player-placeholder i {
             font-size: 3rem;
+        }
+
+        /* Spotify embed */
+        .spotify-wrap {
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 16px;
+            overflow: hidden;
+            display: none;
+            box-shadow: 4px 4px 0 var(--color-border, #e5e7eb);
+        }
+
+        .spotify-wrap.active {
+            display: block;
+        }
+
+        .spotify-wrap iframe {
+            width: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Now playing bar */
+        .now-playing {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 14px;
+            font-size: 0.85rem;
+            box-shadow: 3px 3px 0 var(--color-border, #e5e7eb);
+        }
+
+        .now-playing.active {
+            display: flex;
+        }
+
+        .now-playing-title {
+            flex: 1;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--color-black, #1F2937);
+        }
+
+        .now-playing-badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 100px;
+            font-weight: 700;
+        }
+
+        .badge-yt {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .badge-spotify {
+            background: #ECFDF5;
+            color: #059669;
+        }
+
+        /* Playback controls */
+        .playback-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .ctrl-btn {
+            padding: 10px 16px;
+            background: var(--color-white, #fff);
+            border: 2px solid var(--color-border, #e5e7eb);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.2s;
+            color: var(--color-black, #1F2937);
+        }
+
+        .ctrl-btn:hover {
+            border-color: var(--color-primary, #22C55E);
+            color: var(--color-primary, #22C55E);
+        }
+
+        .ctrl-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .ctrl-btn:disabled:hover {
+            border-color: var(--color-border, #e5e7eb);
+            color: var(--color-black, #1F2937);
+        }
+
+        /* Share button */
+        .share-btn {
+            background: var(--color-primary, #22C55E);
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .share-btn:hover {
+            background: #16a34a;
         }
 
         /* Add URL */
@@ -701,7 +817,7 @@
                 <div class="lobby-card">
                     <div class="lobby-logo">🎵</div>
                     <h1 class="lobby-title">SyncTune</h1>
-                    <p class="lobby-subtitle">Nghe nhạc YouTube chung real-time với bạn bè</p>
+                    <p class="lobby-subtitle">Nghe nhạc YouTube & Spotify chung real-time với bạn bè</p>
 
                     <input type="text" id="usernameInput" class="lobby-input" placeholder="Nhập tên của bạn..."
                         maxlength="20">
@@ -728,6 +844,7 @@
                     <div class="room-info">
                         <span id="connectionStatus" class="st-status connecting">Đang kết nối...</span>
                         <span id="roomCodeDisplay" class="room-code" title="Click để copy mã phòng">Room: ---</span>
+                        <button id="shareBtn" class="share-btn">📤 Chia sẻ</button>
                         <span class="room-users">
                             <span class="online-dot"></span>
                             <span id="userCount">1</span> online
@@ -747,9 +864,26 @@
                             <div id="ytPlayer"></div>
                         </div>
 
+                        <!-- Spotify embed (hidden by default) -->
+                        <div id="spotifyWrap" class="spotify-wrap"></div>
+
+                        <!-- Now playing info -->
+                        <div id="nowPlaying" class="now-playing">
+                            <span>▶</span>
+                            <span id="nowPlayingTitle" class="now-playing-title">---</span>
+                            <span id="nowPlayingBadge" class="now-playing-badge badge-yt">YouTube</span>
+                        </div>
+
+                        <!-- Playback controls -->
+                        <div class="playback-controls">
+                            <button id="prevBtn" class="ctrl-btn" disabled>⏮ Trước</button>
+                            <button id="nextBtn" class="ctrl-btn" disabled>Tiếp ⏭</button>
+                            <button id="shuffleBtn" class="ctrl-btn">🔀 Trộn</button>
+                        </div>
+
                         <div class="add-url-row">
                             <input type="text" id="urlInput" class="add-url-input"
-                                placeholder="Dán link YouTube vào đây...">
+                                placeholder="Dán link YouTube hoặc Spotify...">
                             <button id="addUrlBtn" class="add-url-btn">+ Thêm</button>
                         </div>
 
@@ -887,6 +1021,13 @@
                 return null;
             }
 
+            function extractSpotifyId(url) {
+                var m = url.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?track\/([a-zA-Z0-9]+)/);
+                return m ? m[1] : null;
+            }
+
+            function isSpotifyItem(item) { return item && item.platform === 'spotify'; }
+
             function toast(msg) {
                 var t = document.createElement('div');
                 t.className = 'st-toast';
@@ -920,6 +1061,49 @@
             function setConnectionStatus(status, text) {
                 connectionStatus.className = 'st-status ' + status;
                 connectionStatus.textContent = text;
+            }
+
+            function updateControlButtons() {
+                var prevBtn = document.getElementById('prevBtn');
+                var nextBtn = document.getElementById('nextBtn');
+                prevBtn.disabled = currentIndex <= 0;
+                nextBtn.disabled = currentIndex >= queue.length - 1;
+            }
+
+            function updateNowPlaying() {
+                var np = document.getElementById('nowPlaying');
+                var title = document.getElementById('nowPlayingTitle');
+                var badge = document.getElementById('nowPlayingBadge');
+                if (currentIndex >= 0 && queue[currentIndex]) {
+                    var item = queue[currentIndex];
+                    np.classList.add('active');
+                    title.textContent = item.title;
+                    if (isSpotifyItem(item)) {
+                        badge.className = 'now-playing-badge badge-spotify';
+                        badge.textContent = 'Spotify';
+                    } else {
+                        badge.className = 'now-playing-badge badge-yt';
+                        badge.textContent = 'YouTube';
+                    }
+                } else {
+                    np.classList.remove('active');
+                }
+            }
+
+            function shareRoom() {
+                var shareUrl = window.location.origin + window.location.pathname + '?room=' + roomCode;
+                var shareData = {
+                    title: 'SyncTune — Ph\u00f2ng ' + roomCode,
+                    text: 'Tham gia nghe nh\u1ea1c chung v\u1edbi m\u00ecnh tr\u00ean SyncTune!',
+                    url: shareUrl
+                };
+                if (navigator.share) {
+                    navigator.share(shareData).catch(function () { });
+                } else {
+                    navigator.clipboard.writeText(shareUrl).then(function () {
+                        toast('\u0110\u00e3 copy link ph\u00f2ng!');
+                    });
+                }
             }
 
             // ===== ROOM MANAGEMENT =====
@@ -1031,14 +1215,47 @@
             function addToQueue() {
                 var url = urlInput.value.trim();
                 if (!url) return;
+
+                // Check Spotify first
+                var spotifyId = extractSpotifyId(url);
+                if (spotifyId) {
+                    fetch('https://open.spotify.com/oembed?url=https://open.spotify.com/track/' + spotifyId)
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) {
+                            var item = {
+                                videoId: spotifyId,
+                                platform: 'spotify',
+                                title: data.title || 'Spotify Track',
+                                thumbnail: data.thumbnail_url || '',
+                                addedBy: currentUser
+                            };
+                            channel.send({ type: 'broadcast', event: 'queue:add', payload: item });
+                            urlInput.value = '';
+                        })
+                        .catch(function () {
+                            var item = {
+                                videoId: spotifyId,
+                                platform: 'spotify',
+                                title: 'Spotify Track',
+                                thumbnail: '',
+                                addedBy: currentUser
+                            };
+                            channel.send({ type: 'broadcast', event: 'queue:add', payload: item });
+                            urlInput.value = '';
+                        });
+                    return;
+                }
+
+                // YouTube
                 var videoId = extractVideoId(url);
-                if (!videoId) { toast('Link YouTube không hợp lệ!'); return; }
+                if (!videoId) { toast('Link YouTube hoặc Spotify không hợp lệ!'); return; }
 
                 fetch('https://noembed.com/embed?url=https://www.youtube.com/watch?v=' + videoId)
                     .then(function (r) { return r.json(); })
                     .then(function (data) {
                         var item = {
                             videoId: videoId,
+                            platform: 'youtube',
                             title: data.title || 'YouTube Video',
                             thumbnail: 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg',
                             addedBy: currentUser
@@ -1049,6 +1266,7 @@
                     .catch(function () {
                         var item = {
                             videoId: videoId,
+                            platform: 'youtube',
                             title: 'YouTube Video',
                             thumbnail: 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg',
                             addedBy: currentUser
@@ -1089,16 +1307,55 @@
             window.playAtIndex = function (idx) {
                 if (idx < 0 || idx >= queue.length) return;
                 currentIndex = idx;
-                loadVideo(queue[idx].videoId, true);
+                var item = queue[idx];
+
+                if (isSpotifyItem(item)) {
+                    // Show Spotify embed, hide YouTube
+                    document.getElementById('playerPlaceholder').style.display = 'none';
+                    var playerWrap = document.querySelector('.player-wrap');
+                    playerWrap.style.display = 'none';
+                    var spotifyWrap = document.getElementById('spotifyWrap');
+                    spotifyWrap.innerHTML = '<iframe src="https://open.spotify.com/embed/track/' + item.videoId + '?utm_source=generator&theme=0" height="152" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+                    spotifyWrap.classList.add('active');
+                    if (ytPlayerObj && ytPlayerReady) try { ytPlayerObj.stopVideo(); } catch (e) { }
+                } else {
+                    // Show YouTube, hide Spotify
+                    var spotifyEl = document.getElementById('spotifyWrap');
+                    spotifyEl.classList.remove('active');
+                    spotifyEl.innerHTML = '';
+                    document.querySelector('.player-wrap').style.display = 'block';
+                    loadVideo(item.videoId, true);
+                }
+
+                updateNowPlaying();
+                updateControlButtons();
                 renderQueue();
                 if (channel) {
-                    channel.send({ type: 'broadcast', event: 'playback:play', payload: { index: idx, videoId: queue[idx].videoId } });
+                    channel.send({ type: 'broadcast', event: 'playback:play', payload: { index: idx, videoId: item.videoId, platform: item.platform } });
                 }
             };
 
             function onPlaybackPlay(data) {
                 currentIndex = data.index;
-                loadVideo(data.videoId, true);
+                var item = queue[currentIndex];
+                if (!item) return;
+
+                if (isSpotifyItem(item)) {
+                    document.getElementById('playerPlaceholder').style.display = 'none';
+                    document.querySelector('.player-wrap').style.display = 'none';
+                    var spotifyWrap = document.getElementById('spotifyWrap');
+                    spotifyWrap.innerHTML = '<iframe src="https://open.spotify.com/embed/track/' + item.videoId + '?utm_source=generator&theme=0" height="152" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+                    spotifyWrap.classList.add('active');
+                    if (ytPlayerObj && ytPlayerReady) try { ytPlayerObj.stopVideo(); } catch (e) { }
+                } else {
+                    document.getElementById('spotifyWrap').classList.remove('active');
+                    document.getElementById('spotifyWrap').innerHTML = '';
+                    document.querySelector('.player-wrap').style.display = 'block';
+                    loadVideo(data.videoId, true);
+                }
+
+                updateNowPlaying();
+                updateControlButtons();
                 renderQueue();
             }
 
@@ -1128,6 +1385,30 @@
                 if (currentIndex < queue.length - 1) window.playAtIndex(currentIndex + 1);
             };
 
+            window.playPrev = function () {
+                if (currentIndex > 0) window.playAtIndex(currentIndex - 1);
+            };
+
+            window.shuffleQueue = function () {
+                if (queue.length < 2) return;
+                var currentItem = queue[currentIndex];
+                // Fisher-Yates shuffle
+                for (var i = queue.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var tmp = queue[i]; queue[i] = queue[j]; queue[j] = tmp;
+                }
+                // Find current item in new order
+                for (var k = 0; k < queue.length; k++) {
+                    if (queue[k].videoId === currentItem.videoId) { currentIndex = k; break; }
+                }
+                renderQueue();
+                updateControlButtons();
+                toast('\u0110\u00e3 tr\u1ed9n danh s\u00e1ch!');
+                if (channel) {
+                    channel.send({ type: 'broadcast', event: 'queue:full-sync', payload: { queue: queue, currentIndex: currentIndex } });
+                }
+            };
+
             window.removeFromQueue = function (videoId) {
                 channel.send({ type: 'broadcast', event: 'queue:remove', payload: { videoId: videoId } });
             };
@@ -1135,17 +1416,19 @@
             function renderQueue() {
                 queueCountEl.textContent = queue.length;
                 if (queue.length === 0) {
-                    queueListEl.innerHTML = '<div class="queue-empty">Chưa có bài hát nào.<br>Paste link YouTube để thêm!</div>';
+                    queueListEl.innerHTML = '<div class="queue-empty">Chưa có bài hát nào.<br>Paste link YouTube hoặc Spotify!</div>';
                     return;
                 }
                 var html = '';
                 for (var i = 0; i < queue.length; i++) {
                     var item = queue[i];
+                    var platformIcon = isSpotifyItem(item) ? '🎧' : '▶';
+                    var thumbSrc = item.thumbnail || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2236%22%3E%3Crect width=%2248%22 height=%2236%22 fill=%22%231DB954%22 rx=%224%22/%3E%3Ctext x=%2224%22 y=%2224%22 font-size=%2216%22 text-anchor=%22middle%22 fill=%22white%22%3E%E2%99%AB%3C/text%3E%3C/svg%3E';
                     html += '<div class="queue-item ' + (i === currentIndex ? 'playing' : '') + '" onclick="playAtIndex(' + i + ')">';
-                    html += '<img class="queue-item-thumb" src="' + item.thumbnail + '" alt="" loading="lazy">';
+                    html += '<img class="queue-item-thumb" src="' + thumbSrc + '" alt="" loading="lazy">';
                     html += '<div class="queue-item-info">';
                     html += '<div class="queue-item-title">' + escHtml(item.title) + '</div>';
-                    html += '<div class="queue-item-added">' + (i === currentIndex ? '▶ Đang phát' : 'Bởi ' + escHtml(item.addedBy)) + '</div>';
+                    html += '<div class="queue-item-added">' + (i === currentIndex ? platformIcon + ' Đang phát' : 'Bởi ' + escHtml(item.addedBy)) + '</div>';
                     html += '</div>';
                     html += '<button class="queue-item-remove" onclick="event.stopPropagation();removeFromQueue(\'' + item.videoId + '\')" title="Xóa">✕</button>';
                     html += '</div>';
@@ -1183,6 +1466,10 @@
             document.getElementById('leaveBtn').addEventListener('click', leaveRoom);
             document.getElementById('addUrlBtn').addEventListener('click', addToQueue);
             document.getElementById('chatSendBtn').addEventListener('click', sendChat);
+            document.getElementById('shareBtn').addEventListener('click', shareRoom);
+            document.getElementById('prevBtn').addEventListener('click', function () { window.playPrev(); });
+            document.getElementById('nextBtn').addEventListener('click', function () { window.playNext(); });
+            document.getElementById('shuffleBtn').addEventListener('click', function () { window.shuffleQueue(); });
 
             usernameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') createRoom(); });
             roomCodeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') joinRoom(); });
