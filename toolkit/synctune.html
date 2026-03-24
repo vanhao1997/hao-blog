@@ -1582,7 +1582,19 @@
                 width: '100%',
                 playerVars: { autoplay: 0, controls: 1, modestbranding: 1, rel: 0, fs: 1, cc_load_policy: 1 },
                 events: {
-                    onReady: function () { ytPlayerReady = true; console.log('[SyncTune] YouTube player ready'); },
+                    onReady: function () {
+                        ytPlayerReady = true;
+                        console.log('[SyncTune] YouTube player ready');
+                        // If sync data arrived before player was ready, apply it now
+                        if (pendingPlayback) {
+                            var pp = pendingPlayback;
+                            pendingPlayback = null;
+                            document.getElementById('playerPlaceholder').style.display = 'none';
+                            ytPlayerObj.loadVideoById(pp.videoId, pp.time || 0);
+                            if (pp.playing) ytPlayerObj.playVideo();
+                            if (pp.title) fetchAndRenderLyrics(pp.title);
+                        }
+                    },
                     onStateChange: function (e) {
                         if (e.data === YT.PlayerState.ENDED) { playNext(); }
                         // Sync stop button text with player state
@@ -1650,6 +1662,7 @@
             var currentIndex = -1;
             var isMinimized = false;
             var pendingSync = false;
+            var pendingPlayback = null;
             var miniUnreadCount = 0;
 
             var lobbyRooms = {};
@@ -1938,11 +1951,17 @@
                                     var vid = queue[currentIndex].videoId;
                                     var syncTime = msg.payload.currentTime || 0;
                                     var syncPlaying = msg.payload.playing !== false;
-                                    document.getElementById('playerPlaceholder').style.display = 'none';
-                                    ytPlayerObj.loadVideoById(vid, syncTime);
-                                    if (syncPlaying) ytPlayerObj.playVideo();
-                                    var song = queue[currentIndex];
-                                    if (song) fetchAndRenderLyrics(song.title);
+                                    var songTitle = queue[currentIndex].title || '';
+                                    if (!ytPlayerReady) {
+                                        // Player not ready yet — buffer for onReady
+                                        pendingPlayback = { videoId: vid, time: syncTime, playing: syncPlaying, title: songTitle };
+                                        console.log('[SyncTune] Buffered playback for when player ready');
+                                    } else {
+                                        document.getElementById('playerPlaceholder').style.display = 'none';
+                                        ytPlayerObj.loadVideoById(vid, syncTime);
+                                        if (syncPlaying) ytPlayerObj.playVideo();
+                                        fetchAndRenderLyrics(songTitle);
+                                    }
                                 }
                             }
                         })
@@ -2142,6 +2161,7 @@
                     var currentVid = ytPlayerObj.getVideoData && ytPlayerObj.getVideoData().video_id;
                     if (currentVid !== data.videoId) {
                         // Different video — load and seek
+                        document.getElementById('playerPlaceholder').style.display = 'none';
                         ytPlayerObj.loadVideoById(data.videoId, data.time);
                     } else {
                         var diff = Math.abs(ytPlayerObj.getCurrentTime() - data.time);
