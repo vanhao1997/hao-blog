@@ -1927,8 +1927,6 @@
                         .on('broadcast', { event: 'user:left' }, function (msg) { addSystemMessage(msg.payload.username + ' \u0111\u00e3 r\u1eddi ph\u00f2ng \ud83d\udc4b'); })
 
                         .on('broadcast', { event: 'queue:full-sync' }, function (msg) {
-                            var oldQueue = queue.slice();
-                            var oldIndex = currentIndex;
                             queue = msg.payload.queue || [];
                             currentIndex = msg.payload.currentIndex;
                             renderQueue();
@@ -1937,17 +1935,27 @@
                             if (pendingSync) {
                                 pendingSync = false;
                                 if (currentIndex >= 0 && queue[currentIndex]) {
-                                    loadVideo(queue[currentIndex].videoId, true);
-                                    // Sync to host position after video loads
-                                    setTimeout(function () {
-                                        channel.send({ type: 'broadcast', event: 'request:sync', payload: {} });
-                                    }, 2000);
+                                    var vid = queue[currentIndex].videoId;
+                                    var syncTime = msg.payload.currentTime || 0;
+                                    var syncPlaying = msg.payload.playing !== false;
+                                    document.getElementById('playerPlaceholder').style.display = 'none';
+                                    ytPlayerObj.loadVideoById(vid, syncTime);
+                                    if (syncPlaying) ytPlayerObj.playVideo();
+                                    var song = queue[currentIndex];
+                                    if (song) fetchAndRenderLyrics(song.title);
                                 }
                             }
                         })
                         .on('broadcast', { event: 'request:sync' }, function () {
                             if (isHost) {
-                                channel.send({ type: 'broadcast', event: 'queue:full-sync', payload: { queue: queue, currentIndex: currentIndex } });
+                                var p = { queue: queue, currentIndex: currentIndex };
+                                try {
+                                    if (ytPlayerReady && ytPlayerObj) {
+                                        p.currentTime = ytPlayerObj.getCurrentTime();
+                                        p.playing = ytPlayerObj.getPlayerState() === YT.PlayerState.PLAYING;
+                                    }
+                                } catch (e) { }
+                                channel.send({ type: 'broadcast', event: 'queue:full-sync', payload: p });
                             }
                         })
                         .on('presence', { event: 'sync' }, function () {
@@ -2899,57 +2907,11 @@
                 if (!body || lyricsData.length === 0) return;
                 var html = '';
                 for (var i = 0; i < lyricsData.length; i++) {
-                    html += '<div class="lyrics-line upcoming" id="lyric-' + i + '">' + escHtml(lyricsData[i].text) + '</div>';
+                    html += '<div class="lyrics-line">' + escHtml(lyricsData[i].text) + '</div>';
                 }
                 body.innerHTML = html;
             }
 
-            function startLyricsSync() {
-                stopLyricsSync();
-                if (lyricsData.length === 0) return;
-                lyricsSyncTimer = setInterval(function () {
-                    if (!ytPlayerObj || !ytPlayerReady) return;
-                    try {
-                        var currentTime = ytPlayerObj.getCurrentTime();
-                        if (typeof currentTime !== 'number') return;
-                        // Delay lyrics to match actual singing (LRC timestamps often run ahead)
-                        currentTime = Math.max(0, currentTime - 1.5);
-                        // Find the current line
-                        var newIndex = -1;
-                        for (var i = lyricsData.length - 1; i >= 0; i--) {
-                            if (currentTime >= lyricsData[i].time) {
-                                newIndex = i;
-                                break;
-                            }
-                        }
-                        if (newIndex !== currentLyricIndex) {
-                            currentLyricIndex = newIndex;
-                            highlightLyricLine(newIndex);
-                        }
-                    } catch (e) { }
-                }, 500);
-            }
-
-            function stopLyricsSync() {
-                if (lyricsSyncTimer) { clearInterval(lyricsSyncTimer); lyricsSyncTimer = null; }
-            }
-
-            function highlightLyricLine(index) {
-                var body = document.getElementById('lyricsBody');
-                if (!body) return;
-                var lines = body.querySelectorAll('.lyrics-line');
-                for (var i = 0; i < lines.length; i++) {
-                    lines[i].classList.remove('active', 'passed', 'upcoming');
-                    if (i < index) lines[i].classList.add('passed');
-                    else if (i === index) lines[i].classList.add('active');
-                    else lines[i].classList.add('upcoming');
-                }
-                // Scroll active line into view
-                var activeLine = document.getElementById('lyric-' + index);
-                if (activeLine) {
-                    activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
 
             function toggleLyricsPanel() {
                 var panel = document.getElementById('lyricsPanel');
@@ -2958,8 +2920,6 @@
                 lyricsVisible = !lyricsVisible;
                 panel.style.display = lyricsVisible ? 'block' : 'none';
                 btn.classList.toggle('active', lyricsVisible);
-                if (lyricsVisible && lyricsData.length > 0) startLyricsSync();
-                else if (!lyricsVisible) stopLyricsSync();
             }
 
             // ===== EVENT LISTENERS =====
