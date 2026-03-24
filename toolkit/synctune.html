@@ -2003,9 +2003,27 @@
                             channel.send({ type: 'broadcast', event: 'user:joined', payload: { username: currentUser } });
 
                             if (!isHost) {
-                                setTimeout(function () {
-                                    channel.send({ type: 'broadcast', event: 'request:sync', payload: {} });
-                                }, 500);
+                                // Multi-retry sync: try at 500ms, 3s, 6s
+                                var syncRetries = [500, 3000, 6000];
+                                syncRetries.forEach(function (delay) {
+                                    setTimeout(function () {
+                                        // Only request if video not loaded yet
+                                        if (!ytPlayerObj || !ytPlayerReady) {
+                                            channel.send({ type: 'broadcast', event: 'request:sync', payload: {} });
+                                            return;
+                                        }
+                                        try {
+                                            var state = ytPlayerObj.getPlayerState();
+                                            if (state !== YT.PlayerState.PLAYING && state !== YT.PlayerState.PAUSED && state !== YT.PlayerState.BUFFERING) {
+                                                console.log('[SyncTune] Retry sync (delay=' + delay + 'ms)');
+                                                pendingSync = true;
+                                                channel.send({ type: 'broadcast', event: 'request:sync', payload: {} });
+                                            }
+                                        } catch (e) {
+                                            channel.send({ type: 'broadcast', event: 'request:sync', payload: {} });
+                                        }
+                                    }, delay);
+                                });
                             }
 
                             addSystemMessage(isHost
@@ -2131,13 +2149,15 @@
                 currentIndex = idx;
                 var item = queue[idx];
 
+                document.getElementById('playerPlaceholder').style.display = 'none';
                 document.querySelector('.player-wrap').style.display = 'block';
                 loadVideo(item.videoId, true);
 
                 updateNowPlaying();
                 updateControlButtons();
                 renderQueue();
-                if (channel) {
+                // Only host broadcasts play commands to sync everyone
+                if (isHost && channel) {
                     channel.send({ type: 'broadcast', event: 'playback:play', payload: { index: idx, videoId: item.videoId, platform: item.platform } });
                 }
             };
