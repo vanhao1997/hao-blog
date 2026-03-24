@@ -2795,7 +2795,7 @@
             }
 
             function fetchAndRenderLyrics(title) {
-                stopLyricsSync();
+
                 lyricsData = [];
                 currentLyricIndex = -1;
                 var body = document.getElementById('lyricsBody');
@@ -2827,7 +2827,7 @@
                             lyricsData = result.lines;
                             status.textContent = '\u2022 \u0110\u1ed3ng b\u1ed9';
                             renderLyricsLines();
-                            startLyricsSync();
+
                             console.log('[SyncTune Lyrics] Synced from', result.source, ':', result.lines.length, 'lines');
                         } else {
                             status.textContent = '\u2022 Kh\u00f4ng \u0111\u1ed3ng b\u1ed9';
