@@ -1940,6 +1940,8 @@
                         .on('broadcast', { event: 'user:left' }, function (msg) { addSystemMessage(msg.payload.username + ' \u0111\u00e3 r\u1eddi ph\u00f2ng \ud83d\udc4b'); })
 
                         .on('broadcast', { event: 'queue:full-sync' }, function (msg) {
+                            // Host is the source of truth — ignore echoed broadcasts
+                            if (isHost) return;
                             queue = msg.payload.queue || [];
                             currentIndex = msg.payload.currentIndex;
                             renderQueue();
