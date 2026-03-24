@@ -1257,19 +1257,16 @@
         }
 
         .lyrics-line.active {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            transform: scale(1.02);
-            background-image: linear-gradient(90deg, #22C55E var(--lyrics-progress, 0%), #222 var(--lyrics-progress, 0%));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.2));
+            color: #22C55E;
+            background: rgba(34, 197, 94, 0.08);
+            border-radius: 8px;
         }
 
         .lyrics-line.passed {
-            color: #22C55E;
-            opacity: 0.5;
+            color: #888;
+            opacity: 0.6;
         }
 
         .lyrics-line.upcoming {
@@ -2915,8 +2912,6 @@
                     try {
                         var currentTime = ytPlayerObj.getCurrentTime();
                         if (typeof currentTime !== 'number') return;
-                        // Small offset to fine-tune LRCLIB lyrics sync
-                        currentTime = Math.max(0, currentTime - 0.2);
                         // Find the current line
                         var newIndex = -1;
                         for (var i = lyricsData.length - 1; i >= 0; i--) {
@@ -2925,44 +2920,26 @@
                                 break;
                             }
                         }
-                        // Calculate progress within current line (0-100%)
-                        var progress = 0;
-                        if (newIndex >= 0) {
-                            var lineStart = lyricsData[newIndex].time;
-                            var lineEnd = (newIndex < lyricsData.length - 1) ? lyricsData[newIndex + 1].time : lineStart + 5;
-                            var duration = lineEnd - lineStart;
-                            if (duration > 0) {
-                                progress = Math.min(100, Math.max(0, ((currentTime - lineStart) / duration) * 100));
-                            }
-                        }
                         if (newIndex !== currentLyricIndex) {
                             currentLyricIndex = newIndex;
-                            highlightLyricLine(newIndex, progress);
-                        } else if (newIndex >= 0) {
-                            // Update progress on same line
-                            var activeLine = document.getElementById('lyric-' + newIndex);
-                            if (activeLine) activeLine.style.setProperty('--lyrics-progress', progress + '%');
+                            highlightLyricLine(newIndex);
                         }
                     } catch (e) { }
-                }, 50);
+                }, 500);
             }
 
             function stopLyricsSync() {
                 if (lyricsSyncTimer) { clearInterval(lyricsSyncTimer); lyricsSyncTimer = null; }
             }
 
-            function highlightLyricLine(index, progress) {
+            function highlightLyricLine(index) {
                 var body = document.getElementById('lyricsBody');
                 if (!body) return;
                 var lines = body.querySelectorAll('.lyrics-line');
                 for (var i = 0; i < lines.length; i++) {
                     lines[i].classList.remove('active', 'passed', 'upcoming');
-                    lines[i].style.removeProperty('--lyrics-progress');
                     if (i < index) lines[i].classList.add('passed');
-                    else if (i === index) {
-                        lines[i].classList.add('active');
-                        lines[i].style.setProperty('--lyrics-progress', (progress || 0) + '%');
-                    }
+                    else if (i === index) lines[i].classList.add('active');
                     else lines[i].classList.add('upcoming');
                 }
                 // Scroll active line into view
