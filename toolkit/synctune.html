@@ -2194,10 +2194,26 @@
                         // Different video or no video loaded — load it at the correct time
                         console.log('[SyncTune] Sync: loading video', data.videoId, 'at', data.time);
                         ytPlayerObj.loadVideoById(data.videoId, data.time || 0);
+                        // Update currentIndex and UI
+                        if (typeof data.currentIndex === 'number') {
+                            currentIndex = data.currentIndex;
+                        }
+                        updateNowPlaying();
+                        renderQueue();
+                        updateControlButtons();
+                        // Fetch lyrics for the new song
+                        var song = queue[currentIndex];
+                        if (song) fetchAndRenderLyrics(song.title);
                     } else {
                         // Same video — just seek if needed
                         var diff = Math.abs(ytPlayerObj.getCurrentTime() - data.time);
                         if (diff > 2) ytPlayerObj.seekTo(data.time, true);
+                        // Ensure currentIndex stays in sync
+                        if (typeof data.currentIndex === 'number' && data.currentIndex !== currentIndex) {
+                            currentIndex = data.currentIndex;
+                            updateNowPlaying();
+                            renderQueue();
+                        }
                     }
                     if (data.playing) {
                         ytPlayerObj.playVideo();
@@ -2252,6 +2268,7 @@
                             event: 'playback:sync',
                             payload: {
                                 videoId: queue[currentIndex].videoId,
+                                currentIndex: currentIndex,
                                 time: ytPlayerObj.getCurrentTime(),
                                 playing: ytPlayerObj.getPlayerState() === YT.PlayerState.PLAYING
                             }
@@ -3146,6 +3163,7 @@
                         event: 'playback:sync',
                         payload: {
                             videoId: queue[currentIndex] && queue[currentIndex].videoId,
+                            currentIndex: currentIndex,
                             time: ytPlayerObj.getCurrentTime(),
                             playing: state === YT.PlayerState.PLAYING
                         }
