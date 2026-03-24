@@ -2178,11 +2178,21 @@
 
             function onPlaybackSync(data) {
                 if (!ytPlayerReady || !data || !data.videoId) return;
-                if (isHost) return; // Host doesn't need sync from itself
                 try {
                     // Always ensure player is visible
                     document.getElementById('playerPlaceholder').style.display = 'none';
                     document.querySelector('.player-wrap').style.display = 'block';
+
+                    // Update currentIndex from sync data
+                    if (typeof data.currentIndex === 'number' && data.currentIndex >= 0) {
+                        var indexChanged = (currentIndex !== data.currentIndex);
+                        currentIndex = data.currentIndex;
+                        if (indexChanged) {
+                            updateNowPlaying();
+                            renderQueue();
+                            updateControlButtons();
+                        }
+                    }
 
                     var currentVid = '';
                     try { currentVid = ytPlayerObj.getVideoData().video_id || ''; } catch (e) { }
@@ -2191,10 +2201,12 @@
                         // Different video or no video loaded — load it at the correct time
                         console.log('[SyncTune] Sync: loading video', data.videoId, 'at', data.time);
                         ytPlayerObj.loadVideoById(data.videoId, data.time || 0);
+                        updateNowPlaying();
+                        renderQueue();
                     } else {
                         // Same video — just seek if needed
                         var diff = Math.abs(ytPlayerObj.getCurrentTime() - data.time);
-                        if (diff > 2) ytPlayerObj.seekTo(data.time, true);
+                        if (diff > 3) ytPlayerObj.seekTo(data.time, true);
                     }
                     if (data.playing) {
                         ytPlayerObj.playVideo();
@@ -2246,6 +2258,7 @@
                             event: 'playback:sync',
                             payload: {
                                 videoId: queue[currentIndex].videoId,
+                                currentIndex: currentIndex,
                                 time: ytPlayerObj.getCurrentTime(),
                                 playing: ytPlayerObj.getPlayerState() === YT.PlayerState.PLAYING
                             }
@@ -3119,6 +3132,7 @@
                         event: 'playback:sync',
                         payload: {
                             videoId: queue[currentIndex] && queue[currentIndex].videoId,
+                            currentIndex: currentIndex,
                             time: ytPlayerObj.getCurrentTime(),
                             playing: state === YT.PlayerState.PLAYING
                         }
