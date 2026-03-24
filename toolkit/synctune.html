@@ -1583,7 +1583,7 @@
             ytPlayerObj = new YT.Player('ytPlayer', {
                 height: '100%',
                 width: '100%',
-                playerVars: { autoplay: 0, controls: 1, modestbranding: 1, rel: 0, fs: 1 },
+                playerVars: { autoplay: 0, controls: 1, modestbranding: 1, rel: 0, fs: 1, cc_load_policy: 1 },
                 events: {
                     onReady: function () { ytPlayerReady = true; console.log('[SyncTune] YouTube player ready'); },
                     onStateChange: function (e) {
@@ -1598,6 +1598,28 @@
                             if (btn) btn.innerHTML = '\u25b6 Ph\u00e1t';
                             if (miniBtn) miniBtn.textContent = '\u25b6';
                         }
+                    },
+                    onApiChange: function () {
+                        // Auto-enable captions (YouTube's built-in subtitles)
+                        try {
+                            var tracks = ytPlayerObj.getOption('captions', 'tracklist');
+                            if (tracks && tracks.length > 0) {
+                                console.log('[SyncTune] Caption tracks available:', tracks.map(function (t) { return t.languageCode; }));
+                                // Prefer Vietnamese, then English
+                                var preferred = null;
+                                for (var i = 0; i < tracks.length; i++) {
+                                    if (tracks[i].languageCode === 'vi') { preferred = tracks[i]; break; }
+                                }
+                                if (!preferred) {
+                                    for (var i = 0; i < tracks.length; i++) {
+                                        if (tracks[i].languageCode === 'en') { preferred = tracks[i]; break; }
+                                    }
+                                }
+                                if (!preferred) preferred = tracks[0];
+                                ytPlayerObj.setOption('captions', 'track', { languageCode: preferred.languageCode });
+                                console.log('[SyncTune] Enabled captions:', preferred.languageCode);
+                            }
+                        } catch (e) { console.warn('[SyncTune] Captions error:', e); }
                     }
                 }
             });
@@ -1918,7 +1940,11 @@
                             if (pendingSync) {
                                 pendingSync = false;
                                 if (currentIndex >= 0 && queue[currentIndex]) {
-                                    loadVideo(queue[currentIndex].videoId, false);
+                                    loadVideo(queue[currentIndex].videoId, true);
+                                    // Sync to host position after video loads
+                                    setTimeout(function () {
+                                        channel.send({ type: 'broadcast', event: 'request:sync', payload: {} });
+                                    }, 2000);
                                 }
                             }
                         })
@@ -2110,13 +2136,17 @@
                 try {
                     var currentVid = ytPlayerObj.getVideoData && ytPlayerObj.getVideoData().video_id;
                     if (currentVid !== data.videoId) {
+                        // Different video — load and seek
                         ytPlayerObj.loadVideoById(data.videoId, data.time);
                     } else {
                         var diff = Math.abs(ytPlayerObj.getCurrentTime() - data.time);
-                        if (diff > 3) ytPlayerObj.seekTo(data.time, true);
+                        if (diff > 2) ytPlayerObj.seekTo(data.time, true);
                     }
-                    if (data.playing) ytPlayerObj.playVideo();
-                    else ytPlayerObj.pauseVideo();
+                    if (data.playing) {
+                        ytPlayerObj.playVideo();
+                    } else {
+                        ytPlayerObj.pauseVideo();
+                    }
                 } catch (e) { console.warn('[SyncTune] Sync error:', e); }
             }
 
@@ -2885,8 +2915,8 @@
                     try {
                         var currentTime = ytPlayerObj.getCurrentTime();
                         if (typeof currentTime !== 'number') return;
-                        // Offset to compensate for audio buffering delay (lyrics were ahead of audio)
-                        currentTime = Math.max(0, currentTime - 0.5);
+                        // Small offset to fine-tune LRCLIB lyrics sync
+                        currentTime = Math.max(0, currentTime - 0.2);
                         // Find the current line
                         var newIndex = -1;
                         for (var i = lyricsData.length - 1; i >= 0; i--) {
