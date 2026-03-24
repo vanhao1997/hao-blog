@@ -2145,7 +2145,7 @@
 
             // ===== PLAYBACK =====
             window.playAtIndex = function (idx) {
-                if (!isHost) { toast('Chỉ chủ phòng mới có thể chọn bài'); return; }
+
                 if (idx < 0 || idx >= queue.length) return;
                 currentIndex = idx;
                 var item = queue[idx];
@@ -2215,17 +2215,14 @@
             }
 
             window.playNext = function () {
-                if (!isHost) { toast('Chỉ chủ phòng mới có thể điều khiển'); return; }
                 if (currentIndex < queue.length - 1) window.playAtIndex(currentIndex + 1);
             };
 
             window.playPrev = function () {
-                if (!isHost) { toast('Chỉ chủ phòng mới có thể điều khiển'); return; }
                 if (currentIndex > 0) window.playAtIndex(currentIndex - 1);
             };
 
             window.togglePlayPause = function () {
-                if (!isHost) { toast('Chỉ chủ phòng mới có thể điều khiển'); return; }
                 if (!ytPlayerObj || !ytPlayerReady) return;
                 try {
                     var state = ytPlayerObj.getPlayerState();
