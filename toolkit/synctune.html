@@ -2912,6 +2912,8 @@
                     try {
                         var currentTime = ytPlayerObj.getCurrentTime();
                         if (typeof currentTime !== 'number') return;
+                        // Delay lyrics to match actual singing (LRC timestamps often run ahead)
+                        currentTime = Math.max(0, currentTime - 1.5);
                         // Find the current line
                         var newIndex = -1;
                         for (var i = lyricsData.length - 1; i >= 0; i--) {
