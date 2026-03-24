@@ -5,6 +5,9 @@
     <script src="/js/tracking.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>SyncTune — Nghe Nhạc Chung | Nguyễn Văn Hảo</title>
     <meta name="description" content="Tạo phòng nghe nhạc YouTube chung real-time với bạn bè qua SyncTune">
     <link rel="canonical" href="https://nguyenvanhao.name.vn/toolkit/synctune.html">
@@ -1663,6 +1666,7 @@
             var isMinimized = false;
             var pendingSync = false;
             var pendingPlayback = null;
+            var lastSongChangeTime = 0;
             var miniUnreadCount = 0;
 
             var lobbyRooms = {};
@@ -2147,6 +2151,7 @@
             window.playAtIndex = function (idx) {
 
                 if (idx < 0 || idx >= queue.length) return;
+                lastSongChangeTime = Date.now();
                 currentIndex = idx;
                 var item = queue[idx];
 
@@ -2163,6 +2168,7 @@
             };
 
             function onPlaybackPlay(data) {
+                lastSongChangeTime = Date.now();
                 currentIndex = data.index;
                 var item = queue[currentIndex];
                 if (!item) return;
@@ -2178,6 +2184,8 @@
 
             function onPlaybackSync(data) {
                 if (!ytPlayerReady || !data || !data.videoId) return;
+                // Skip sync for 8s after a song change to avoid race condition
+                if (Date.now() - lastSongChangeTime < 8000) return;
                 try {
                     // Always ensure player is visible
                     document.getElementById('playerPlaceholder').style.display = 'none';
