@@ -234,31 +234,18 @@
                                 Keyword</button>
                         </div>
                     </div>
-                    <!-- Model Selector -->
+                    <!-- Provider & Model Selector -->
                     <div class="flex justify-center">
                         <div
-                            class="inline-flex items-center gap-2 bg-white rounded-lg px-4 py-2 shadow-sm border border-slate-200">
-                            <span class="text-slate-500 text-sm font-medium">🧠 Model:</span>
+                            class="inline-flex items-center gap-3 bg-white rounded-lg px-4 py-2 shadow-sm border border-slate-200">
+                            <select id="providerSelect" onchange="switchProvider(this.value)"
+                                class="bg-slate-50 border border-slate-200 outline-none text-slate-800 font-bold text-sm cursor-pointer px-3 py-1.5 rounded-md">
+                                <option value="gemini">🌐 Gemini</option>
+                                <option value="insightdev">🔮 InsightDev</option>
+                            </select>
                             <select id="modelSelect" onchange="switchModel(this.value)"
                                 class="bg-transparent border-none outline-none text-slate-800 font-semibold text-sm cursor-pointer pr-6 appearance-none"
                                 style="background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2364748b%22 stroke-width=%222%22%3E%3Cpath d=%22M6 9l6 6 6-6%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0 center;">
-                                <optgroup label="🌐 Gemini (Google)">
-                                    <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro ⚡</option>
-                                    <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-                                    <option value="gemini-2.5-flash">Gemini 2.5 Flash 🚀</option>
-                                </optgroup>
-                                <optgroup label="🔮 InsightDev API">
-                                    <option value="insightdev:anthropic:sonnet-4-5-20250929">Claude 4.5 Sonnet 🧠
-                                    </option>
-                                    <option value="insightdev:anthropic:opus-4.5">Claude Opus 4.5 💎</option>
-                                    <option value="insightdev:openai:gpt-5">GPT-5 🌟</option>
-                                    <option value="insightdev:openai:gpt-4.1">GPT-4.1</option>
-                                    <option value="insightdev:openai:gpt-4.1-mini">GPT-4.1 Mini 🚀</option>
-                                    <option value="insightdev:deepseek:deepseek-r1-0528">DeepSeek R1 🔬</option>
-                                    <option value="insightdev:gemini:gemini-2.5-pro">Gemini 2.5 Pro (via InsightDev)
-                                    </option>
-                                    <option value="insightdev:grok:grok-4">Grok 4 ⚡</option>
-                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -605,15 +592,79 @@
             }
         }
 
+        // ============================================================
+        // PROVIDER & MODEL DATA
+        // ============================================================
+        const providerModels = {
+            gemini: [
+                { value: 'gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro ⚡' },
+                { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' },
+                { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash 🚀' },
+            ],
+            insightdev: [
+                // Anthropic
+                { value: 'insightdev:anthropic:opus-4.5', label: '🟣 Claude Opus 4.5' },
+                { value: 'insightdev:anthropic:haiku-4-5-20251001', label: '🟣 Claude 4.5 Haiku' },
+                { value: 'insightdev:anthropic:sonnet-4-5-20250929', label: '🟣 Claude 4.5 Sonnet' },
+                { value: 'insightdev:anthropic:sonnet-4-5-20250929-thinking', label: '🟣 Claude 4.5 Sonnet (Thinking)' },
+                { value: 'insightdev:anthropic:opus-4-1-20250805', label: '🟣 Claude Opus 4.1' },
+                // OpenAI
+                { value: 'insightdev:openai:gpt-5.1-chat', label: '🟢 GPT-5.1 Chat' },
+                { value: 'insightdev:openai:gpt-5', label: '🟢 GPT-5' },
+                { value: 'insightdev:openai:gpt-4.1', label: '🟢 GPT-4.1' },
+                { value: 'insightdev:openai:gpt-4.1-mini', label: '🟢 GPT-4.1 Mini' },
+                { value: 'insightdev:openai:gpt-oss-20b', label: '🟢 GPT-OSS 20B' },
+                // DeepSeek
+                { value: 'insightdev:deepseek:deepseek-v3-0324', label: '🔵 DeepSeek V3' },
+                { value: 'insightdev:deepseek:deepseek-r1-0528', label: '🔵 DeepSeek R1' },
+                // Grok
+                { value: 'insightdev:grok:grok-4', label: '⚡ Grok 4' },
+                { value: 'insightdev:grok:grok-3', label: '⚡ Grok 3' },
+                // Gemini (via InsightDev)
+                { value: 'insightdev:gemini:gemini-3-pro-preview-11-2025', label: '🌐 Gemini 3 Pro Preview' },
+                { value: 'insightdev:gemini:gemini-2.5-pro-preview-0605', label: '🌐 Gemini 2.5 Pro Preview' },
+                { value: 'insightdev:gemini:gemini-2.5-pro', label: '🌐 Gemini 2.5 Pro' },
+                { value: 'insightdev:gemini:gemini-2.5-flash', label: '🌐 Gemini 2.5 Flash' },
+            ]
+        };
+
+        function switchProvider(provider) {
+            state.provider = provider;
+            localStorage.setItem('seo_provider', provider);
+            populateModelSelect(provider);
+            // Select first model of new provider
+            const models = providerModels[provider];
+            if (models && models.length > 0) {
+                switchModel(models[0].value);
+                document.getElementById('modelSelect').value = models[0].value;
+            }
+        }
+
+        function populateModelSelect(provider) {
+            const sel = document.getElementById('modelSelect');
+            sel.innerHTML = '';
+            (providerModels[provider] || []).forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.value;
+                opt.textContent = m.label;
+                sel.appendChild(opt);
+            });
+        }
+
         function switchModel(model) {
             state.model = model;
             localStorage.setItem('seo_model', model);
         }
 
-        // Restore saved model on load
+        // Restore saved provider & model on load
         (function initModelSelect() {
-            const sel = document.getElementById('modelSelect');
-            if (sel && state.model) { sel.value = state.model; }
+            const savedProvider = localStorage.getItem('seo_provider') || 'gemini';
+            state.provider = savedProvider;
+            const provSel = document.getElementById('providerSelect');
+            if (provSel) provSel.value = savedProvider;
+            populateModelSelect(savedProvider);
+            const modelSel = document.getElementById('modelSelect');
+            if (modelSel && state.model) { modelSel.value = state.model; }
         })();
 
         function switchView(viewName) {
