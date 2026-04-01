@@ -774,7 +774,7 @@
                             content: prompt
                         }
                     ],
-                    max_tokens: 16384,
+                    max_tokens: 65536,
                     temperature: 0.2
                 })
             });
@@ -793,19 +793,69 @@
                 throw new Error(`InsightDev không trả về nội dung (reason: ${finishReason || 'unknown'}). Vui lòng thử lại.`);
             }
 
+            console.log('[InsightDev] Raw response length:', raw.length);
             return parseAIJson(raw);
         }
 
         // --- Shared JSON parser ---
         function parseAIJson(raw) {
-            try { return JSON.parse(raw); } catch (e1) {
-                const f = raw.indexOf('{'), l = raw.lastIndexOf('}');
-                if (f !== -1 && l !== -1) { try { return JSON.parse(raw.substring(f, l + 1)); } catch (e2) { } }
-                // Regex fallback for improperly formatted JSON
-                const extract = (key) => { const re = new RegExp(`"${key}"\\s*:\\s*"([\\s\\S]*?)"\\s*[,}]`); const m = raw.match(re); return m ? m[1].replace(/\\n/g, '\n').replace(/\\"/g, '"') : ''; };
-                const kwMatch = raw.match(/"keywords"\s*:\s*\[([\s\S]*?)\]/);
+            // Step 1: Strip markdown code fences (```json ... ``` or ``` ... ```)
+            let cleaned = raw;
+            const fenceMatch = cleaned.match(/^```(?:json)?\s*\n?([\s\S]*?)\n?\s*```$/);
+            if (fenceMatch) {
+                cleaned = fenceMatch[1].trim();
+            } else {
+                // Also handle partial fences at start/end
+                cleaned = cleaned.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?\s*```$/, '').trim();
+            }
+
+            // Step 2: Try direct JSON parse
+            try { return JSON.parse(cleaned); } catch (e1) {
+                // Step 3: Extract first complete JSON object
+                const f = cleaned.indexOf('{'), l = cleaned.lastIndexOf('}');
+                if (f !== -1 && l !== -1 && l > f) {
+                    try { return JSON.parse(cleaned.substring(f, l + 1)); } catch (e2) {
+                        console.warn('[parseAIJson] JSON.parse failed on extracted block:', e2.message);
+                    }
+                }
+                // Step 4: Regex fallback for individual fields
+                console.warn('[parseAIJson] Using regex fallback extraction');
+                const extractSimple = (key) => {
+                    const re = new RegExp(`"${key}"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"`);
+                    const m = cleaned.match(re);
+                    return m ? m[1].replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\') : '';
+                };
+                // For content_markdown, use a more robust extraction (find key, then grab everything until closing)
+                const extractLong = (key) => {
+                    const keyIdx = cleaned.indexOf(`"${key}"`);
+                    if (keyIdx === -1) return '';
+                    const colonIdx = cleaned.indexOf(':', keyIdx);
+                    if (colonIdx === -1) return '';
+                    const quoteStart = cleaned.indexOf('"', colonIdx + 1);
+                    if (quoteStart === -1) return '';
+                    // Walk through string respecting escaped quotes
+                    let i = quoteStart + 1, result = '';
+                    while (i < cleaned.length) {
+                        if (cleaned[i] === '\\' && i + 1 < cleaned.length) {
+                            result += cleaned[i] + cleaned[i + 1];
+                            i += 2;
+                        } else if (cleaned[i] === '"') {
+                            break;
+                        } else {
+                            result += cleaned[i];
+                            i++;
+                        }
+                    }
+                    return result.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                };
+                const kwMatch = cleaned.match(/"keywords"\s*:\s*\[([\s\S]*?)\]/);
                 const keywords = kwMatch ? kwMatch[1].match(/"([^"]+)"/g)?.map(k => k.replace(/"/g, '')) || [] : [];
-                return { seo_title: extract('seo_title'), meta_description: extract('meta_description'), keywords, content_markdown: extract('content_markdown') };
+                return {
+                    seo_title: extractSimple('seo_title'),
+                    meta_description: extractSimple('meta_description'),
+                    keywords,
+                    content_markdown: extractLong('content_markdown')
+                };
             }
         }
 
