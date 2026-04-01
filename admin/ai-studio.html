@@ -242,9 +242,23 @@
                             <select id="modelSelect" onchange="switchModel(this.value)"
                                 class="bg-transparent border-none outline-none text-slate-800 font-semibold text-sm cursor-pointer pr-6 appearance-none"
                                 style="background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2364748b%22 stroke-width=%222%22%3E%3Cpath d=%22M6 9l6 6 6-6%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0 center;">
-                                <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro ⚡</option>
-                                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-                                <option value="gemini-2.5-flash">Gemini 2.5 Flash 🚀</option>
+                                <optgroup label="🌐 Gemini (Google)">
+                                    <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro ⚡</option>
+                                    <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                                    <option value="gemini-2.5-flash">Gemini 2.5 Flash 🚀</option>
+                                </optgroup>
+                                <optgroup label="🔮 InsightDev API">
+                                    <option value="insightdev:anthropic:sonnet-4-5-20250929">Claude 4.5 Sonnet 🧠
+                                    </option>
+                                    <option value="insightdev:anthropic:opus-4.5">Claude Opus 4.5 💎</option>
+                                    <option value="insightdev:openai:gpt-5">GPT-5 🌟</option>
+                                    <option value="insightdev:openai:gpt-4.1">GPT-4.1</option>
+                                    <option value="insightdev:openai:gpt-4.1-mini">GPT-4.1 Mini 🚀</option>
+                                    <option value="insightdev:deepseek:deepseek-r1-0528">DeepSeek R1 🔬</option>
+                                    <option value="insightdev:gemini:gemini-2.5-pro">Gemini 2.5 Pro (via InsightDev)
+                                    </option>
+                                    <option value="insightdev:grok:grok-4">Grok 4 ⚡</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -411,9 +425,17 @@
                     </div>
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">API Key</label>
-                            <input type="password" id="apiKeyInput" placeholder="sk-..."
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">🌐 Gemini API Key</label>
+                            <input type="password" id="apiKeyInput" placeholder="AIza..."
                                 class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 outline-none text-sm font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">🔮 InsightDev API Key</label>
+                            <input type="password" id="insightdevApiKeyInput" placeholder="your-api-key"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 outline-none text-sm font-medium">
+                            <p class="text-xs text-slate-400 mt-1.5 flex items-center gap-1">Lấy key tại <a
+                                    href="https://insightdev.id.vn/" target="_blank"
+                                    class="text-indigo-500 hover:underline font-medium">insightdev.id.vn</a></p>
                         </div>
                         <button onclick="saveSettings()"
                             class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">Save
@@ -437,6 +459,7 @@
         // ============================================================
         const state = {
             apiKey: localStorage.getItem('seo_api_key') || 'AIzaSyC07z_iB_CJvtgm78yUvVBTFwtBhDlNwNg',
+            insightdevApiKey: localStorage.getItem('insightdev_api_key') || '',
             model: localStorage.getItem('seo_model') || 'gemini-3.1-pro-preview',
             mode: 'url', // 'url' | 'keyword'
             data: null,
@@ -600,8 +623,11 @@
 
         function toggleSettings() { views.settings.classList.toggle('hidden'); views.settings.classList.toggle('flex'); }
         function saveSettings() {
-            const key = document.getElementById('apiKeyInput').value.trim();
-            if (key) { state.apiKey = key; localStorage.setItem('seo_api_key', key); toggleSettings(); showToast('API Key saved!'); }
+            const geminiKey = document.getElementById('apiKeyInput').value.trim();
+            const insightdevKey = document.getElementById('insightdevApiKeyInput').value.trim();
+            if (geminiKey) { state.apiKey = geminiKey; localStorage.setItem('seo_api_key', geminiKey); }
+            if (insightdevKey) { state.insightdevApiKey = insightdevKey; localStorage.setItem('insightdev_api_key', insightdevKey); }
+            if (geminiKey || insightdevKey) { toggleSettings(); showToast('✅ API Keys saved!'); }
         }
         function resetApp() { switchView('input'); state.data = null; state.bannerBlob = null; document.getElementById('mainInput').value = ''; }
         function showToast(msg) {
@@ -622,9 +648,18 @@
         }
 
         // ============================================================
-        // AI API CALLS — Gemini 3.1 Pro Preview
+        // AI API CALLS — Multi-provider (Gemini + InsightDev)
         // ============================================================
         async function callAI(prompt) {
+            // Route to InsightDev API if model starts with 'insightdev:'
+            if (state.model.startsWith('insightdev:')) {
+                return await callInsightDevAI(prompt);
+            }
+            return await callGeminiAI(prompt);
+        }
+
+        // --- Gemini API (Google) ---
+        async function callGeminiAI(prompt) {
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${state.model}:generateContent?key=${state.apiKey}`;
 
             const response = await fetch(apiUrl, {
@@ -659,6 +694,59 @@
                 throw new Error(`Gemini không trả về nội dung (reason: ${blockReason || 'unknown'}). Vui lòng thử lại.`);
             }
 
+            return parseAIJson(raw);
+        }
+
+        // --- InsightDev API (OpenAI-compatible) ---
+        async function callInsightDevAI(prompt) {
+            if (!state.insightdevApiKey) {
+                throw new Error('Chưa cấu hình InsightDev API Key. Vào Settings để nhập key.');
+            }
+
+            const modelName = state.model.replace('insightdev:', '');
+
+            const response = await fetch('https://api.sv2.llm.ai.vn/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${state.insightdevApiKey}`
+                },
+                body: JSON.stringify({
+                    model: modelName,
+                    messages: [
+                        {
+                            role: 'system',
+                            content: 'You are a Senior SEO Content Specialist. Return ONLY valid JSON. All string values must be properly escaped. Do NOT use unescaped newlines or special characters inside JSON string values.'
+                        },
+                        {
+                            role: 'user',
+                            content: prompt
+                        }
+                    ],
+                    max_tokens: 16384,
+                    temperature: 0.2
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                const errMsg = errData?.error?.message || `HTTP ${response.status}`;
+                throw new Error(`InsightDev API Error: ${errMsg}`);
+            }
+
+            const data = await response.json();
+            const raw = data.choices?.[0]?.message?.content?.trim();
+
+            if (!raw) {
+                const finishReason = data.choices?.[0]?.finish_reason;
+                throw new Error(`InsightDev không trả về nội dung (reason: ${finishReason || 'unknown'}). Vui lòng thử lại.`);
+            }
+
+            return parseAIJson(raw);
+        }
+
+        // --- Shared JSON parser ---
+        function parseAIJson(raw) {
             try { return JSON.parse(raw); } catch (e1) {
                 const f = raw.indexOf('{'), l = raw.lastIndexOf('}');
                 if (f !== -1 && l !== -1) { try { return JSON.parse(raw.substring(f, l + 1)); } catch (e2) { } }
@@ -760,7 +848,14 @@ Output Format:
         async function handleAnalyze(e) {
             e.preventDefault();
             const input = document.getElementById('mainInput').value.trim();
-            if (!input || !state.apiKey) return;
+            if (!input) return;
+            // Validate correct API key exists for selected model
+            if (state.model.startsWith('insightdev:') && !state.insightdevApiKey) {
+                document.getElementById('errorText').textContent = 'Chưa cấu hình InsightDev API Key. Vào Settings để nhập key.';
+                document.getElementById('errorMsg').classList.remove('hidden');
+                return;
+            }
+            if (!state.model.startsWith('insightdev:') && !state.apiKey) return;
 
             switchView('loading');
             try {
@@ -944,7 +1039,8 @@ Output Format:
 
             lucide.createIcons();
             document.getElementById('apiKeyInput').value = state.apiKey;
-            if (!state.apiKey) toggleSettings();
+            document.getElementById('insightdevApiKeyInput').value = state.insightdevApiKey;
+            if (!state.apiKey && !state.insightdevApiKey) toggleSettings();
             document.getElementById('analyzeForm').addEventListener('submit', handleAnalyze);
 
             // Load categories for dropdown
