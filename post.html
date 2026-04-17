@@ -34,6 +34,101 @@
   <link rel="stylesheet" href="/css/style.css?v=1.4">
   <link rel="stylesheet" href="/css/animations.css?v=1.4">
   <link rel="stylesheet" href="/css/phosphor/style.css">
+  <style>
+    /* Post Layout: 2-column grid with sidebar TOC */
+    .post-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+      align-items: start;
+    }
+
+    .toc-sidebar {
+      position: sticky;
+      top: 90px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      padding: 20px;
+      border: 2px solid var(--color-border, #E5E7EB);
+      border-radius: 16px;
+      background: var(--color-white, #fff);
+      box-shadow: 4px 4px 0 var(--color-border, #E5E7EB);
+    }
+
+    .toc-sidebar h4 {
+      margin: 0 0 12px 0;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--color-black, #1F2937);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .toc-sidebar ol {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc-sidebar li {
+      margin: 2px 0;
+    }
+
+    .toc-sidebar a {
+      display: block;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: var(--color-gray, #6B7280);
+      text-decoration: none;
+      line-height: 1.4;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .toc-sidebar a:hover {
+      color: var(--color-primary, #22C55E);
+      background: rgba(34, 197, 94, 0.06);
+    }
+
+    .toc-sidebar a.active {
+      color: var(--color-primary, #22C55E);
+      background: rgba(34, 197, 94, 0.1);
+      border-left-color: var(--color-primary, #22C55E);
+      font-weight: 600;
+    }
+
+    .toc-sidebar a.toc-h3 {
+      padding-left: 22px;
+      font-size: 0.78rem;
+    }
+
+    .toc-sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .toc-sidebar::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 4px;
+    }
+
+    /* Responsive: collapse sidebar on mobile */
+    @media (max-width: 1024px) {
+      .post-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .toc-sidebar {
+        position: relative;
+        top: 0;
+        max-height: none;
+        margin-bottom: 24px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -108,10 +203,21 @@
     </div>
   </div>
 
-  <!-- Post Content -->
-  <article class="post-content" id="postContent">
-    <p style="text-align: center;">Đang tải nội dung...</p>
-  </article>
+  <!-- Post Content with Sidebar TOC -->
+  <div class="post-layout">
+    <!-- Sidebar TOC -->
+    <aside class="toc-sidebar" id="tocSidebar">
+      <h4>📑 Mục lục</h4>
+      <ol id="tocList">
+        <li style="color: var(--color-gray); font-size: 0.82rem;">Đang tải...</li>
+      </ol>
+    </aside>
+
+    <!-- Main Article -->
+    <article class="post-content" id="postContent">
+      <p style="text-align: center;">Đang tải nội dung...</p>
+    </article>
+  </div>
 
   <!-- Related Posts -->
   <section class="related-posts">

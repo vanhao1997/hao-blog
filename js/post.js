@@ -18,41 +18,67 @@
     }, { passive: true });
 })();
 
-// === Auto-generate Table of Contents ===
+// === Sidebar Table of Contents with Scroll Spy ===
 function generateTOC() {
     const content = document.getElementById('postContent');
-    if (!content) return;
+    const tocList = document.getElementById('tocList');
+    const tocSidebar = document.getElementById('tocSidebar');
+    if (!content || !tocList || !tocSidebar) return;
 
     const headings = content.querySelectorAll('h2, h3');
-    if (headings.length < 3) return; // Don't show TOC for short posts
+    if (headings.length < 2) {
+        // Hide sidebar for very short posts
+        tocSidebar.style.display = 'none';
+        const layout = document.querySelector('.post-layout');
+        if (layout) layout.style.gridTemplateColumns = '1fr';
+        return;
+    }
 
-    const tocHTML = `
-        <nav class="toc-container clay-card" style="margin-bottom: 32px; padding: 24px;">
-            <div class="toc-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="this.parentElement.classList.toggle('collapsed')">
-                <h4 style="margin: 0; font-size: 1rem; color: var(--color-black, #1F2937);">📑 Mục lục</h4>
-                <span class="toc-toggle" style="font-size: 1.2rem; transition: transform 0.3s;">▼</span>
-            </div>
-            <ol class="toc-list" style="margin-top: 12px; padding-left: 20px; list-style: none; counter-reset: toc;">
-                ${Array.from(headings).map((h, i) => {
+    // Build TOC links
+    tocList.innerHTML = Array.from(headings).map((h, i) => {
         const id = 'heading-' + i;
         h.id = id;
         const isH3 = h.tagName === 'H3';
-        return `<li style="margin: 6px 0; padding-left: ${isH3 ? '16px' : '0'};">
-                        <a href="#${id}" style="color: var(--color-gray, #6B7280); text-decoration: none; font-size: ${isH3 ? '0.85rem' : '0.9rem'}; font-weight: ${isH3 ? '400' : '500'}; line-height: 1.5; transition: color 0.2s;"
-                           onmouseover="this.style.color='var(--color-primary, #22C55E)'" onmouseout="this.style.color='var(--color-gray, #6B7280)'">
-                            ${h.textContent}
-                        </a>
-                    </li>`;
-    }).join('')}
-            </ol>
-        </nav>
-        <style>
-            .toc-container.collapsed .toc-list { display: none; }
-            .toc-container.collapsed .toc-toggle { transform: rotate(-90deg); }
-        </style>
-    `;
+        return `<li><a href="#${id}" class="${isH3 ? 'toc-h3' : ''}" data-toc-index="${i}">${h.textContent}</a></li>`;
+    }).join('');
 
-    content.insertAdjacentHTML('afterbegin', tocHTML);
+    // Smooth scroll on click
+    tocList.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.querySelector(link.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Update URL hash without jumping
+                history.replaceState(null, '', link.getAttribute('href'));
+            }
+        });
+    });
+
+    // Scroll Spy: highlight current section
+    const tocLinks = tocList.querySelectorAll('a');
+    let ticking = false;
+
+    function updateActiveLink() {
+        let current = 0;
+        headings.forEach((h, i) => {
+            if (h.getBoundingClientRect().top <= 120) current = i;
+        });
+        tocLinks.forEach(link => link.classList.remove('active'));
+        if (tocLinks[current]) {
+            tocLinks[current].classList.add('active');
+            // Scroll the sidebar to keep active link visible
+            tocLinks[current].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) { requestAnimationFrame(updateActiveLink); ticking = true; }
+    }, { passive: true });
+
+    // Initial highlight
+    updateActiveLink();
 }
 document.addEventListener('DOMContentLoaded', async () => {
     // Get slug from URL
