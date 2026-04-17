@@ -12,6 +12,8 @@ deployment:
     - /bin/cp -R tool/ $DEPLOYPATH
     - /bin/cp -R toolkit/ $DEPLOYPATH
     - /bin/cp -R uploads/ $DEPLOYPATH
+    - /bin/cp -R partials/ $DEPLOYPATH
     - /bin/cp manifest.json robots.txt sitemap.xml sw.js $DEPLOYPATH 2>/dev/null; true
     - if [ -d "$DEPLOYPATH/api_test" ]; then rm -rf "$DEPLOYPATH/api_test"; fi
+    - rm -f "$DEPLOYPATH/api/.env" 2>/dev/null; true
 

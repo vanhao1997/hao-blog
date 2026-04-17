@@ -68,7 +68,7 @@ switch($method) {
             // Filter Params
             $is_published = isset($_GET['is_published']) ? ($_GET['is_published'] === 'true') : null;
             $category_id = $_GET['category_id'] ?? null;
-            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $limit = isset($_GET['limit']) ? max(1, min((int)$_GET['limit'], 100)) : 10;
             
             $where = [];
             $p = [];
@@ -91,7 +91,7 @@ switch($method) {
                 $sql .= " WHERE " . implode(" AND ", $where);
             }
             
-            $sql .= " ORDER BY p.created_at DESC LIMIT $limit";
+            $sql .= " ORDER BY p.created_at DESC LIMIT " . (int)$limit;
             
             $stmt = $db->prepare($sql);
             $stmt->execute($p);

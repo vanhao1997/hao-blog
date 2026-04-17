@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Editor - Admin</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --editor-sidebar-width: 360px;
+        }
+
+        .editor-layout {
+            display: grid;
+            grid-template-columns: 1fr var(--editor-sidebar-width);
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+
+        .editor-topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 56px;
+            background: #fff;
+            border-bottom: 2px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .editor-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .editor-topbar-left a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .editor-topbar-left a:hover {
+            color: #1f2937;
+        }
+
+        .editor-topbar-center {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .autosave-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22C55E;
+            display: inline-block;
+        }
+
+        .autosave-dot.saving {
+            background: #F59E0B;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .editor-topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .editor-main {
+            padding: 80px 40px 40px;
+            max-width: 860px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .editor-title-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'DM Sans', sans-serif;
+            color: #0f172a;
+            background: transparent;
+            padding: 16px 0;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .editor-title-input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .editor-meta-bar {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .editor-meta-bar .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tox-tinymce {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+        }
+
+        /* Sidebar */
+        .editor-sidebar {
+            position: fixed;
+            top: 56px;
+            right: 0;
+            bottom: 0;
+            width: var(--editor-sidebar-width);
+            background: #fff;
+            border-left: 2px solid #e2e8f0;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-section h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .seo-preview {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .seo-preview-title {
+            color: #1a0dab;
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+
+        .seo-preview-url {
+            color: #006621;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+        }
+
+        .seo-preview-desc {
+            color: #545454;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .featured-image-preview {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            border: 2px dashed #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .featured-image-preview:hover {
+            border-color: #22C55E;
+        }
+
+        .featured-image-preview.has-image {
+            border-style: solid;
+            border-color: #e2e8f0;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color 0.2s;
+            background: #fff;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: #22C55E;
+            outline: none;
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border: 2px solid #1f2937;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-primary {
+            background: #22C55E;
+            color: #fff;
+            box-shadow: 3px 3px 0 #1f2937;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 3px 5px 0 #1f2937;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            box-shadow: none;
+        }
+
+        .btn-ghost:hover {
+            color: #1f2937;
+            background: #f1f5f9;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .char-count {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 1024px) {
+            .editor-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-sidebar {
+                position: static;
+                width: 100%;
+                border-left: none;
+                border-top: 2px solid #e2e8f0;
+            }
+
+            .editor-main {
+                padding: 72px 20px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="editor-topbar">
+        <div class="editor-topbar-left">
+            <a href="/admin/posts.html">← Quay lại</a>
+            <span style="color: #e2e8f0;">|</span>
+            <span id="editorStatus" style="color: #94a3b8; font-size: 0.85rem;">Draft</span>
+        </div>
+        <div class="editor-topbar-center">
+            <span class="autosave-dot" id="autosaveDot"></span>
+            <span id="autosaveText">Tự động lưu</span>
+        </div>
+        <div class="editor-topbar-right">
+            <button class="btn btn-ghost" id="btnPreview" onclick="previewPost()">👁️ Xem trước</button>
+            <button class="btn btn-secondary" id="btnSaveDraft" onclick="submitPost(false)">📝 Lưu nháp</button>
+            <button class="btn btn-primary" id="btnPublish" onclick="submitPost(true)">🚀 Xuất bản</button>
+        </div>
+    </div>
+
+    <div class="editor-layout">
+        <!-- Main Editor Area -->
+        <div class="editor-main">
+            <input type="hidden" id="postId">
+            <input type="text" id="postTitle" class="editor-title-input" placeholder="Tiêu đề bài viết..." autofocus>
+
+            <div class="editor-meta-bar">
+                <div class="meta-item">📝 <span id="wordCount">0</span> từ</div>
+                <div class="meta-item">⏱️ <span id="readTime">0 phút</span> đọc</div>
+                <div class="meta-item" id="lastSavedInfo">💾 Chưa lưu</div>
+            </div>
+
+            <!-- Markdown Import -->
+            <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: center;">
+                <button type="button" class="btn btn-ghost" style="font-size: 0.85rem;"
+                    onclick="document.getElementById('mdInput').click()">
+                    📥 Import Markdown
+                </button>
+                <input type="file" id="mdInput" accept=".md,.txt" style="display:none"
+                    onchange="handleMarkdownImport(this)">
+            </div>
+
+            <!-- TinyMCE Editor -->
+            <textarea id="postContent" style="min-height: 500px;"></textarea>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="editor-sidebar">
+            <!-- SEO Preview -->
+            <div class="sidebar-section">
+                <h4>🔍 SEO Preview</h4>
+                <div class="seo-preview">
+                    <div class="seo-preview-title" id="seoTitle">Tiêu đề bài viết</div>
+                    <div class="seo-preview-url" id="seoUrl">nguyenvanhao.name.vn/blog/<span id="seoSlug">slug</span>
+                    </div>
+                    <div class="seo-preview-desc" id="seoDesc">Mô tả ngắn sẽ hiển thị ở đây...</div>
+                </div>
+            </div>
+
+            <!-- Slug -->
+            <div class="sidebar-section">
+                <h4>🔗 URL (Slug)</h4>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input type="text" id="postSlug" class="form-input" placeholder="tu-dong-tao-tu-tieu-de">
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="sidebar-section">
+                <h4>📂 Danh mục</h4>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <select id="postCategory" class="form-select"></select>
+                </div>
+            </div>
+
+            <!-- Excerpt -->
+            <div class="sidebar-section">
+                <h4>📋 Mô tả ngắn (Excerpt)</h4>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <textarea id="postExcerpt" class="form-textarea" rows="3"
+                        placeholder="Mô tả ngắn cho SEO và listing..." maxlength="300"></textarea>
+                    <div class="char-count"><span id="excerptCount">0</span>/300</div>
+                </div>
+            </div>
+
+            <!-- Featured Image -->
+            <div class="sidebar-section">
+                <h4>🖼️ Ảnh đại diện</h4>
+                <div class="featured-image-preview" id="imagePreview"
+                    onclick="document.getElementById('imageUrlInput').focus()">
+                    📷 Nhấn để thêm ảnh
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <input type="url" id="imageUrlInput" class="form-input" placeholder="URL ảnh..."
+                        style="flex: 1; font-size: 0.8rem;">
+                    <button type="button" class="btn btn-secondary" onclick="openImagePicker()"
+                        style="white-space: nowrap; font-size: 0.8rem; padding: 8px 12px;">🖼️ Thư viện</button>
+                </div>
+            </div>
+
+            <!-- Publishing Options -->
+            <div class="sidebar-section">
+                <h4>📅 Xuất bản</h4>
+                <div class="form-group">
+                    <label class="form-label">Thời gian đọc</label>
+                    <input type="text" id="postReadTime" class="form-input" placeholder="5 phút đọc" value="">
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="sidebar-section" id="dangerZone" style="display: none;">
+                <h4 style="color: #EF4444;">⚠️ Nguy hiểm</h4>
+                <button class="btn" style="background: #FEE2E2; color: #EF4444; width: 100%; border-color: #EF4444;"
+                    onclick="deleteCurrentPost()">
+                    🗑️ Xóa bài viết
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Image Picker Modal (reused) -->
+    <div class="modal-overlay" id="imagePickerModal" style="z-index: 2000;">
+        <div class="modal" style="width: 95%; max-width: 1200px; height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 class="modal-title">Chọn ảnh từ thư viện</h3>
+                <button class="modal-close" onclick="closeImagePicker()">&times;</button>
+            </div>
+            <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 24px;">
+                <div class="image-grid" id="pickerImagesGrid"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+                    <p>Đang tải...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/core/utils.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/admin/js/admin.js?v=20260417"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.3.0/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        let currentPostId = null;
+        let autoSaveTimer = null;
+        let lastSavedContent = '';
+
+        // Initialize TinyMCE
+        tinymce.init({
+            selector: '#postContent',
+            plugins: 'table lists link image code wordcount autosave',
+            toolbar: 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright | bullist numlist outdent indent | table link image | code',
+            height: 600,
+            menubar: false,
+            statusbar: true,
+            branding: false,
+            promotion: false,
+            block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4; Preformatted=pre; Blockquote=blockquote',
+            content_style: `
+                body { 
+                    font-family: 'DM Sans', -apple-system, sans-serif; 
+                    font-size: 17px; color: #334155; line-height: 1.8;
+                    max-width: 780px; margin: 0 auto; padding: 20px;
+                }
+                h2, h3, h4 { color: #0f172a; margin-top: 28px; font-weight: 700; }
+                h2 { font-size: 1.6rem; }
+                h3 { font-size: 1.3rem; }
+                table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+                table td, table th { border: 1px solid #cbd5e1; padding: 12px; }
+                table th { background: #f1f5f9; font-weight: 600; }
+                ul, ol { padding-left: 24px; }
+                blockquote { border-left: 4px solid #6366f1; padding: 12px 16px; margin: 16px 0; color: #64748b; background: #f8fafc; border-radius: 0 8px 8px 0; }
+                img { max-width: 100%; height: auto; border-radius: 12px; }
+                a { color: #22C55E; }
+                code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+                pre { background: #1e293b; color: #e2e8f0; padding: 16px; border-radius: 8px; overflow-x: auto; }
+            `,
+            setup: function (editor) {
+                editor.on('change keyup', function () {
+                    editor.save();
+                    updateWordCount();
+                    updateSEOPreview();
+                    scheduleAutoSave();
+                });
+            }
+        });
+
+        // === Page Init ===
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            await loadCategoriesSelect();
+
+            // Check if editing an existing post
+            const params = new URLSearchParams(window.location.search);
+            const editId = params.get('id');
+            if (editId) {
+                await loadPostForEditing(editId);
+            }
+
+            // Live bindings
+            const titleInput = document.getElementById('postTitle');
+            const slugInput = document.getElementById('postSlug');
+            const excerptInput = document.getElementById('postExcerpt');
+            const imageInput = document.getElementById('imageUrlInput');
+
+            titleInput.addEventListener('input', () => {
+                if (!currentPostId || !slugInput.value) {
+                    slugInput.value = Utils.slugify(titleInput.value);
+                }
+                updateSEOPreview();
+                scheduleAutoSave();
+            });
+
+            slugInput.addEventListener('input', updateSEOPreview);
+
+            excerptInput.addEventListener('input', () => {
+                document.getElementById('excerptCount').textContent = excerptInput.value.length;
+                updateSEOPreview();
+                scheduleAutoSave();
+            });
+
+            imageInput.addEventListener('input', () => {
+                updateImagePreview(imageInput.value);
+            });
+
+            // Restore from auto-save
+            restoreAutoSave();
+        });
+
+        // === Load Post for Editing ===
+        async function loadPostForEditing(id) {
+            try {
+                const post = await API.getPost(id);
+                if (!post) { alert('Không tìm thấy bài viết.'); return; }
+
+                currentPostId = post.id;
+                document.getElementById('postId').value = post.id;
+                document.getElementById('postTitle').value = post.title;
+                document.getElementById('postSlug').value = post.slug;
+                document.getElementById('postCategory').value = post.category_id || '';
+                document.getElementById('postExcerpt').value = post.excerpt || '';
+                document.getElementById('imageUrlInput').value = post.featured_image || '';
+                document.getElementById('postReadTime').value = post.read_time || '';
+                document.getElementById('excerptCount').textContent = (post.excerpt || '').length;
+                document.getElementById('editorStatus').textContent = post.is_published ? 'Published' : 'Draft';
+                document.getElementById('dangerZone').style.display = 'block';
+
+                if (post.featured_image) updateImagePreview(post.featured_image);
+
+                // Wait for TinyMCE
+                const waitForEditor = setInterval(() => {
+                    if (tinymce.get('postContent')) {
+                        tinymce.get('postContent').setContent(post.content || '');
+                        clearInterval(waitForEditor);
+                        updateWordCount();
+                        updateSEOPreview();
+                        lastSavedContent = JSON.stringify(getPostData());
+                    }
+                }, 100);
+            } catch (e) {
+                console.error('Error loading post:', e);
+                showToast('Lỗi tải bài viết', 'error');
+            }
+        }
+
+        // === SEO Preview ===
+        function updateSEOPreview() {
+            const title = document.getElementById('postTitle').value || 'Tiêu đề bài viết';
+            const slug = document.getElementById('postSlug').value || 'slug';
+            const excerpt = document.getElementById('postExcerpt').value || 'Mô tả ngắn sẽ hiển thị ở đây...';
+
+            document.getElementById('seoTitle').textContent = title + ' - Nguyễn Văn Hảo Blog';
+            document.getElementById('seoSlug').textContent = slug;
+            document.getElementById('seoDesc').textContent = excerpt.substring(0, 160);
+        }
+
+        // === Word Count ===
+        function updateWordCount() {
+            const editor = tinymce.get('postContent');
+            if (!editor) return;
+            const text = editor.getContent({ format: 'text' }) || '';
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            document.getElementById('wordCount').textContent = words;
+            const minutes = Math.max(1, Math.ceil(words / 200));
+            document.getElementById('readTime').textContent = minutes + ' phút';
+            // Auto-fill read time if empty
+            const readTimeInput = document.getElementById('postReadTime');
+            if (!readTimeInput.value) readTimeInput.placeholder = minutes + ' phút đọc';
+        }
+
+        // === Image Preview ===
+        function updateImagePreview(url) {
+            const preview = document.getElementById('imagePreview');
+            if (url && url.trim()) {
+                preview.style.backgroundImage = `url('${url}')`;
+                preview.textContent = '';
+                preview.classList.add('has-image');
+            } else {
+                preview.style.backgroundImage = '';
+                preview.textContent = '📷 Nhấn để thêm ảnh';
+                preview.classList.remove('has-image');
+            }
+        }
+
+        // === Auto-Save (localStorage) ===
+        function scheduleAutoSave() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                const data = getPostData();
+                const serialized = JSON.stringify(data);
+                if (serialized !== lastSavedContent) {
+                    localStorage.setItem('editor_autosave', serialized);
+                    localStorage.setItem('editor_autosave_time', new Date().toISOString());
+                    document.getElementById('autosaveDot').classList.add('saving');
+                    setTimeout(() => document.getElementById('autosaveDot').classList.remove('saving'), 1000);
+                    document.getElementById('autosaveText').textContent = 'Đã lưu tự động';
+                    setTimeout(() => document.getElementById('autosaveText').textContent = 'Tự động lưu', 3000);
+                }
+            }, 5000); // Auto-save every 5 seconds of inactivity
+        }
+
+        function restoreAutoSave() {
+            const saved = localStorage.getItem('editor_autosave');
+            const savedTime = localStorage.getItem('editor_autosave_time');
+            if (saved && !currentPostId) {
+                const data = JSON.parse(saved);
+                if (data.title || data.content) {
+                    const timeStr = savedTime ? new Date(savedTime).toLocaleString('vi-VN') : '';
+                    if (confirm(`Phát hiện bản nháp chưa lưu${timeStr ? ' từ ' + timeStr : ''}. Khôi phục?`)) {
+                        document.getElementById('postTitle').value = data.title || '';
+                        document.getElementById('postSlug').value = data.slug || '';
+                        document.getElementById('postExcerpt').value = data.excerpt || '';
+                        document.getElementById('imageUrlInput').value = data.featured_image || '';
+                        if (data.featured_image) updateImagePreview(data.featured_image);
+                        if (data.category_id) document.getElementById('postCategory').value = data.category_id;
+
+                        const waitForEditor = setInterval(() => {
+                            if (tinymce.get('postContent')) {
+                                tinymce.get('postContent').setContent(data.content || '');
+                                clearInterval(waitForEditor);
+                                updateWordCount();
+                                updateSEOPreview();
+                            }
+                        }, 100);
+                    } else {
+                        localStorage.removeItem('editor_autosave');
+                        localStorage.removeItem('editor_autosave_time');
+                    }
+                }
+            }
+        }
+
+        // === Get Post Data ===
+        function getPostData() {
+            return {
+                id: document.getElementById('postId').value || null,
+                title: document.getElementById('postTitle').value,
+                slug: document.getElementById('postSlug').value || Utils.slugify(document.getElementById('postTitle').value),
+                excerpt: document.getElementById('postExcerpt').value,
+                content: tinymce.get('postContent') ? tinymce.get('postContent').getContent() : '',
+                featured_image: document.getElementById('imageUrlInput').value,
+                category_id: document.getElementById('postCategory').value,
+                read_time: document.getElementById('postReadTime').value || document.getElementById('readTime').textContent + ' đọc'
+            };
+        }
+
+        // === Submit Post ===
+        async function submitPost(isPublished) {
+            const btn = isPublished ? document.getElementById('btnPublish') : document.getElementById('btnSaveDraft');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Đang lưu...';
+
+            try {
+                const postData = getPostData();
+                postData.is_published = isPublished ? 1 : 0;
+                const result = await savePost(postData);
+
+                if (result.success) {
+                    showToast(isPublished ? '🚀 Đã xuất bản!' : '📝 Đã lưu nháp!', 'success');
+                    lastSavedContent = JSON.stringify(postData);
+                    localStorage.removeItem('editor_autosave');
+                    localStorage.removeItem('editor_autosave_time');
+                    document.getElementById('editorStatus').textContent = isPublished ? 'Published' : 'Draft';
+                    document.getElementById('lastSavedInfo').textContent = '💾 Đã lưu ' + new Date().toLocaleTimeString('vi-VN');
+                } else {
+                    showToast('Lỗi: ' + (result.error || 'Không xác định'), 'error');
+                }
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+        // === Preview ===
+        function previewPost() {
+            const slug = document.getElementById('postSlug').value;
+            if (slug) window.open('/blog/' + slug, '_blank');
+            else showToast('Cần có slug để xem trước', 'info');
+        }
+
+        // === Delete ===
+        async function deleteCurrentPost() {
+            if (!currentPostId) return;
+            if (!confirm('Bạn chắc chắn muốn xóa bài viết này? Không thể hoàn tác!')) return;
+            try {
+                await API.deletePost(currentPostId);
+                showToast('Đã xóa bài viết!', 'success');
+                setTimeout(() => window.location.href = '/admin/posts.html', 1000);
+            } catch (e) {
+                showToast('Lỗi xóa: ' + e.message, 'error');
+            }
+        }
+
+        // === Markdown Import ===
+        async function handleMarkdownImport(input) {
+            const file = input.files[0];
+            if (!file) return;
+            try {
+                const text = await file.text();
+                const html = marked.parse(text);
+                if (tinymce.get('postContent')) {
+                    tinymce.get('postContent').setContent(html);
+                    showToast('📥 Đã import từ Markdown!', 'success');
+                    updateWordCount();
+                    updateSEOPreview();
+                }
+            } catch (e) {
+                showToast('Lỗi đọc file: ' + e.message, 'error');
+            }
+            input.value = '';
+        }
+
+        // === Image Picker ===
+        function openImagePicker() {
+            document.getElementById('imagePickerModal').classList.add('active');
+            loadPickerImages();
+        }
+
+        function closeImagePicker() {
+            document.getElementById('imagePickerModal').classList.remove('active');
+        }
+
+        async function loadPickerImages() {
+            const grid = document.getElementById('pickerImagesGrid');
+            grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Đang tải ảnh...</p>';
+            try {
+                const response = await API.getImages();
+                let images = Array.isArray(response) ? response : (response?.data || []);
+                if (images.length === 0) {
+                    grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Chưa có ảnh nào.</p>';
+                    return;
+                }
+                grid.innerHTML = images.map(img => `
+                    <div class="image-card" onclick="selectPickerImage('${img.url}')"
+                        style="cursor:pointer; padding:4px; background:#fff; border:2px solid transparent; border-radius:8px; transition:all .2s;">
+                        <img src="${img.url}" alt="${img.alt_text || ''}" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:4px; display:block;">
+                    </div>
+                `).join('');
+                grid.querySelectorAll('.image-card').forEach(c => {
+                    c.addEventListener('mouseover', () => c.style.borderColor = '#22C55E');
+                    c.addEventListener('mouseout', () => c.style.borderColor = 'transparent');
+                });
+            } catch (e) {
+                grid.innerHTML = `<p style="color:red; grid-column:1/-1;">Lỗi: ${e.message}</p>`;
+            }
+        }
+
+        function selectPickerImage(url) {
+            document.getElementById('imageUrlInput').value = url;
+            updateImagePreview(url);
+            closeImagePicker();
+        }
+
+        // === Toast ===
+        function showToast(msg, type = 'info') {
+            if (typeof Components !== 'undefined') { Components.showToast(msg, type); return; }
+            const t = document.createElement('div');
+            t.textContent = msg;
+            Object.assign(t.style, {
+                position: 'fixed', bottom: '24px', right: '24px', zIndex: '99999',
+                padding: '14px 24px', borderRadius: '12px', color: '#fff', fontWeight: '500',
+                background: type === 'success' ? '#22C55E' : type === 'error' ? '#EF4444' : '#6366F1',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)', fontFamily: 'DM Sans,sans-serif'
+            });
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+    </script>
+</body>
+
+</html>

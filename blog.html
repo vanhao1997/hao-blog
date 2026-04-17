@@ -119,14 +119,26 @@
     <!-- Posts Section -->
     <section class="posts-section" id="posts" style="padding-top: var(--space-8);">
         <div class="container">
-            <!-- Filter Buttons -->
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-category="all">Tất cả</button>
-                <button class="filter-btn" data-category="digital-marketing">Digital Marketing</button>
-                <button class="filter-btn" data-category="ai">AI</button>
+            <!-- Search and Filter -->
+            <div class="blog-controls"
+                style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; align-items: center;">
+
+                <!-- Search Bar -->
+                <div class="search-container" style="width: 100%; max-width: 500px; position: relative;">
+                    <input type="text" id="searchInput" class="form-input" placeholder="Tìm kiếm bài viết..."
+                        style="width: 100%; padding: 12px 20px 12px 48px; border-radius: 99px; border: 2px solid #e2e8f0; font-family: var(--font-body); font-size: 1rem;">
+                    <span
+                        style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1.2rem;">🔍</span>
+                </div>
+
+                <!-- Filter Buttons -->
+                <div class="filter-buttons" style="margin-bottom: 0;">
+                    <button class="filter-btn active" data-category="all">Tất cả</button>
+                    <button class="filter-btn" data-category="digital-marketing">Digital Marketing</button>
+                    <button class="filter-btn" data-category="ai">AI</button>
+                </div>
             </div>
 
-            <!-- Posts Grid -->
             <!-- Posts Grid -->
             <div class="posts-grid" id="postsGrid">
                 <!-- Posts will be loaded here dynamically -->
@@ -210,11 +222,21 @@
         </div>
     </footer>
 
-    <!-- JavaScript -->
-    <!-- Supabase SDK & Custom Scripts -->
+    <!-- Core Modules -->
+    <script src="/js/core/utils.js"></script>
     <script src="/js/api.js"></script>
-    <script src="/js/blog.js?v=1.5"></script>
-    <script src="/js/main.js?v=1.4"></script>
+    <script src="/js/core/components.js"></script>
+
+    <!-- Feature Modules -->
+    <script src="/js/features/menu.js"></script>
+    <script src="/js/features/scroll.js"></script>
+    <script src="/js/features/modal.js"></script>
+
+    <!-- Page Controller -->
+    <script src="/js/blog.js?v=2.0"></script>
+
+    <!-- Main Init -->
+    <script src="/js/main.js?v=2.0"></script>
 </body>
 
 </html>

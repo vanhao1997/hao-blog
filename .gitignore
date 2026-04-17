@@ -1,6 +1,14 @@
 # Database dumps
 *.sql
 
+# Environment variables (NEVER commit)
+.env
+api/.env
+
+# Error logs
+error_log
+api/error_log
+
 # Node modules
 node_modules/
 
@@ -14,3 +22,4 @@ Thumbs.db
 
 # Agent brain (local only)
 .gemini/
+.antigravity/

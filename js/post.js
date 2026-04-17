@@ -1,26 +1,76 @@
+// Post Page Scripts (Refactored — uses core/utils.js + core/components.js)
+
+// === Reading Progress Bar ===
+(function initProgressBar() {
+    const bar = document.createElement('div');
+    bar.id = 'readingProgress';
+    Object.assign(bar.style, {
+        position: 'fixed', top: '0', left: '0', height: '3px', width: '0%',
+        background: 'linear-gradient(90deg, #22C55E, #6EE7B7)',
+        zIndex: '99999', transition: 'width 0.1s ease', borderRadius: '0 2px 2px 0'
+    });
+    document.body.appendChild(bar);
+
+    window.addEventListener('scroll', () => {
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrolled = (window.scrollY / docHeight) * 100;
+        bar.style.width = Math.min(scrolled, 100) + '%';
+    }, { passive: true });
+})();
+
+// === Auto-generate Table of Contents ===
+function generateTOC() {
+    const content = document.getElementById('postContent');
+    if (!content) return;
+
+    const headings = content.querySelectorAll('h2, h3');
+    if (headings.length < 3) return; // Don't show TOC for short posts
+
+    const tocHTML = `
+        <nav class="toc-container clay-card" style="margin-bottom: 32px; padding: 24px;">
+            <div class="toc-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="this.parentElement.classList.toggle('collapsed')">
+                <h4 style="margin: 0; font-size: 1rem; color: var(--color-black, #1F2937);">📑 Mục lục</h4>
+                <span class="toc-toggle" style="font-size: 1.2rem; transition: transform 0.3s;">▼</span>
+            </div>
+            <ol class="toc-list" style="margin-top: 12px; padding-left: 20px; list-style: none; counter-reset: toc;">
+                ${Array.from(headings).map((h, i) => {
+        const id = 'heading-' + i;
+        h.id = id;
+        const isH3 = h.tagName === 'H3';
+        return `<li style="margin: 6px 0; padding-left: ${isH3 ? '16px' : '0'};">
+                        <a href="#${id}" style="color: var(--color-gray, #6B7280); text-decoration: none; font-size: ${isH3 ? '0.85rem' : '0.9rem'}; font-weight: ${isH3 ? '400' : '500'}; line-height: 1.5; transition: color 0.2s;"
+                           onmouseover="this.style.color='var(--color-primary, #22C55E)'" onmouseout="this.style.color='var(--color-gray, #6B7280)'">
+                            ${h.textContent}
+                        </a>
+                    </li>`;
+    }).join('')}
+            </ol>
+        </nav>
+        <style>
+            .toc-container.collapsed .toc-list { display: none; }
+            .toc-container.collapsed .toc-toggle { transform: rotate(-90deg); }
+        </style>
+    `;
+
+    content.insertAdjacentHTML('afterbegin', tocHTML);
+}
 document.addEventListener('DOMContentLoaded', async () => {
     // Get slug from URL
     const urlParams = new URLSearchParams(window.location.search);
     let slug = urlParams.get('slug');
 
-    // Fallback: Try to get slug from path (e.g. /blog/my-slug)
+    // Fallback: path-based slug (e.g., /blog/my-slug via .htaccess)
     if (!slug) {
-        // Basic path parsing used in static setup if rewrite rules are not full
-        // If served via PHP/Apache, slug might be passed via query string or path info
-        // We will assume URL structure: /blog.html?slug=xyz OR /blog/xyz (handled by .htaccess)
-        // If .htaccess maps /blog/xyz -> /blog.html?slug=xyz, then 'slug' param is present.
         const path = window.location.pathname;
         const match = path.match(/\/blog\/([^/]+)/);
-        if (match && match[1]) {
-            slug = match[1];
-        }
+        if (match && match[1]) slug = match[1];
     }
 
     if (!slug) {
-        // If still no slug, maybe we are just on /blog.html? Not likely for post.js usage.
         console.error('No slug found in URL');
-        if (document.getElementById('postContent')) {
-            document.getElementById('postContent').innerHTML = '<div style="text-align:center; padding: 50px;"><h2>🔍 Không tìm thấy bài viết</h2><p>Xin vui lòng kiểm tra lại đường dẫn.</p><a href="/" class="btn btn-primary">Về trang chủ</a></div>';
+        const content = document.getElementById('postContent');
+        if (content) {
+            content.innerHTML = '<div style="text-align:center; padding: 50px;"><h2>🔍 Không tìm thấy bài viết</h2><p>Xin vui lòng kiểm tra lại đường dẫn.</p><a href="/" class="btn btn-primary">Về trang chủ</a></div>';
         }
         return;
     }
@@ -30,16 +80,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (post) {
             renderPost(post);
-            // Load related posts by category, excluding current post
-            if (post.category_id) {
-                loadRelatedPosts(post.category_id, post.id);
-            } else {
-                loadRelatedPosts(null, post.id); // Load any recent if no category
-            }
+            loadRelatedPosts(post.category_id || null, post.id);
         } else {
             document.getElementById('postContent').innerHTML = '<div style="text-align:center; padding: 50px;"><h2>🚫 Bài viết không tồn tại</h2><p>Có thể bài viết đã bị xóa hoặc đường dẫn không đúng.</p></div>';
         }
-
     } catch (err) {
         console.error('Error fetching post:', err);
         document.getElementById('postContent').innerHTML = '<p>Có lỗi xảy ra khi tải bài viết.</p>';
@@ -51,17 +95,11 @@ async function loadRelatedPosts(categoryId, currentPostId) {
     if (!grid) return;
 
     try {
-        const params = {
-            limit: 4,
-            is_published: true
-        };
-
+        const params = { limit: 4, is_published: true };
         if (categoryId) params.category_id = categoryId;
 
         const response = await API.getPosts(params);
         let posts = response.data || [];
-
-        // Filter out current post if API didn't do it (API doesn't have neq support in this simple version, do it in JS)
         posts = posts.filter(p => p.id != currentPostId).slice(0, 3);
 
         if (posts.length === 0) {
@@ -71,7 +109,8 @@ async function loadRelatedPosts(categoryId, currentPostId) {
 
         grid.innerHTML = '';
         posts.forEach(post => {
-            const card = createRelatedPostCard(post);
+            // Use shared component instead of local createRelatedPostCard
+            const card = Components.createPostCard(post, { style: 'related' });
             grid.appendChild(card);
         });
     } catch (error) {
@@ -80,58 +119,19 @@ async function loadRelatedPosts(categoryId, currentPostId) {
     }
 }
 
-function createRelatedPostCard(post) {
-    const a = document.createElement('a');
-    a.href = `/blog/${post.slug}`; // Clean URL
-    a.className = 'post-card-link-wrapper';
-
-    let imageHtml = '';
-    if (post.featured_image && post.featured_image.trim()) {
-        imageHtml = `<div class="post-card-image" style="background-image: url('${post.featured_image}'); background-size: cover; background-position: center; height: 150px;"></div>`;
-    } else {
-        imageHtml = `
-            <div class="post-card-image" 
-                style="background: linear-gradient(135deg, var(--color-blue) 0%, var(--color-mint) 100%); height: 150px; display: flex; align-items: center; justify-content: center;">
-                <span style="font-size: 3rem;">📄</span>
-            </div>
-        `;
-    }
-
-    a.innerHTML = `
-        <article class="clay-card post-card">
-            ${imageHtml}
-            <div class="post-card-body">
-                <span class="tag tag-${post.category_slug || 'default'}" style="font-size: 0.65rem;">${post.category_name || 'Blog'}</span>
-                <h3 class="post-card-title" style="font-size: 1rem; margin-top: 8px;">
-                    ${post.title}
-                </h3>
-                 <p class="post-card-excerpt"
-                    style="font-size: 0.9rem; margin-top: 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                    ${post.excerpt || ''}
-                </p>
-                <div class="post-card-footer" style="margin-top: 12px;">
-                    <span class="post-card-link">Đọc thêm →</span>
-                </div>
-            </div>
-        </article>
-    `;
-    return a;
-}
-
 function renderPost(post) {
     // Update Title
     document.title = `${post.title} - Nguyễn Văn Hảo Blog`;
     document.getElementById('postTitle').innerText = post.title;
 
-    // Update Meta
-    const date = new Date(post.published_at).toLocaleDateString('vi-VN');
+    // Update breadcrumb
+    const breadcrumb = document.getElementById('breadcrumbTitle');
+    if (breadcrumb) breadcrumb.textContent = post.title;
+
+    // Update Meta — use shared Utils.formatDate
+    const date = Utils.formatDate(post.published_at);
     document.getElementById('postDate').innerText = date;
     document.getElementById('postReadTime').innerText = post.read_time || '5 phút đọc';
-
-    // Author - Using static name for now as we don't have authors table populated or linked fully yet in API response beyond name
-    // My SQL schema did not have authors table instructions but post.js referenced it.
-    // The previous schema I generated uses `users` table but posts table description didn't link `author_id`.
-    // I assumed single author (Admin) for simplified migration.
     document.getElementById('postAuthor').innerText = 'Nguyễn Văn Hảo';
 
     // Category
@@ -155,7 +155,6 @@ function renderPost(post) {
         img.style.height = '100%';
         img.style.objectFit = 'cover';
         img.style.borderRadius = '24px';
-
         imgContainer.appendChild(img);
     }
 
@@ -163,20 +162,36 @@ function renderPost(post) {
     const contentEl = document.getElementById('postContent');
     contentEl.innerHTML = post.content;
 
-    // Append Author Card
-    const authorCard = `
+    // Generate Table of Contents
+    generateTOC();
+
+    // Author Card
+    contentEl.insertAdjacentHTML('beforeend', `
         <div class="clay-card author-card" style="margin-top: 40px;">
-            <div
-                style="width: 80px; height: 80px; background: var(--color-primary); border: 3px solid var(--color-black); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0;">
+            <div style="width: 80px; height: 80px; background: var(--color-primary); border: 3px solid var(--color-black); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0;">
                 👨‍💻
             </div>
             <div class="author-info">
                 <h4>Nguyễn Văn Hảo</h4>
-                <p>Digital Marketer với đam mê chia sẻ kiến thức về Performance Marketing, Facebook Ads, Social Media và
-                    Content Marketing.</p>
+                <p>Digital Marketer với đam mê chia sẻ kiến thức về Performance Marketing, Facebook Ads, Social Media và Content Marketing.</p>
             </div>
         </div>
-    `;
+    `);
 
-    contentEl.insertAdjacentHTML('beforeend', authorCard);
+    // Share buttons
+    const shareUrl = encodeURIComponent(window.location.href);
+    const shareTitle = encodeURIComponent(post.title);
+    contentEl.insertAdjacentHTML('beforeend', `
+        <div class="share-buttons" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="btn" style="background: #1877F2; color: #fff; border-color: var(--color-black);">
+                Facebook
+            </a>
+            <a href="https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}" target="_blank" class="btn" style="background: #1DA1F2; color: #fff; border-color: var(--color-black);">
+                Twitter
+            </a>
+            <button onclick="navigator.clipboard.writeText(window.location.href).then(()=>Components.showToast('Đã sao chép link!','success'))" class="btn" style="background: var(--color-mint); border-color: var(--color-black);">
+                📋 Sao chép link
+            </button>
+        </div>
+    `);
 }

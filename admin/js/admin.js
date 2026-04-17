@@ -267,7 +267,7 @@ async function editPost(id) {
     // User said "click edit then fields empty". exact behavior depends on HTML.
     // Checking posts.html would be wise. But assuming standard modal pattern from category example.
 
-    window.location.href = `/admin/post-editor.html?id=${id}`;
+    window.location.href = `/admin/editor.html?id=${id}`;
 }
 
 // Confirm Delete Post — shows styled confirmation popup
