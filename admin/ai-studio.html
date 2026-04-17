@@ -528,16 +528,21 @@
             bCtx.save(); bCtx.fillStyle = theme.cardBg; bCtx.strokeStyle = 'rgba(255,255,255,0.1)'; bCtx.lineWidth = 2;
             bCtx.beginPath(); bCtx.roundRect(margin, margin, cardW, cardH, 24); bCtx.fill(); bCtx.stroke(); bCtx.restore();
             // Category badge
-            const contentMargin = margin + 50, catText = categoryLabels[bCategory];
-            bCtx.font = 'bold 20px Raleway'; const catMetrics = bCtx.measureText(catText); const catPadX = 18, catPadY = 9, catX = contentMargin, catY = margin + 50;
+            // Use selected category name from dropdown if available
+            const contentMargin = margin + 50;
+            const selectedCatEl = document.getElementById('res-category');
+            const catText = (selectedCatEl && selectedCatEl.selectedIndex > 0)
+                ? selectedCatEl.options[selectedCatEl.selectedIndex].textContent.toUpperCase()
+                : categoryLabels[bCategory];
+            bCtx.font = 'bold 20px Inter, sans-serif'; const catMetrics = bCtx.measureText(catText); const catPadX = 18, catPadY = 9, catX = contentMargin, catY = margin + 50;
             const badgeGrad = bCtx.createLinearGradient(catX, catY, catX + catMetrics.width + catPadX * 2, catY); badgeGrad.addColorStop(0, theme.accentStart); badgeGrad.addColorStop(1, theme.accentEnd);
             bCtx.beginPath(); bCtx.roundRect(catX, catY, catMetrics.width + catPadX * 2, 20 + catPadY * 2, 8); bCtx.fillStyle = badgeGrad; bCtx.fill();
             bCtx.fillStyle = '#ffffff'; bCtx.textBaseline = 'top'; bCtx.textAlign = 'left'; bCtx.fillText(catText, catX + catPadX, catY + catPadY + 1);
             // Title
-            bCtx.font = '800 56px Raleway'; bCtx.fillStyle = theme.text; bCtx.textBaseline = 'top'; bCtx.textAlign = 'left';
+            bCtx.font = '800 56px Inter, sans-serif'; bCtx.fillStyle = theme.text; bCtx.textBaseline = 'top'; bCtx.textAlign = 'left';
             wrapBannerText(bCtx, bTitle, contentMargin, catY + 75, cardW - 100, 70, theme.text);
             // Footer
-            bCtx.font = '500 24px Raleway'; bCtx.fillStyle = theme.subText; bCtx.textBaseline = 'bottom'; bCtx.textAlign = 'left';
+            bCtx.font = '500 24px Inter, sans-serif'; bCtx.fillStyle = theme.subText; bCtx.textBaseline = 'bottom'; bCtx.textAlign = 'left';
             const footerY = h - margin - 40; bCtx.fillText('nguyenvanhao.name.vn', contentMargin, footerY);
             bCtx.beginPath(); bCtx.strokeStyle = theme.accentStart; bCtx.lineWidth = 3; bCtx.moveTo(contentMargin, footerY + 8); bCtx.lineTo(contentMargin + 100, footerY + 8); bCtx.stroke();
         }
@@ -599,6 +604,7 @@
         // ============================================================
         const providerModels = {
             gemini: [
+                { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro (Mạnh nhất)' },
                 { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash (Free ⭐ Khuyên dùng)' },
                 { value: 'gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash Lite (Free Nhanh)' },
             ],
@@ -886,36 +892,37 @@ Source Content:
 ${urlOrText.substring(0, 30000)}
 ---
 
-## SEO Requirements (MANDATORY):
-1. **Title Tag**: 55-65 characters. Must contain main keyword near the beginning. Use power words.
-2. **Meta Description**: 145-160 characters. Include main keyword + clear CTA.
-3. **Keywords**: Return 5-8 LSI keywords relevant to the topic.
-4. **Article Structure**:
-   - Start with a compelling intro (2-3 sentences hooking the reader)
-   - Use **H2 headings** that contain target keywords (5-8 H2s)
-   - Use **H3 sub-headings** for detailed breakdowns under H2s
-   - Include **bold** for important terms
-   - Ensure the article feels 100% original and authoritative.
-   - Include at least 1 **numbered/bullet list** of actionable items
-   - End with "## Câu hỏi thường gặp (FAQ)" section with 3-5 Q&A pairs (### format)
-   - Do NOT add a Table of Contents (it is auto-generated).
+## SEO Requirements (MANDATORY — the generated article MUST score 80+/100 on SEO analysis):
+1. **Title Tag**: 55-65 characters. Main keyword MUST appear near the beginning. Use power words (Hướng dẫn, Chiến lược, Bí quyết, Top, etc.).
+2. **Meta Description**: 145-160 characters. MUST include main keyword + clear CTA.
+3. **Keywords**: Return 5-8 LSI keywords. The FIRST keyword is the main keyword.
+4. **Article Structure (ALL items are REQUIRED)**:
+   - Start with a compelling intro paragraph (2-3 sentences). The MAIN KEYWORD must appear in the first paragraph.
+   - Use **H2 headings** (5-8 H2s). At least ONE H2 must contain the main keyword.
+   - Use **H3 sub-headings** under H2s (at least 3 H3s total).
+   - Include **bold** for important terms and key phrases.
+   - Include at least 1 comparison **table** using markdown table format (with | and ---).
+   - Include at least 1 **numbered list** or **bullet list** with 3+ items of actionable tips.
+   - MUST end with "## Câu hỏi thường gặp (FAQ)" section containing 3-5 Q&A pairs, each question as ### heading.
+   - Do NOT add a Table of Contents section (it is auto-generated by the system).
 5. **Content Quality**:
    - Write in natural, engaging Vietnamese. Avoid robotic, direct translation tone.
-   - Expand on the source information where useful.
+   - Each H2 section should be 150-300 words with practical examples.
+   - Use transition words between sections.
 6. **Constraints**:
    - Strictly NO mention of the original source brand name or competitors.
    - NO external text links to the original site.
    - DO NOT use citation symbols [1], [2],..
    - DO NOT write self-referencing sentences ("Bài viết này...").
-7. **LENGTH**: Minimum 1500 words. Deep, comprehensive, information-rich.
-8. **Clean Output**: Return ONLY valid raw JSON without any markdown formatting wrappers like \`\`\`json. The AI must strictly output the JSON.
+7. **LENGTH**: Minimum 2000 words. Deep, comprehensive, information-rich.
+8. **Clean Output**: Return ONLY valid raw JSON without any markdown formatting wrappers like \`\`\`json.
 
 Output Format:
 {
-  "seo_title": "string",
-  "meta_description": "string",
-  "keywords": ["kw1", "kw2"],
-  "content_markdown": "Full markdown content"
+  "seo_title": "55-65 char title with main keyword at beginning",
+  "meta_description": "145-160 char with main keyword + CTA",
+  "keywords": ["main keyword", "lsi1", "lsi2", "lsi3", "lsi4", "lsi5"],
+  "content_markdown": "Full SEO-optimized article in Markdown. MUST include: H2 with keyword, H3 sub-headings, comparison table, bullet/numbered list, FAQ section."
 }`;
         }
 
@@ -924,20 +931,20 @@ Output Format:
 Role: Senior SEO Content Specialist & Expert Writer focused on the Vietnamese market.
 Task: Write a top-ranking, original SEO blog post about "${keyword}" for "nguyenvanhao.name.vn".
 
-## SEO Requirements (MANDATORY):
-1. **Title Tag**: 55-65 characters. "${keyword}" must appear near the beginning. Use power words (Hướng dẫn, Chiến lược, Bí quyết, Top, etc.).
-2. **Meta Description**: 145-160 characters. Include "${keyword}" + clear value proposition.
-3. **Keywords**: Return the main keyword + 5-7 LSI/related keywords.
-4. **Article Structure**:
-   - Start with a compelling intro (2-3 sentences, mention "${keyword}" naturally in first paragraph)
-   - Use **Table of Contents** at top: "## Nội dung bài viết" with numbered markdown links
-   - Use **H2 headings** that strategically include "${keyword}" or variations (5-8 H2s)
-   - Use **H3 sub-headings** for deeper breakdowns
-   - Use **bold** for important terms/phrases that support SEO
-   - Include at least 1 **comparison table** (markdown table)
-   - Include at least 1 **numbered/bullet list** of actionable tips
-   - End with "## Câu hỏi thường gặp (FAQ)" — 3-5 Q&A pairs, each question as ### heading
+## SEO Requirements (MANDATORY — the generated article MUST score 80+/100 on SEO analysis):
+1. **Title Tag**: 55-65 characters. "${keyword}" MUST appear near the beginning. Use power words (Hướng dẫn, Chiến lược, Bí quyết, Top, etc.).
+2. **Meta Description**: 145-160 characters. MUST include "${keyword}" + clear value proposition.
+3. **Keywords**: Return the main keyword + 5-7 LSI/related keywords. The FIRST keyword is the main keyword.
+4. **Article Structure (ALL items are REQUIRED)**:
+   - Start with a compelling intro (2-3 sentences, mention "${keyword}" naturally in the first paragraph)
+   - Use **H2 headings** that strategically include "${keyword}" or variations (5-8 H2s). At least ONE H2 must contain "${keyword}".
+   - Use **H3 sub-headings** for deeper breakdowns (at least 3 H3s total).
+   - Use **bold** for important terms/phrases that support SEO.
+   - Include at least 1 **comparison table** using markdown table format (with | and ---).
+   - Include at least 1 **numbered/bullet list** with 3+ items of actionable tips.
+   - MUST end with "## Câu hỏi thường gặp (FAQ)" — 3-5 Q&A pairs, each question as ### heading.
    - End with conclusion + CTA.
+   - Do NOT add a Table of Contents (it is auto-generated by the system).
 5. **Content Quality**:
    - 100% original, authoritative, well-researched.
    - Natural Vietnamese, professional but approachable.
@@ -949,7 +956,7 @@ Task: Write a top-ranking, original SEO blog post about "${keyword}" for "nguyen
    - DO NOT write word count summaries.
    - DO NOT write self-referencing sentences ("Bài viết này...").
 7. **LENGTH**: 2000-2500 words minimum. Deep, comprehensive, information-rich.
-8. **Clean Output**: Return ONLY valid raw JSON without any markdown formatting wrappers like \`\`\`json. The AI must strictly output the JSON.
+8. **Clean Output**: Return ONLY valid raw JSON without any markdown formatting wrappers like \`\`\`json.
 
 Output Format:
 {
