@@ -185,7 +185,6 @@ function renderPost(post) {
         img.style.width = '100%';
         img.style.height = '100%';
         img.style.objectFit = 'cover';
-        img.style.borderRadius = '24px';
         imgContainer.appendChild(img);
     }
 
