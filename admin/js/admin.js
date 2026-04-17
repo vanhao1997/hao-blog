@@ -595,3 +595,11 @@ window.slugify = slugify;
 window.prettifyFilename = prettifyFilename;
 window.copyImageLink = copyImageLink;
 window.showToast = showToast;
+
+// Global HTML escape helper
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+}
+window.escapeHtml = escapeHtml;

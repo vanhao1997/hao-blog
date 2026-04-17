@@ -278,14 +278,14 @@
 
             grid.innerHTML = images.map(img => `
                 <div class="image-card">
-                    <div class="image-preview" style="background-image: url('${img.url}')"></div>
-                    <div class="image-info">
-                        <p class="image-name" title="${escapeHtml(img.filename || '')}">${escapeHtml((img.filename || '').substring(0, 30))}</p>
-                        <p class="image-alt">${escapeHtml(img.alt_text || 'Chưa có alt text')}</p>
-                    </div>
-                    <div class="image-actions">
-                        <button onclick="copyImageUrl('${img.url}')" title="Copy URL" style="font-size:0.8rem;background:#6366f1;color:#fff;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;">📋 Copy</button>
-                        <button onclick="confirmDeleteImage('${img.id}')" title="Xóa" style="font-size:0.8rem;background:#ef4444;color:#fff;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;">🗑️ Xóa</button>
+                    <img src="${img.url}" alt="${escapeHtml(img.alt_text || img.filename || '')}" loading="lazy">
+                    <div class="image-card-info" style="padding: 12px;">
+                        <p style="font-weight: 600; font-size: 0.85rem; color: #334155; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(img.filename || '')}">${escapeHtml((img.filename || '').substring(0, 35))}</p>
+                        <p style="font-size: 0.78rem; color: #94a3b8; margin: 0 0 8px;">${escapeHtml(img.alt_text || 'Chưa có alt text')}</p>
+                        <div style="display: flex; gap: 6px;">
+                            <button onclick="copyImageUrl('${img.url}')" style="font-size:0.78rem;background:#6366f1;color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;">📋 Copy</button>
+                            <button onclick="confirmDeleteImage('${img.id}')" style="font-size:0.78rem;background:#ef4444;color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;">🗑️ Xóa</button>
+                        </div>
                     </div>
                 </div>
             `).join('');
