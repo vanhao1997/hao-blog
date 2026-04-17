@@ -157,7 +157,12 @@ function renderPost(post) {
     // Update Meta — use shared Utils.formatDate
     const date = Utils.formatDate(post.published_at);
     document.getElementById('postDate').innerText = date;
-    document.getElementById('postReadTime').innerText = post.read_time || '5 phút đọc';
+
+    // Auto Reading Time: ~200 words/min for Vietnamese
+    const plainText = (post.content || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const wordCount = plainText.split(/\s+/).filter(w => w.length > 0).length;
+    const readMinutes = Math.max(1, Math.ceil(wordCount / 200));
+    document.getElementById('postReadTime').innerText = `${readMinutes} phút đọc`;
     document.getElementById('postAuthor').innerText = 'Nguyễn Văn Hảo';
 
     // Category
@@ -203,4 +208,45 @@ function renderPost(post) {
             </div>
         </div>
     `);
+
+    // Lazy Loading: add loading="lazy" to all content images
+    contentEl.querySelectorAll('img').forEach(img => {
+        img.setAttribute('loading', 'lazy');
+        if (!img.alt) img.alt = post.title;
+    });
+
+    // JSON-LD Breadcrumb Schema for SEO
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Trang chủ", "item": "https://nguyenvanhao.name.vn/" },
+            { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://nguyenvanhao.name.vn/blog" },
+            { "@type": "ListItem", "position": 3, "name": post.title, "item": `https://nguyenvanhao.name.vn/blog/${post.slug}` }
+        ]
+    };
+    const schemaScript = document.createElement('script');
+    schemaScript.type = 'application/ld+json';
+    schemaScript.textContent = JSON.stringify(breadcrumbSchema);
+    document.head.appendChild(schemaScript);
+
+    // Article Schema for SEO
+    const articleSchema = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "description": post.excerpt || '',
+        "image": post.featured_image || 'https://nguyenvanhao.name.vn/images/og-cover.png',
+        "author": { "@type": "Person", "name": "Nguyễn Văn Hảo" },
+        "publisher": { "@type": "Organization", "name": "Nguyễn Văn Hảo Blog" },
+        "datePublished": post.published_at,
+        "dateModified": post.updated_at || post.published_at,
+        "mainEntityOfPage": `https://nguyenvanhao.name.vn/blog/${post.slug}`,
+        "wordCount": wordCount,
+        "timeRequired": `PT${readMinutes}M`
+    };
+    const articleSchemaScript = document.createElement('script');
+    articleSchemaScript.type = 'application/ld+json';
+    articleSchemaScript.textContent = JSON.stringify(articleSchema);
+    document.head.appendChild(articleSchemaScript);
 }

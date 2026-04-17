@@ -68,7 +68,7 @@ switch($method) {
             // Filter Params
             $is_published = isset($_GET['is_published']) ? ($_GET['is_published'] === 'true') : null;
             $category_id = $_GET['category_id'] ?? null;
-            $limit = isset($_GET['limit']) ? max(1, min((int)$_GET['limit'], 100)) : 10;
+            $limit = isset($_GET['limit']) ? max(1, min((int)$_GET['limit'], 500)) : 10;
             
             $where = [];
             $p = [];
@@ -81,6 +81,11 @@ switch($method) {
             if ($category_id) {
                 $where[] = "p.category_id = ?";
                 $p[] = $category_id;
+            }
+
+            // For public queries, also publish scheduled posts whose time has arrived
+            if ($is_published) {
+                $db->exec("UPDATE posts SET is_published = 1, published_at = scheduled_at WHERE is_published = 0 AND scheduled_at IS NOT NULL AND scheduled_at <= NOW()");
             }
             
             $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug, c.color as category_color 
@@ -111,15 +116,67 @@ switch($method) {
 
         $data = json_decode(file_get_contents("php://input"));
 
+        // ===== BULK ACTIONS =====
+        if (isset($data->action) && isset($data->ids) && is_array($data->ids)) {
+            $ids = array_map('intval', $data->ids);
+            if (count($ids) === 0) {
+                http_response_code(400);
+                echo json_encode(["error" => "No IDs provided"]);
+                exit;
+            }
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            
+            try {
+                switch ($data->action) {
+                    case 'delete':
+                        $stmt = $db->prepare("DELETE FROM posts WHERE id IN ($placeholders)");
+                        $stmt->execute($ids);
+                        echo json_encode(["success" => true, "message" => "Deleted " . $stmt->rowCount() . " posts"]);
+                        break;
+                    case 'publish':
+                        $stmt = $db->prepare("UPDATE posts SET is_published = 1, published_at = COALESCE(published_at, NOW()), updated_at = NOW() WHERE id IN ($placeholders)");
+                        $stmt->execute($ids);
+                        echo json_encode(["success" => true, "message" => "Published " . $stmt->rowCount() . " posts"]);
+                        break;
+                    case 'unpublish':
+                        $stmt = $db->prepare("UPDATE posts SET is_published = 0, updated_at = NOW() WHERE id IN ($placeholders)");
+                        $stmt->execute($ids);
+                        echo json_encode(["success" => true, "message" => "Unpublished " . $stmt->rowCount() . " posts"]);
+                        break;
+                    default:
+                        http_response_code(400);
+                        echo json_encode(["error" => "Unknown action: " . $data->action]);
+                }
+            } catch(PDOException $e) {
+                http_response_code(500);
+                echo json_encode(["error" => $e->getMessage()]);
+            }
+            exit;
+        }
+
+        // ===== CREATE POST =====
         if (!empty($data->title)) {
             try {
-                $query = "INSERT INTO posts (title, slug, excerpt, content, featured_image, category_id, is_published, read_time, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $query = "INSERT INTO posts (title, slug, excerpt, content, featured_image, category_id, is_published, read_time, published_at, scheduled_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt = $db->prepare($query);
                 
                 $baseSlug = $data->slug ?? strtolower(str_replace(' ', '-', $data->title));
                 $slug = generateUniqueSlug($db, $baseSlug);
-                $published_at = $data->is_published ? date('Y-m-d H:i:s') : null;
-                // Convert empty category_id to null to avoid FK constraint violation
+                
+                // Handle scheduling
+                $scheduled_at = null;
+                $is_published = $data->is_published ? 1 : 0;
+                $published_at = null;
+
+                if (!empty($data->scheduled_at)) {
+                    // Schedule for future — save as draft with scheduled_at set
+                    $scheduled_at = $data->scheduled_at;
+                    $is_published = 0;
+                    $published_at = null;
+                } elseif ($data->is_published) {
+                    $published_at = date('Y-m-d H:i:s');
+                }
+
                 $categoryId = (!empty($data->category_id)) ? $data->category_id : null;
 
                 $stmt->execute([
@@ -129,11 +186,13 @@ switch($method) {
                     $data->content ?? '',
                     $data->featured_image ?? '',
                     $categoryId,
-                    $data->is_published ? 1 : 0,
+                    $is_published,
                     $data->read_time ?? '5 phút đọc',
-                    $published_at
+                    $published_at,
+                    $scheduled_at
                 ]);
-                echo json_encode(["success" => true, "message" => "Post created"]);
+                $newId = $db->lastInsertId();
+                echo json_encode(["success" => true, "message" => "Post created", "id" => $newId, "slug" => $slug]);
             } catch(PDOException $e) {
                 http_response_code(500);
                 echo json_encode(["error" => $e->getMessage()]);
@@ -165,7 +224,6 @@ switch($method) {
                 if (isset($data->title)) { $fields[] = "title = ?"; $params[] = $data->title; }
                 if (isset($data->slug)) { 
                     $fields[] = "slug = ?"; 
-                    // Verify uniqueness even on update
                     $params[] = generateUniqueSlug($db, $data->slug, $updateId); 
                 }
                 if (isset($data->excerpt)) { $fields[] = "excerpt = ?"; $params[] = $data->excerpt; }
@@ -176,11 +234,21 @@ switch($method) {
                     $fields[] = "is_published = ?"; 
                     $params[] = $data->is_published ? 1 : 0; 
                     if ($data->is_published) {
-                        $fields[] = "published_at = ?";
-                        $params[] = date('Y-m-d H:i:s');
+                        $fields[] = "published_at = COALESCE(published_at, NOW())";
+                        // Clear schedule if publishing now
+                        $fields[] = "scheduled_at = NULL";
                     }
                 }
                 if (isset($data->read_time)) { $fields[] = "read_time = ?"; $params[] = $data->read_time; }
+                if (isset($data->scheduled_at)) {
+                    if ($data->scheduled_at) {
+                        $fields[] = "scheduled_at = ?"; $params[] = $data->scheduled_at;
+                        // If scheduling, set as draft
+                        $fields[] = "is_published = 0";
+                    } else {
+                        $fields[] = "scheduled_at = NULL";
+                    }
+                }
 
                 $fields[] = "updated_at = NOW()";
 

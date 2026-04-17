@@ -188,6 +188,7 @@
             <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
             <a href="/admin/ai-studio.html" class="nav-item active">🤖 AI Studio</a>
             <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
+            <a href="/admin/tools.html" class="nav-item">🧰 Công cụ</a>
             <div class="nav-divider"></div>
             <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
             <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
@@ -415,7 +416,14 @@
                             <div class="text-xs text-slate-400 font-mono">Markdown Preview</div>
                         </div>
                         <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
-                            <div id="res-content" class="prose prose-slate max-w-none"></div>
+                            <div
+                                class="mb-3 px-2 py-1.5 bg-amber-50 border border-amber-200 rounded-md flex items-center gap-2 text-xs text-amber-700 font-medium">
+                                <span>✏️</span> Bạn có thể chỉnh sửa trực tiếp nội dung bên dưới trước khi đăng bài
+                            </div>
+                            <div id="res-content" class="prose prose-slate max-w-none" contenteditable="true"
+                                style="outline: none; min-height: 200px; border: 1px dashed transparent; border-radius: 8px; padding: 4px; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#818cf8'"
+                                onblur="this.style.borderColor='transparent'"></div>
                         </div>
                     </div>
                 </div>
@@ -609,7 +617,7 @@
             for (let k = 0; k < lines.length; k++) ctx.fillText(lines[k], x, y + k * lineH);
         }
 
-        function shuffleBanner() { randomizeBanner(); drawBanner(); }
+        async function shuffleBanner() { randomizeBanner(); await drawBanner(); }
 
         function detectCategory(title) {
             const lower = (title || '').toLowerCase();
@@ -1309,7 +1317,10 @@ Output Format:
             try {
                 let bannerUrl = '';
 
-                // 1. Upload banner
+                // 1. Re-render banner fresh to ensure blob is up-to-date
+                await drawBanner();
+
+                // 2. Upload banner
                 if (state.bannerBlob) {
                     const formData = new FormData();
                     const slug = slugify(state.data.seo_title || 'untitled');

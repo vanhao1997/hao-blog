@@ -13,10 +13,56 @@
     <!-- Marked JS for Markdown Support -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* TinyMCE Fixes if needed */
         .tox-tinymce {
             border-radius: 8px !important;
             border: 1px solid #e2e8f0 !important;
+        }
+
+        .bulk-bar {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .bulk-bar.visible {
+            display: flex;
+        }
+
+        .bulk-bar .bulk-count {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.9rem;
+        }
+
+        .bulk-bar .btn {
+            font-size: 0.8rem;
+            padding: 6px 14px;
+        }
+
+        .cb-cell {
+            width: 36px;
+            text-align: center;
+        }
+
+        .cb-cell input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #22C55E;
+        }
+
+        .badge-scheduled {
+            background: #818cf8;
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -33,6 +79,7 @@
                 <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
                 <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
                 <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
+                <a href="/admin/tools.html" class="nav-item">🧰 Công cụ</a>
                 <div class="nav-divider"></div>
                 <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
                 <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
@@ -47,10 +94,21 @@
             </header>
 
             <div class="admin-content">
+                <div class="bulk-bar" id="bulkBar">
+                    <span class="bulk-count"><span id="bulkCount">0</span> bài đã chọn</span>
+                    <button class="btn btn-secondary" onclick="bulkAction('publish')">✅ Xuất bản</button>
+                    <button class="btn btn-secondary" onclick="bulkAction('unpublish')">📄 Gỡ xuất bản</button>
+                    <button class="btn" style="background:#ef4444;color:#fff;" onclick="bulkAction('delete')">🗑️
+                        Xóa</button>
+                    <button class="btn btn-secondary" onclick="clearSelection()" style="margin-left:auto;">✕ Bỏ
+                        chọn</button>
+                </div>
                 <div class="card">
                     <table class="data-table">
                         <thead>
                             <tr>
+                                <th class="cb-cell"><input type="checkbox" id="selectAll"
+                                        onchange="toggleSelectAll(this)"></th>
                                 <th>Tiêu đề</th>
                                 <th>Danh mục</th>
                                 <th>Trạng thái</th>
@@ -60,7 +118,7 @@
                         </thead>
                         <tbody id="postsTable">
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 40px;">Đang tải...</td>
+                                <td colspan="6" style="text-align: center; padding: 40px;">Đang tải...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -120,10 +178,19 @@
                                 ảnh</button>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">⏰ Hẹn giờ đăng bài (tùy chọn)</label>
+                        <input type="datetime-local" id="postSchedule" class="form-input">
+                        <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">Nếu đặt thời gian, bài viết sẽ tự
+                            động xuất bản khi đến giờ.</p>
+                    </div>
                     <div class="form-actions" style="display: flex; gap: 12px; margin-top: 24px;">
                         <button type="button" class="btn btn-secondary" id="btnSaveDraft" onclick="submitPost(false)"
                             style="flex: 1;">📝
                             Lưu nháp</button>
+                        <button type="button" class="btn" id="btnSchedule" onclick="submitScheduled()"
+                            style="flex: 1; background: #818cf8; color: #fff;">⏰
+                            Hẹn giờ</button>
                         <button type="button" class="btn btn-primary" id="btnPublish" onclick="submitPost(true)"
                             style="flex: 1;">🚀
                             Xuất bản</button>
@@ -354,6 +421,94 @@
             document.getElementById('postImage').value = url;
             closeImagePicker();
         }
+
+        // === Schedule Post ===
+        async function submitScheduled() {
+            const scheduleInput = document.getElementById('postSchedule');
+            if (!scheduleInput || !scheduleInput.value) {
+                showToast('⏰ Vui lòng chọn thời gian hẹn giờ trước!', 'error');
+                return;
+            }
+            const btn = document.getElementById('btnSchedule');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true; btn.innerHTML = '⏳ Đang lên lịch...';
+
+            try {
+                const postId = document.getElementById('postId').value || null;
+                const postData = {
+                    id: postId,
+                    title: document.getElementById('postTitle').value,
+                    slug: document.getElementById('postSlug').value || slugify(document.getElementById('postTitle').value),
+                    excerpt: document.getElementById('postExcerpt').value,
+                    content: tinymce.get('postContent') ? tinymce.get('postContent').getContent() : document.getElementById('postContent').value,
+                    featured_image: document.getElementById('postImage').value,
+                    category_id: document.getElementById('postCategory').value,
+                    is_published: 0,
+                    scheduled_at: scheduleInput.value
+                };
+
+                const result = await savePost(postData);
+                if (result.success) {
+                    showToast('⏰ Đã hẹn giờ đăng bài thành công!', 'success');
+                    closeModal();
+                    await loadAllPosts();
+                }
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false; btn.innerHTML = originalHTML;
+            }
+        }
+
+        // === Bulk Actions ===
+        function toggleSelectAll(master) {
+            document.querySelectorAll('.post-cb').forEach(cb => cb.checked = master.checked);
+            updateBulkBar();
+        }
+
+        function updateBulkBar() {
+            const checked = document.querySelectorAll('.post-cb:checked');
+            const bar = document.getElementById('bulkBar');
+            const countEl = document.getElementById('bulkCount');
+            if (checked.length > 0) {
+                bar.classList.add('visible');
+                countEl.textContent = checked.length;
+            } else {
+                bar.classList.remove('visible');
+            }
+        }
+
+        async function bulkAction(action) {
+            const checked = document.querySelectorAll('.post-cb:checked');
+            const ids = Array.from(checked).map(cb => cb.value);
+            if (ids.length === 0) return;
+
+            const labels = { delete: 'xóa', publish: 'xuất bản', unpublish: 'gỡ xuất bản' };
+            if (action === 'delete' && !confirm(`Bạn có chắc muốn xóa ${ids.length} bài viết?`)) return;
+
+            try {
+                const result = await API.bulkPostAction(action, ids);
+                showToast(`✅ Đã ${labels[action]} ${ids.length} bài viết!`, 'success');
+                clearSelection();
+                await loadAllPosts();
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, 'error');
+            }
+        }
+
+        function clearSelection() {
+            document.querySelectorAll('.post-cb').forEach(cb => cb.checked = false);
+            const selectAll = document.getElementById('selectAll');
+            if (selectAll) selectAll.checked = false;
+            updateBulkBar();
+        }
+
+        // Expose to window
+        window.toggleSelectAll = toggleSelectAll;
+        window.updateBulkBar = updateBulkBar;
+        window.bulkAction = bulkAction;
+        window.clearSelection = clearSelection;
+        window.submitScheduled = submitScheduled;
     </script>
 </body>
 

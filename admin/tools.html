@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Admin - Hao Blog</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/css/admin.css">
+    <style>
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .tool-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .tool-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tool-card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-card-body {
+            padding: 24px;
+        }
+
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .score-good {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .score-warn {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .score-bad {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .audit-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f8fafc;
+            transition: background 0.2s;
+        }
+
+        .audit-row:hover {
+            background: #f8fafc;
+        }
+
+        .audit-row:last-child {
+            border-bottom: none;
+        }
+
+        .audit-title {
+            font-weight: 600;
+            color: #334155;
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .audit-issues {
+            font-size: 0.8rem;
+            color: #ef4444;
+        }
+
+        .audit-ok {
+            font-size: 0.8rem;
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .orphan-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: #fef2f2;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .orphan-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .orphan-info {
+            flex: 1;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .stat-chip {
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <a href="/admin/index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
+            <nav class="admin-nav">
+                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
+                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
+                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
+                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
+                <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
+                <a href="/admin/tools.html" class="nav-item active">🧰 Công cụ</a>
+                <div class="nav-divider"></div>
+                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>🧰 Công cụ Admin</h1>
+            </header>
+
+            <div class="admin-content">
+                <div class="tool-grid">
+                    <!-- SEO Audit -->
+                    <div class="tool-card">
+                        <div class="tool-card-header">
+                            <h3>🔍 SEO Audit tự động</h3>
+                            <button class="btn btn-primary" onclick="runSeoAudit()" id="btnSeoAudit"
+                                style="font-size: 0.85rem;">Quét SEO</button>
+                        </div>
+                        <div class="tool-card-body" id="seoAuditBody">
+                            <p style="color: #94a3b8; text-align: center; padding: 20px;">Nhấn "Quét SEO" để kiểm tra
+                                tất cả bài viết đã xuất bản.</p>
+                        </div>
+                    </div>
+
+                    <!-- Media Cleanup -->
+                    <div class="tool-card">
+                        <div class="tool-card-header">
+                            <h3>🧹 Media Cleanup</h3>
+                            <button class="btn btn-secondary" onclick="runMediaCleanup()" id="btnMediaCleanup"
+                                style="font-size: 0.85rem;">Quét ảnh orphan</button>
+                        </div>
+                        <div class="tool-card-body" id="mediaCleanupBody">
+                            <p style="color: #94a3b8; text-align: center; padding: 20px;">Tìm ảnh trong thư viện không
+                                được sử dụng bởi bài viết nào.</p>
+                        </div>
+                    </div>
+
+                    <!-- Backup & Export -->
+                    <div class="tool-card">
+                        <div class="tool-card-header">
+                            <h3>💾 Backup & Export</h3>
+                            <button class="btn btn-primary" onclick="runBackup()" id="btnBackup"
+                                style="font-size: 0.85rem;">📦 Tải backup JSON</button>
+                        </div>
+                        <div class="tool-card-body" id="backupBody">
+                            <p style="color: #94a3b8; text-align: center; padding: 20px;">Xuất toàn bộ dữ liệu (bài
+                                viết, danh mục, hình ảnh) ra file JSON.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/admin/js/admin.js?v=20260323c"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+        });
+
+        // ====== SEO AUDIT ======
+        async function runSeoAudit() {
+            const btn = document.getElementById('btnSeoAudit');
+            const body = document.getElementById('seoAuditBody');
+            btn.disabled = true; btn.textContent = '⏳ Đang quét...';
+            try {
+                const res = await API.request('/tools.php?action=seo-audit');
+                const { data, avg_score, total } = res;
+
+                const scoreClass = avg_score >= 80 ? 'score-good' : avg_score >= 50 ? 'score-warn' : 'score-bad';
+                let html = `
+                    <div class="stats-row">
+                        <div class="stat-chip" style="background: #f1f5f9; color: #334155;">📝 ${total} bài viết</div>
+                        <div class="stat-chip ${scoreClass}">Điểm TB: ${avg_score}/100</div>
+                    </div>
+                    <div style="max-height: 500px; overflow-y: auto;">
+                `;
+
+                data.forEach(post => {
+                    const scoreClass = post.score >= 80 ? 'score-good' : post.score >= 50 ? 'score-warn' : 'score-bad';
+                    html += `
+                        <div class="audit-row">
+                            <div class="score-badge ${scoreClass}">${post.score}</div>
+                            <div class="audit-title">
+                                <a href="/blog/${post.slug}" target="_blank" style="text-decoration: none; color: inherit;">${escapeHtml(post.title)}</a>
+                            </div>
+                            <div>
+                                ${post.issues.length === 0
+                            ? '<span class="audit-ok">✅ Perfect</span>'
+                            : `<span class="audit-issues">⚠️ ${post.issues.length} issue(s)</span>`}
+                            </div>
+                        </div>
+                    `;
+                    if (post.issues.length > 0) {
+                        html += `<div style="padding: 4px 16px 12px 72px;">`;
+                        post.issues.forEach(issue => {
+                            html += `<div style="font-size: 0.78rem; color: #ef4444; padding: 2px 0;">• ${escapeHtml(issue)}</div>`;
+                        });
+                        html += `</div>`;
+                    }
+                });
+
+                html += '</div>';
+                body.innerHTML = html;
+            } catch (e) {
+                body.innerHTML = `<p style="color: #ef4444;">Lỗi: ${e.message}</p>`;
+            } finally {
+                btn.disabled = false; btn.textContent = 'Quét SEO';
+            }
+        }
+
+        // ====== MEDIA CLEANUP ======
+        let orphanImages = [];
+
+        async function runMediaCleanup() {
+            const btn = document.getElementById('btnMediaCleanup');
+            const body = document.getElementById('mediaCleanupBody');
+            btn.disabled = true; btn.textContent = '⏳ Đang quét...';
+            try {
+                const res = await API.request('/tools.php?action=media-cleanup');
+                orphanImages = res.orphans || [];
+
+                let html = `
+                    <div class="stats-row">
+                        <div class="stat-chip" style="background: #dbeafe; color: #1e40af;">📷 Tổng: ${res.total_images}</div>
+                        <div class="stat-chip" style="background: #dcfce7; color: #166534;">✅ Đang dùng: ${res.used_count}</div>
+                        <div class="stat-chip" style="background: ${orphanImages.length > 0 ? '#fee2e2' : '#f1f5f9'}; color: ${orphanImages.length > 0 ? '#991b1b' : '#475569'};">🗑️ Orphan: ${orphanImages.length}</div>
+                    </div>
+                `;
+
+                if (orphanImages.length === 0) {
+                    html += '<p style="text-align: center; color: #22c55e; font-weight: 600; padding: 16px;">✅ Không có ảnh orphan nào! Thư viện sạch sẽ.</p>';
+                } else {
+                    html += `<div style="margin-bottom: 12px;"><button class="btn" style="background: #ef4444; color: #fff; font-size: 0.85rem;" onclick="deleteAllOrphans()">🗑️ Xóa tất cả ${orphanImages.length} ảnh orphan</button></div>`;
+                    html += '<div style="max-height: 400px; overflow-y: auto;">';
+                    orphanImages.forEach(img => {
+                        html += `
+                            <div class="orphan-card">
+                                <img src="${img.url}" alt="${escapeHtml(img.alt_text || '')}">
+                                <div class="orphan-info">
+                                    <strong>${escapeHtml(img.filename || 'Không tên')}</strong><br>
+                                    <span style="font-size: 0.75rem; color: #94a3b8;">${img.created_at || ''}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                }
+                body.innerHTML = html;
+            } catch (e) {
+                body.innerHTML = `<p style="color: #ef4444;">Lỗi: ${e.message}</p>`;
+            } finally {
+                btn.disabled = false; btn.textContent = 'Quét ảnh orphan';
+            }
+        }
+
+        async function deleteAllOrphans() {
+            if (!confirm(`Xóa ${orphanImages.length} ảnh orphan? Hành động này không thể hoàn tác!`)) return;
+            try {
+                const ids = orphanImages.map(img => img.id);
+                await API.request('/tools.php?action=media-cleanup-delete', {
+                    method: 'POST',
+                    body: JSON.stringify({ ids })
+                });
+                showToast(`✅ Đã xóa ${ids.length} ảnh orphan!`, 'success');
+                await runMediaCleanup();
+            } catch (e) {
+                showToast('Lỗi: ' + e.message, 'error');
+            }
+        }
+
+        // ====== BACKUP & EXPORT ======
+        async function runBackup() {
+            const btn = document.getElementById('btnBackup');
+            const body = document.getElementById('backupBody');
+            btn.disabled = true; btn.textContent = '⏳ Đang xuất...';
+            try {
+                const res = await API.request('/tools.php?action=backup');
+                // Download as JSON file
+                const blob = new Blob([JSON.stringify(res, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `hao-blog-backup-${new Date().toISOString().slice(0, 10)}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                body.innerHTML = `
+                    <div class="stats-row">
+                        <div class="stat-chip" style="background: #dcfce7; color: #166534;">✅ Backup thành công!</div>
+                        <div class="stat-chip" style="background: #f1f5f9; color: #475569;">📝 ${res.stats?.posts || 0} bài viết</div>
+                        <div class="stat-chip" style="background: #f1f5f9; color: #475569;">📂 ${res.stats?.categories || 0} danh mục</div>
+                        <div class="stat-chip" style="background: #f1f5f9; color: #475569;">🖼️ ${res.stats?.images || 0} hình ảnh</div>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b;">File backup đã được tải xuống: <strong>hao-blog-backup-${new Date().toISOString().slice(0, 10)}.json</strong></p>
+                `;
+                showToast('📦 Backup thành công!', 'success');
+            } catch (e) {
+                body.innerHTML = `<p style="color: #ef4444;">Lỗi: ${e.message}</p>`;
+            } finally {
+                btn.disabled = false; btn.textContent = '📦 Tải backup JSON';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -114,6 +114,13 @@ class API {
         });
     }
 
+    static async bulkPostAction(action, ids) {
+        return this.request('/posts.php', {
+            method: 'POST',
+            body: JSON.stringify({ action, ids })
+        });
+    }
+
     // Categories
     static async getCategories(params = {}) {
         const query = new URLSearchParams({ ...params }).toString();

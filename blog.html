@@ -44,6 +44,59 @@
         content="Tất cả bài viết về Digital Marketing, Facebook Ads, Social Media, Content Marketing và AI">
     <meta name="twitter:image" content="https://nguyenvanhao.name.vn/images/og-cover.png">
     <link rel="canonical" href="https://nguyenvanhao.name.vn/blog">
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 40px 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .page-btn:hover:not(.disabled):not(.active) {
+            background: #f1f5f9;
+            border-color: #22C55E;
+            color: #22C55E;
+        }
+
+        .page-btn.active {
+            background: #22C55E;
+            color: #fff;
+            border-color: #22C55E;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .page-ellipsis {
+            color: #94a3b8;
+            font-weight: 600;
+            padding: 0 4px;
+        }
+
+        @media (max-width: 640px) {
+            .page-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 
 <body>

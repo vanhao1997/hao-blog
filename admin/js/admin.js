@@ -101,7 +101,7 @@ async function loadAllPosts() {
         }
 
         if (!posts || posts.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #9ca3af;">Chưa có bài viết. Hãy tạo bài viết đầu tiên!</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">Chưa có bài viết. Hãy tạo bài viết đầu tiên!</td></tr>';
             return;
         }
 
@@ -109,11 +109,19 @@ async function loadAllPosts() {
             const slug = post.slug || '';
             const pid = post.id;
             const isPub = post.is_published == 1;
+            const isScheduled = post.scheduled_at && !isPub;
+            let statusBadge;
+            if (isScheduled) {
+                statusBadge = `<span class="badge-scheduled">⏰ ${formatDate(post.scheduled_at)}</span>`;
+            } else {
+                statusBadge = `<span class="status-badge ${isPub ? 'published' : 'draft'}">${isPub ? 'Đã xuất bản' : 'Bản nháp'}</span>`;
+            }
             return `
       <tr>
+        <td class="cb-cell"><input type="checkbox" class="post-cb" value="${pid}" onchange="updateBulkBar()"></td>
         <td><strong>${escapeHtml(post.title)}</strong></td>
         <td>${escapeHtml(post.category_name || '-')}</td>
-        <td><span class="status-badge ${isPub ? 'published' : 'draft'}">${isPub ? 'Đã xuất bản' : 'Bản nháp'}</span></td>
+        <td>${statusBadge}</td>
         <td>${formatDate(post.created_at)}</td>
         <td>
           <div class="action-btns" style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;">
@@ -130,7 +138,7 @@ async function loadAllPosts() {
         }).join('');
     } catch (error) {
         console.error('Error loading posts:', error);
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: #ef4444;">Lỗi tải dữ liệu: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: #ef4444;">Lỗi tải dữ liệu: ${error.message}</td></tr>`;
     }
 }
 
