@@ -599,9 +599,10 @@
         // ============================================================
         const providerModels = {
             gemini: [
-                { value: 'gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro ⚡' },
-                { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' },
-                { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash 🚀' },
+                { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro (Free Tối Ưu)' },
+                { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash (Free Nhanh)' },
+                { value: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash 🚀' },
+                { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
             ],
             insightdev: [
                 // Anthropic
@@ -861,46 +862,62 @@
             }
         }
 
-        function buildPromptURL(url) {
+        async function fetchUrlContent(url) {
+            try {
+                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                const data = await res.json();
+                if (!data.contents) throw new Error('No proxy content');
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.contents, 'text/html');
+                doc.querySelectorAll('script, style, nav, footer, header, aside').forEach(el => el.remove());
+                let text = doc.body.innerText.replace(/\s+/g, ' ').trim();
+                return text.substring(0, 40000);
+            } catch (err) {
+                console.warn('Scrape proxy error:', err);
+                return `URL: ${url}`;
+            }
+        }
+
+        function buildPromptURL(urlOrText) {
             return `
 Role: Senior SEO Content Specialist & On-Page SEO Expert focused on the Vietnamese market.
-Task: Analyze content from ${url} and rewrite it into a top-ranking SEO blog post for "nguyenvanhao.name.vn".
+Task: Analyze the following source content and rewrite it into a highly engaging, top-ranking SEO blog post for "nguyenvanhao.name.vn". 
+
+Source Content:
+---
+${urlOrText.substring(0, 30000)}
+---
 
 ## SEO Requirements (MANDATORY):
 1. **Title Tag**: 55-65 characters. Must contain main keyword near the beginning. Use power words.
 2. **Meta Description**: 145-160 characters. Include main keyword + clear CTA.
 3. **Keywords**: Return 5-8 LSI keywords relevant to the topic.
 4. **Article Structure**:
-   - Start with a compelling intro (2-3 sentences hooking the reader, mention the main keyword)
-   - Use **Table of Contents** at the top using markdown links: "## Nội dung bài viết" followed by numbered list
+   - Start with a compelling intro (2-3 sentences hooking the reader)
    - Use **H2 headings** that contain target keywords (5-8 H2s)
    - Use **H3 sub-headings** for detailed breakdowns under H2s
-   - Include **bold** for important terms and key phrases
-   - Include at least 1 comparison **table** (markdown table format)
-   - Include at least 1 **numbered list** or **bullet list** of actionable tips
-   - End with "## Câu hỏi thường gặp (FAQ)" section with 3-5 Q&A pairs using **### format** for each question
-   - End with a brief conclusion with a CTA sentence.
+   - Include **bold** for important terms
+   - Ensure the article feels 100% original and authoritative.
+   - Include at least 1 **numbered/bullet list** of actionable items
+   - End with "## Câu hỏi thường gặp (FAQ)" section with 3-5 Q&A pairs (### format)
+   - Do NOT add a Table of Contents (it is auto-generated).
 5. **Content Quality**:
-   - Write in natural, engaging Vietnamese. Avoid robotic tone.
-   - Each H2 section should be 150-300 words.
-   - Use transition words between sections.
-   - Include practical examples, data points, or case studies.
-6. **CRITICAL - Media**: Keep and include ALL original <img> tags (with their original URLs) and YouTube <iframe> tags found in source.
-7. **Constraints**:
-   - Strictly NO mention of original brand/competitors.
-   - NO external text links, but KEEP original image/video embeds.
+   - Write in natural, engaging Vietnamese. Avoid robotic, direct translation tone.
+   - Expand on the source information where useful.
+6. **Constraints**:
+   - Strictly NO mention of the original source brand name or competitors.
+   - NO external text links to the original site.
    - DO NOT use citation symbols [1], [2],..
-   - DO NOT write word count summaries.
-   - DO NOT write "Bài viết này" or self-referencing sentences.
-8. **LENGTH**: 2000-2500 words minimum. Write deeply with rich information.
-9. **Clean Output**: Return ONLY valid raw JSON.
+   - DO NOT write self-referencing sentences ("Bài viết này...").
+7. **LENGTH**: Minimum 1500 words. Deep, comprehensive, information-rich.
+8. **Clean Output**: Return ONLY valid raw JSON without any markdown formatting wrappers like \`\`\`json. The AI must strictly output the JSON.
 
 Output Format:
 {
-  "seo_title": "55-65 char title with main keyword",
-  "meta_description": "145-160 char description with keyword + CTA",
-  "keywords": ["main keyword", "lsi1", "lsi2", "lsi3", "lsi4"],
-  "content_markdown": "Full SEO-optimized blog post in Markdown with TOC, FAQ, tables, and media."
+  "seo_title": "string",
+  "meta_description": "string",
+  "keywords": ["kw1", "kw2"],
+  "content_markdown": "Full markdown content"
 }`;
         }
 
@@ -934,7 +951,7 @@ Task: Write a top-ranking, original SEO blog post about "${keyword}" for "nguyen
    - DO NOT write word count summaries.
    - DO NOT write self-referencing sentences ("Bài viết này...").
 7. **LENGTH**: 2000-2500 words minimum. Deep, comprehensive, information-rich.
-8. **Clean Output**: Return ONLY valid raw JSON.
+8. **Clean Output**: Return ONLY valid raw JSON without any markdown formatting wrappers like \`\`\`json. The AI must strictly output the JSON.
 
 Output Format:
 {
@@ -971,7 +988,7 @@ Output Format:
                 await new Promise(r => setTimeout(r, 500));
                 updateProgress(2, 'Bước 2/3: AI đang viết bài SEO 2000-2500 từ (TOC + FAQ + Table)...');
 
-                const prompt = currentMode === 'url' ? buildPromptURL(input) : buildPromptKeyword(input);
+                const prompt = currentMode === 'url' ? buildPromptURL(await fetchUrlContent(input)) : buildPromptKeyword(input);
                 const data = await callAI(prompt);
                 state.data = data;
 
