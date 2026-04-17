@@ -85,7 +85,11 @@ switch($method) {
 
             // For public queries, also publish scheduled posts whose time has arrived
             if ($is_published) {
-                $db->exec("UPDATE posts SET is_published = 1, published_at = scheduled_at WHERE is_published = 0 AND scheduled_at IS NOT NULL AND scheduled_at <= NOW()");
+                try {
+                    $db->exec("UPDATE posts SET is_published = 1, published_at = scheduled_at WHERE is_published = 0 AND scheduled_at IS NOT NULL AND scheduled_at <= NOW()");
+                } catch (Exception $e) {
+                    // scheduled_at column may not exist yet — safe to ignore
+                }
             }
             
             $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug, c.color as category_color 
