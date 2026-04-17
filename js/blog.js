@@ -45,7 +45,7 @@ async function loadPosts(categoryId = 'all') {
     if (allPots.length === 0) {
         grid.innerHTML = '<div class="loading-spinner"></div>';
         try {
-            const response = await API.getPosts({ is_published: true });
+            const response = await API.getPosts({ is_published: true, limit: 100 });
             allPots = response.data || [];
         } catch (error) {
             console.error('Error loading posts:', error);
