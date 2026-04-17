@@ -7,6 +7,10 @@
     <title>AI Studio - Admin Panel</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -343,7 +347,7 @@
                                 <label
                                     class="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Danh
                                     mục</label>
-                                <select id="res-category"
+                                <select id="res-category" onchange="drawBanner()"
                                     class="w-full text-sm bg-slate-50 border border-slate-200 p-3 rounded-lg outline-none focus:border-indigo-400">
                                     <option value="">— Chọn danh mục —</option>
                                 </select>
@@ -521,7 +525,9 @@
             });
         }
 
-        function drawBanner() {
+        async function drawBanner() {
+            // Ensure Inter font is loaded before canvas rendering
+            await document.fonts.ready;
             const theme = bannerThemes[bThemeKey];
             const tpl = bannerTemplates[bCategory][bTemplateIdx];
             const w = bannerCanvas.width, h = bannerCanvas.height;
