@@ -45,6 +45,30 @@ async function loadDashboardStats() {
             document.getElementById('publishedPosts').textContent = stats.posts_published;
             document.getElementById('draftPosts').textContent = stats.posts_draft;
             document.getElementById('totalImages').textContent = stats.images_total;
+
+            if (document.getElementById('totalViews')) {
+                document.getElementById('totalViews').textContent = stats.total_views || 0;
+            }
+
+            // Load top posts if available
+            if (stats.top_posts && document.getElementById('topPosts')) {
+                const tbody = document.getElementById('topPosts');
+                if (stats.top_posts.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; padding: 40px; color: #9ca3af;">Chưa có dữ liệu lượt xem.</td></tr>';
+                } else {
+                    tbody.innerHTML = stats.top_posts.map(post => `
+                    <tr>
+                        <td>
+                            <strong>${escapeHtml(post.title)}</strong><br>
+                            <a href="/blog/${post.slug}" target="_blank" style="font-size:0.75rem; color:#3b82f6; text-decoration:none;">Xem bài viết</a>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="status-badge" style="background:#fce7f3; color:#db2777;">${post.views}</span>
+                        </td>
+                    </tr>
+                    `).join('');
+                }
+            }
         }
     } catch (error) {
         console.error('Error loading stats:', error);
@@ -67,7 +91,7 @@ async function loadRecentPosts() {
         if (!tbody) return;
 
         if (!posts || posts.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #9ca3af;">Chưa có bài viết. <a href="posts.html">Tạo bài viết đầu tiên</a></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 40px; color: #9ca3af;">Chưa có bài viết. <a href="posts.html">Tạo bài viết đầu tiên</a></td></tr>';
             return;
         }
 
@@ -76,7 +100,6 @@ async function loadRecentPosts() {
         <td><strong>${escapeHtml(post.title)}</strong></td>
         <td>${escapeHtml(post.category_name || '-')}</td>
         <td><span class="status-badge ${post.is_published == 1 ? 'published' : 'draft'}">${post.is_published == 1 ? 'Đã xuất bản' : 'Bản nháp'}</span></td>
-        <td>${formatDate(post.created_at)}</td>
       </tr>
     `).join('');
     } catch (error) {

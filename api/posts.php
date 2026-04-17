@@ -60,6 +60,12 @@ switch($method) {
             $post = $stmt->fetch();
             echo json_encode($post);
         } elseif (isset($_GET['slug'])) {
+            // Increment views count
+            try {
+                $updateViews = $db->prepare("UPDATE posts SET views = views + 1 WHERE slug = ?");
+                $updateViews->execute([$_GET['slug']]);
+            } catch (\Throwable $e) {} // Ignore if views column doesn't exist yet
+
             $stmt = $db->prepare("SELECT p.*, c.name as category_name, c.slug as category_slug, c.color as category_color FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.slug = ?");
             $stmt->execute([$_GET['slug']]);
             $post = $stmt->fetch();
