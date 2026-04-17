@@ -307,9 +307,17 @@
                         <span>Tạo bài mới</span>
                     </button>
                     <div class="flex gap-2">
-                        <button onclick="saveDraft()" id="btnSave"
-                            class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-indigo-200 active:scale-95">
-                            <i data-lucide="rocket" class="w-4 h-4"></i> <span>Lưu bản nháp</span>
+                        <button onclick="savePost(false, true)" id="btnPreview"
+                            class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-lg text-sm font-bold transition-all active:scale-95 border border-slate-200">
+                            <i data-lucide="eye" class="w-4 h-4"></i> <span>Preview</span>
+                        </button>
+                        <button onclick="savePost(false, false)" id="btnSave"
+                            class="flex items-center gap-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-4 py-2.5 rounded-lg text-sm font-bold transition-all active:scale-95 border border-indigo-200">
+                            <i data-lucide="save" class="w-4 h-4"></i> <span>Lưu nháp</span>
+                        </button>
+                        <button onclick="savePost(true, false)" id="btnPublish"
+                            class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-emerald-200 active:scale-95">
+                            <i data-lucide="send" class="w-4 h-4"></i> <span>Đăng ngay</span>
                         </button>
                     </div>
                 </div>
@@ -1244,11 +1252,24 @@ Output Format:
             return text.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 80);
         }
 
-        async function saveDraft() {
+        async function savePost(isPublished = false, isPreview = false) {
             if (!state.data) return;
-            const btn = document.getElementById('btnSave');
-            const originalHTML = btn.innerHTML;
-            btn.disabled = true; btn.innerHTML = '⏳ Đang lưu...';
+            const btnSave = document.getElementById('btnSave');
+            const btnPublish = document.getElementById('btnPublish');
+            const btnPreview = document.getElementById('btnPreview');
+
+            const originalSave = btnSave.innerHTML;
+            const originalPublish = btnPublish.innerHTML;
+            const originalPreview = btnPreview.innerHTML;
+
+            btnSave.disabled = true; btnPublish.disabled = true; btnPreview.disabled = true;
+            if (isPreview) {
+                btnPreview.innerHTML = '⏳...';
+            } else if (isPublished) {
+                btnPublish.innerHTML = '⏳ Đang đăng...';
+            } else {
+                btnSave.innerHTML = '⏳ Đang lưu...';
+            }
 
             try {
                 let bannerUrl = '';
@@ -1256,38 +1277,44 @@ Output Format:
                 // 1. Upload banner
                 if (state.bannerBlob) {
                     const formData = new FormData();
-                    const slug = slugify(state.data.seo_title);
-                    formData.append('image', state.bannerBlob, `${slug}-banner.png`);
-                    formData.append('alt_text', state.data.seo_title);
+                    const slug = slugify(state.data.seo_title || 'untitled');
+                    formData.append('image', state.bannerBlob, `${slug}-${Date.now()}-banner.png`);
+                    formData.append('alt_text', state.data.seo_title || 'Untitled');
                     const uploadRes = await fetch('/api/upload.php', { method: 'POST', body: formData });
                     const uploadData = await uploadRes.json();
                     if (uploadData.success) bannerUrl = uploadData.url;
                 }
 
-                // 2. Save post as draft (use editable fields)
+                // 2. Save post
                 const editedTitle = document.getElementById('res-seo-title').value;
                 const editedDesc = document.getElementById('res-meta-desc').value;
                 const selectedCat = document.getElementById('res-category').value;
+                const postSlug = slugify(editedTitle);
                 const postData = {
                     title: editedTitle,
-                    slug: slugify(editedTitle),
+                    slug: postSlug,
                     excerpt: editedDesc,
                     content: resultEls.content.innerHTML,
                     featured_image: bannerUrl,
                     category_id: selectedCat || null,
-                    is_published: 0
+                    is_published: isPublished ? 1 : 0
                 };
                 const response = await fetch('/api/posts.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(postData) });
                 const res = await response.json();
                 if (res.success) {
-                    showToast('✅ Đã lưu bản nháp + banner thành công!');
+                    showToast(isPublished ? '✅ Đã đăng bài thành công!' : '✅ Đã lưu bản nháp thành công!');
+                    if (isPreview || isPublished) {
+                        window.open(`/post.html?slug=${postSlug}`, '_blank');
+                    }
                 } else {
                     throw new Error(res.error || 'Save failed');
                 }
             } catch (e) {
                 showToast('❌ Lỗi: ' + e.message);
             } finally {
-                btn.disabled = false; btn.innerHTML = originalHTML;
+                btnSave.disabled = false; btnSave.innerHTML = originalSave;
+                btnPublish.disabled = false; btnPublish.innerHTML = originalPublish;
+                btnPreview.disabled = false; btnPreview.innerHTML = originalPreview;
             }
         }
 

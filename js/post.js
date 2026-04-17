@@ -203,21 +203,4 @@ function renderPost(post) {
             </div>
         </div>
     `);
-
-    // Share buttons
-    const shareUrl = encodeURIComponent(window.location.href);
-    const shareTitle = encodeURIComponent(post.title);
-    contentEl.insertAdjacentHTML('beforeend', `
-        <div class="share-buttons" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="btn" style="background: #1877F2; color: #fff; border-color: var(--color-black);">
-                Facebook
-            </a>
-            <a href="https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}" target="_blank" class="btn" style="background: #1DA1F2; color: #fff; border-color: var(--color-black);">
-                Twitter
-            </a>
-            <button onclick="navigator.clipboard.writeText(window.location.href).then(()=>Components.showToast('Đã sao chép link!','success'))" class="btn" style="background: var(--color-mint); border-color: var(--color-black);">
-                📋 Sao chép link
-            </button>
-        </div>
-    `);
 }
