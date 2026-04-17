@@ -575,6 +575,14 @@
             bCtx.font = '500 24px Inter, sans-serif'; bCtx.fillStyle = theme.subText; bCtx.textBaseline = 'bottom'; bCtx.textAlign = 'left';
             const footerY = h - margin - 40; bCtx.fillText('nguyenvanhao.name.vn', contentMargin, footerY);
             bCtx.beginPath(); bCtx.strokeStyle = theme.accentStart; bCtx.lineWidth = 3; bCtx.moveTo(contentMargin, footerY + 8); bCtx.lineTo(contentMargin + 100, footerY + 8); bCtx.stroke();
+
+            // Convert to blob and save to state
+            return new Promise((resolve) => {
+                bannerCanvas.toBlob((blob) => {
+                    state.bannerBlob = blob;
+                    resolve(blob);
+                }, 'image/png');
+            });
         }
 
         function drawBannerPattern(ctx, w, h, theme) {
@@ -1185,10 +1193,7 @@ Output Format:
 
                 // Render results
                 renderResult(data);
-                drawBanner();
-
-                // Convert banner to blob
-                bannerCanvas.toBlob((blob) => { state.bannerBlob = blob; }, 'image/png');
+                await drawBanner();
 
                 switchView('result');
             } catch (err) {
