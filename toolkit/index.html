@@ -177,6 +177,33 @@
 </head>
 
 <body>
+    <!-- Contact Modal -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Gửi tin nhắn</h3>
+                <button class="modal-close" id="modalClose">✕</button>
+            </div>
+            <form id="modalContactForm">
+                <div class="form-group">
+                    <label class="form-label" for="modalName">Họ và tên *</label>
+                    <input type="text" id="modalName" class="form-input" placeholder="Nhập họ và tên..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="modalEmail">Email *</label>
+                    <input type="email" id="modalEmail" class="form-input" placeholder="Nhập email..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="modalMessage">Tin nhắn *</label>
+                    <textarea id="modalMessage" class="form-textarea" placeholder="Nhập nội dung tin nhắn..."
+                        required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary form-submit btn-lg" style="width: 100%;">
+                    Gửi tin nhắn →
+                </button>
+            </form>
+        </div>
+    </div>
     <header class="header">
         <div class="container header-inner">
             <a href="/" class="logo">
@@ -194,7 +221,7 @@
                     <li><a href="/lien-he" class="nav-link">Liên hệ</a></li>
                     <li><a href="/toolkit/" class="nav-link active">Công cụ</a></li>
                 </ul>
-                <a href="/lien-he" class="btn btn-primary hide-mobile">Liên hệ ngay</a>
+                <button class="btn btn-primary hide-mobile" id="contactBtn">Liên hệ ngay</button>
             </nav>
         </div>
     </header>
@@ -395,7 +422,18 @@
         </div>
     </footer>
 
-    <script src="/js/main.js?v=1.4"></script>
+    <!-- Core Modules -->
+    <script src="/js/core/utils.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/core/components.js"></script>
+
+    <!-- Feature Modules -->
+    <script src="/js/features/menu.js"></script>
+    <script src="/js/features/scroll.js"></script>
+    <script src="/js/features/modal.js"></script>
+
+    <!-- Main Init -->
+    <script src="/js/main.js?v=2.0"></script>
     <script>
         // Search & Filter
         const searchInput = document.getElementById('searchInput');
