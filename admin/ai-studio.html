@@ -449,7 +449,7 @@
         const state = {
             apiKey: localStorage.getItem('seo_api_key') || 'AIzaSyC07z_iB_CJvtgm78yUvVBTFwtBhDlNwNg',
             insightdevApiKey: localStorage.getItem('insightdev_api_key') || '',
-            model: localStorage.getItem('seo_model') || 'gemini-3.1-pro-preview',
+            model: localStorage.getItem('seo_model') || 'gemini-2.5-flash',
             mode: 'url', // 'url' | 'keyword'
             data: null,
             bannerBlob: null
@@ -599,10 +599,8 @@
         // ============================================================
         const providerModels = {
             gemini: [
-                { value: 'gemini-1.5-pro-latest', label: 'Gemini 1.5 Pro (Free Tối Ưu)' },
-                { value: 'gemini-1.5-flash-latest', label: 'Gemini 1.5 Flash (Free Nhanh)' },
-                { value: 'gemini-2.0-flash-exp', label: 'Gemini 2.0 Flash 🚀' },
-                { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
+                { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash (Free ⭐ Khuyên dùng)' },
+                { value: 'gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash Lite (Free Nhanh)' },
             ],
             insightdev: [
                 // Anthropic
