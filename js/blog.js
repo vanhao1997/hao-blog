@@ -169,15 +169,57 @@ function goToPage(page) {
 // Add Search Listener
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
-    if (searchInput && typeof Utils.debounce !== 'undefined') {
-        searchInput.addEventListener('input', Utils.debounce(() => {
+    const searchDropdown = document.getElementById('searchDropdown');
+
+    // Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            if (searchDropdown) searchDropdown.style.display = 'none';
+        }
+    });
+
+    if (searchInput) {
+        const handleSearch = () => {
+            const query = searchInput.value.toLowerCase().trim();
             currentPage = 1;
-            renderBlogGrid();
-        }, 300));
-    } else if (searchInput) {
-        searchInput.addEventListener('input', () => {
-            currentPage = 1;
-            renderBlogGrid();
-        });
+            renderBlogGrid(); // Keep normal grid filtering
+
+            // Dropdown logic
+            if (searchDropdown) {
+                if (query.length < 2) {
+                    searchDropdown.style.display = 'none';
+                    return;
+                }
+
+                const filtered = allPosts.filter(post =>
+                    post.title.toLowerCase().includes(query) ||
+                    (post.excerpt && post.excerpt.toLowerCase().includes(query))
+                ).slice(0, 5);
+
+                if (filtered.length > 0) {
+                    searchDropdown.innerHTML = filtered.map(post => `
+                        <li style="border-bottom: 1px solid #f1f5f9;">
+                            <a href="/blog/${post.slug}" style="display: flex; align-items: center; padding: 12px 16px; text-decoration: none; color: inherit; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                                <div style="width: 48px; height: 48px; border-radius: 8px; background: url('${post.featured_image || '/images/og-cover.png'}') center/cover; flex-shrink: 0; margin-right: 12px;"></div>
+                                <div>
+                                    <h4 style="margin: 0 0 4px 0; font-size: 0.95rem; color: #1e293b; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${Utils.escapeHTML(post.title)}</h4>
+                                    <span style="font-size: 0.75rem; color: #64748b;">${Utils.formatDate(post.published_at)}</span>
+                                </div>
+                            </a>
+                        </li>
+                    `).join('');
+                    searchDropdown.style.display = 'block';
+                } else {
+                    searchDropdown.innerHTML = '<li style="padding: 16px; text-align: center; color: #64748b; font-size: 0.9rem;">Không tìm thấy kết quả phù hợp.</li>';
+                    searchDropdown.style.display = 'block';
+                }
+            }
+        };
+
+        if (typeof Utils.debounce !== 'undefined') {
+            searchInput.addEventListener('input', Utils.debounce(handleSearch, 300));
+        } else {
+            searchInput.addEventListener('input', handleSearch);
+        }
     }
 });
