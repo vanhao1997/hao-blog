@@ -39,6 +39,9 @@ ErrorDocument 404 /404.html
 # Rewrite rules
 RewriteEngine On
 
+# Dynamic Sitemap
+RewriteRule ^sitemap\.xml$ /api/sitemap.php [L]
+
 # Force HTTPS
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
