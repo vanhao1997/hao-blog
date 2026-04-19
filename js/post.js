@@ -328,4 +328,95 @@ function renderPost(post) {
     articleSchemaScript.type = 'application/ld+json';
     articleSchemaScript.textContent = JSON.stringify(articleSchema);
     document.head.appendChild(articleSchemaScript);
+
+    // Initialize Comments
+    loadComments(post.id);
+    initCommentForm(post.id);
+}
+
+// === Comments System ===
+async function loadComments(postId) {
+    const list = document.getElementById('commentsList');
+    const countEl = document.getElementById('commentsCount');
+    if (!list) return;
+
+    try {
+        const res = await fetch(`/api/comments.php?post_id=${postId}`);
+        const result = await res.json();
+
+        if (result.success && result.data && result.data.length > 0) {
+            if (countEl) countEl.textContent = result.data.length;
+            list.innerHTML = result.data.map(c => `
+                <div style="background: #f8fafc; padding: 24px; border-radius: 12px; position: relative;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px;">
+                            ${Utils.escapeHTML(c.author_name.charAt(0)).toUpperCase()}
+                        </div>
+                        <div>
+                            <h4 style="margin: 0; color: #1e293b; font-size: 1rem;">${Utils.escapeHTML(c.author_name)}</h4>
+                            <span style="font-size: 0.8rem; color: #64748b;">${Utils.formatDate(c.created_at)}</span>
+                        </div>
+                    </div>
+                    <p style="margin: 0; color: #334155; line-height: 1.6; white-space: pre-wrap;">${Utils.escapeHTML(c.content)}</p>
+                </div>
+            `).join('');
+        } else {
+            if (countEl) countEl.textContent = '0';
+            list.innerHTML = '<p style="color: #64748b; text-align: center;">Chưa có bình luận nào. Hãy là người đầu tiên!</p>';
+        }
+    } catch (e) {
+        console.error('Error loading comments:', e);
+    }
+}
+
+function initCommentForm(postId) {
+    const form = document.getElementById('commentForm');
+    if (!form) return;
+
+    // Remove existing listener to prevent duplicates if renderPost called multiple times
+    const newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+
+    newForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const author = document.getElementById('commentAuthor').value.trim();
+        const content = document.getElementById('commentContent').value.trim();
+        const btn = document.getElementById('submitCommentBtn');
+
+        if (!author || !content) return;
+
+        const originalText = btn.innerHTML;
+        btn.innerHTML = 'Đang gửi...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/comments.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post_id: postId, author_name: author, content: content })
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                btn.innerHTML = '✅ ' + data.message;
+                btn.style.background = 'var(--color-primary)';
+                document.getElementById('commentContent').value = '';
+
+                // Reload comments
+                loadComments(postId);
+            } else {
+                btn.innerHTML = '❌ ' + (data.error || 'Lỗi');
+                btn.style.background = '#EF4444';
+            }
+        } catch (err) {
+            btn.innerHTML = '❌ Lỗi kết nối';
+            btn.style.background = '#EF4444';
+        }
+
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+            btn.disabled = false;
+        }, 3000);
+    });
 }
