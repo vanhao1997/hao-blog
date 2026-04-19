@@ -89,74 +89,55 @@ function renderBlogGrid() {
 
     if (filteredPosts.length === 0) {
         grid.innerHTML = '<p class="no-posts" style="grid-column: 1/-1; text-align: center; padding: 40px; background: #f8fafc; border-radius: 16px;">Không tìm thấy bài viết nào phù hợp.</p>';
-        renderPagination(0);
+        renderLoadMoreBtn(false);
         return;
     }
 
-    // Pagination
     const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
     if (currentPage > totalPages) currentPage = totalPages;
     const start = (currentPage - 1) * POSTS_PER_PAGE;
     const pagePosts = filteredPosts.slice(start, start + POSTS_PER_PAGE);
 
-    grid.innerHTML = '';
+    if (currentPage === 1) {
+        grid.innerHTML = ''; // Fresh render
+    }
+
     pagePosts.forEach((post, index) => {
-        const card = Components.createPostCard(post, { index, style: 'default' });
+        const card = Components.createPostCard(post, { index: start + index, style: 'default' });
         grid.appendChild(card);
     });
 
-    renderPagination(totalPages);
-
-    // Scroll to top of grid on page change
-    if (currentPage > 1) {
-        grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    renderLoadMoreBtn(currentPage < totalPages);
 }
 
-function renderPagination(totalPages) {
+function renderLoadMoreBtn(hasMore) {
     let paginationEl = document.getElementById('blogPagination');
     if (!paginationEl) {
         paginationEl = document.createElement('div');
         paginationEl.id = 'blogPagination';
+        paginationEl.style.textAlign = 'center';
+        paginationEl.style.marginTop = '40px';
         const grid = document.getElementById('postsGrid');
         if (grid && grid.parentNode) grid.parentNode.insertBefore(paginationEl, grid.nextSibling);
     }
 
-    if (totalPages <= 1) {
+    if (!hasMore) {
         paginationEl.innerHTML = '';
         return;
     }
 
-    let html = '<div class="pagination">';
+    paginationEl.innerHTML = `
+        <button class="btn btn-secondary" id="btnLoadMore" style="padding: 12px 32px; border-radius: 99px; font-weight: 500;">
+            Xem thêm bài viết 👇
+        </button>
+    `;
 
-    // Prev button
-    html += `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>← Trước</button>`;
-
-    // Page numbers
-    const maxVisible = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-    if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
-
-    if (startPage > 1) {
-        html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
-        if (startPage > 2) html += `<span class="page-ellipsis">...</span>`;
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-        html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-    }
-
-    if (endPage < totalPages) {
-        if (endPage < totalPages - 1) html += `<span class="page-ellipsis">...</span>`;
-        html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
-    }
-
-    // Next button
-    html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Tiếp →</button>`;
-    html += '</div>';
-
-    paginationEl.innerHTML = html;
+    document.getElementById('btnLoadMore').onclick = (e) => {
+        e.target.innerHTML = '<div class="loading-spinner" style="width: 20px; height: 20px; border-top-color: #3b82f6; border-right-color: #3b82f6; border-bottom-color: #3b82f6;"></div>';
+        setTimeout(() => {
+            goToPage(currentPage + 1);
+        }, 400); // Fake delay for UX
+    };
 }
 
 function goToPage(page) {
