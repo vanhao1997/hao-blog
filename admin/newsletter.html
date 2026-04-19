@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -18,25 +18,26 @@
         <aside class="admin-sidebar">
             <a href="index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
             <nav class="admin-nav">
-                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
-                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
-                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
-                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
-                <a href="/admin/newsletter.html" class="nav-item active">📧 Subscribers</a>
-                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
-                <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
-                <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
-                <a href="/admin/tools.html" class="nav-item">🧰 Công cụ</a>
+                <a href="/admin/index.html" class="nav-item">ðŸ“Š Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">ðŸ“ BÃ i viáº¿t</a>
+                <a href="/admin/categories.html" class="nav-item">ðŸ“‚ Danh má»¥c</a>
+                <a href="/admin/images.html" class="nav-item">ðŸ–¼ï¸ HÃ¬nh áº£nh</a>
+                <a href="/admin/newsletter.html" class="nav-item active">ðŸ“§ Subscribers</a>
+                <a href="/admin/banner.html" class="nav-item">ðŸŽ¨ Táº¡o Banner</a>
+                <a href="/admin/ai-studio.html" class="nav-item">ðŸ¤– AI Studio</a>
+                <a href="/admin/auto-news.html" class="nav-item">🔄 Auto-News</a>
+                <a href="/admin/synctune.html" class="nav-item">ðŸŽµ SyncTune</a>
+                <a href="/admin/tools.html" class="nav-item">ðŸ§° CÃ´ng cá»¥</a>
                 <div class="nav-divider"></div>
-                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
-                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+                <a href="/" class="nav-item" target="_blank">ðŸŒ Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">ðŸšª ÄÄƒng xuáº¥t</a>
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
-                <h1>Quản lý Subscribers</h1>
+                <h1>Quáº£n lÃ½ Subscribers</h1>
                 <div class="user-info">
                     <span id="userName">Admin</span>
                     <div class="user-avatar">A</div>
@@ -46,9 +47,9 @@
             <div class="admin-content">
                 <div class="card">
                     <div class="card-header" style="justify-content: space-between;">
-                        <h3 id="subscriberCount">Tổng: 0 người đăng ký</h3>
+                        <h3 id="subscriberCount">Tá»•ng: 0 ngÆ°á»i Ä‘Äƒng kÃ½</h3>
                         <div class="card-actions">
-                            <button id="btnExportCsv" class="btn btn-primary" style="display:none;">📥 Export
+                            <button id="btnExportCsv" class="btn btn-primary" style="display:none;">ðŸ“¥ Export
                                 CSV</button>
                         </div>
                     </div>
@@ -58,14 +59,14 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Email</th>
-                                <th>Ngày đăng ký</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
+                                <th>NgÃ y Ä‘Äƒng kÃ½</th>
+                                <th>Tráº¡ng thÃ¡i</th>
+                                <th>Thao tÃ¡c</th>
                             </tr>
                         </thead>
                         <tbody id="subscribersList">
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 40px; color: #9ca3af;">Đang tải...
+                                <td colspan="5" style="text-align: center; padding: 40px; color: #9ca3af;">Äang táº£i...
                                 </td>
                             </tr>
                         </tbody>
@@ -78,13 +79,13 @@
     <!-- Confirm Dialog -->
     <div class="modal" id="confirmDeleteModal">
         <div class="modal-content" style="max-width: 400px; text-align: center; padding: 32px 24px;">
-            <div style="font-size: 3rem; margin-bottom: 16px;">⚠️</div>
-            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 12px;">Xóa Subscriber?</h2>
-            <p style="color: #6b7280; margin-bottom: 24px; line-height: 1.5;">Hành động này không thể hoàn tác.</p>
+            <div style="font-size: 3rem; margin-bottom: 16px;">âš ï¸</div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 12px;">XÃ³a Subscriber?</h2>
+            <p style="color: #6b7280; margin-bottom: 24px; line-height: 1.5;">HÃ nh Ä‘á»™ng nÃ y khÃ´ng thá»ƒ hoÃ n tÃ¡c.</p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <button type="button" class="btn btn-secondary"
-                    onclick="document.getElementById('confirmDeleteModal').style.display='none'">Hủy</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa Vĩnh Viễn</button>
+                    onclick="document.getElementById('confirmDeleteModal').style.display='none'">Há»§y</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">XÃ³a VÄ©nh Viá»…n</button>
             </div>
         </div>
     </div>
@@ -121,20 +122,20 @@
 
             document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
                 if (deleteSubscriberId) {
-                    document.getElementById('confirmDeleteBtn').textContent = 'Đang xóa...';
+                    document.getElementById('confirmDeleteBtn').textContent = 'Äang xÃ³a...';
                     try {
                         const res = await API.request(`/newsletter.php?id=${deleteSubscriberId}`, 'DELETE');
                         if (res.success) {
-                            showToast('Đã xóa subscriber');
+                            showToast('ÄÃ£ xÃ³a subscriber');
                             document.getElementById('confirmDeleteModal').style.display = 'none';
                             loadSubscribers();
                         } else {
-                            showToast('Lỗi khi xóa', 'error');
+                            showToast('Lá»—i khi xÃ³a', 'error');
                         }
                     } catch (e) {
-                        showToast('Lỗi kết nối', 'error');
+                        showToast('Lá»—i káº¿t ná»‘i', 'error');
                     }
-                    document.getElementById('confirmDeleteBtn').textContent = 'Xóa Vĩnh Viễn';
+                    document.getElementById('confirmDeleteBtn').textContent = 'XÃ³a VÄ©nh Viá»…n';
                 }
             });
         });
@@ -144,14 +145,14 @@
                 const res = await API.request('/newsletter.php');
                 if (res.data) {
                     currentSubscribers = res.data;
-                    document.getElementById('subscriberCount').textContent = `Tổng: ${res.total} người đăng ký`;
+                    document.getElementById('subscriberCount').textContent = `Tá»•ng: ${res.total} ngÆ°á»i Ä‘Äƒng kÃ½`;
                     const btnExport = document.getElementById('btnExportCsv');
                     if (res.total > 0) btnExport.style.display = 'inline-flex';
                     else btnExport.style.display = 'none';
 
                     const tbody = document.getElementById('subscribersList');
                     if (res.total === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #9ca3af;">Chưa có subscriber nào.</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #9ca3af;">ChÆ°a cÃ³ subscriber nÃ o.</td></tr>';
                         return;
                     }
 
@@ -166,8 +167,8 @@
                                 </span>
                             </td>
                             <td>
-                                <button class="action-btn" style="color: #dc2626;" onclick="showDeleteSubscriber(\${sub.id})" title="Xóa">
-                                    🗑️
+                                <button class="action-btn" style="color: #dc2626;" onclick="showDeleteSubscriber(\${sub.id})" title="XÃ³a">
+                                    ðŸ—‘ï¸
                                 </button>
                             </td>
                         </tr>

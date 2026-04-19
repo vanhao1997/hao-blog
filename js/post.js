@@ -18,34 +18,7 @@
     }, { passive: true });
 })();
 
-// === Back-to-Top Button ===
-(function initBackToTop() {
-    const btn = document.createElement('button');
-    btn.id = 'backToTop';
-    btn.innerHTML = '↑';
-    btn.setAttribute('aria-label', 'Về đầu trang');
-    Object.assign(btn.style, {
-        position: 'fixed', bottom: '24px', right: '24px', width: '48px', height: '48px',
-        borderRadius: '50%', background: '#22C55E', color: '#fff', border: '2px solid #1F2937',
-        fontSize: '1.3rem', fontWeight: '700', cursor: 'pointer', zIndex: '9999',
-        boxShadow: '3px 3px 0 #1F2937', transition: 'all 0.3s ease',
-        opacity: '0', visibility: 'hidden', transform: 'translateY(20px)'
-    });
-    btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-    btn.addEventListener('mouseenter', () => { btn.style.transform = 'translateY(-4px)'; btn.style.boxShadow = '4px 6px 0 #1F2937'; });
-    btn.addEventListener('mouseleave', () => { btn.style.transform = btn.dataset.visible === '1' ? 'translateY(0)' : 'translateY(20px)'; btn.style.boxShadow = '3px 3px 0 #1F2937'; });
-    document.body.appendChild(btn);
 
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-            btn.style.opacity = '1'; btn.style.visibility = 'visible'; btn.style.transform = 'translateY(0)';
-            btn.dataset.visible = '1';
-        } else {
-            btn.style.opacity = '0'; btn.style.visibility = 'hidden'; btn.style.transform = 'translateY(20px)';
-            btn.dataset.visible = '0';
-        }
-    }, { passive: true });
-})();
 
 // === CTA Newsletter Banner (injected mid-article) ===
 function injectCTABanner() {

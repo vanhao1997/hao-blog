@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý hình ảnh - Admin</title>
+    <title>Quáº£n lÃ½ hÃ¬nh áº£nh - Admin</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -114,41 +114,42 @@
         <aside class="admin-sidebar">
             <a href="/admin/index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
             <nav class="admin-nav">
-                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
-                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
-                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
-                <a href="/admin/images.html" class="nav-item active">🖼️ Hình ảnh</a>
-                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
-                <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
-                <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
-                <a href="/admin/tools.html" class="nav-item">🧰 Công cụ</a>
+                <a href="/admin/index.html" class="nav-item">ðŸ“Š Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">ðŸ“ BÃ i viáº¿t</a>
+                <a href="/admin/categories.html" class="nav-item">ðŸ“‚ Danh má»¥c</a>
+                <a href="/admin/images.html" class="nav-item active">ðŸ–¼ï¸ HÃ¬nh áº£nh</a>
+                <a href="/admin/banner.html" class="nav-item">ðŸŽ¨ Táº¡o Banner</a>
+                <a href="/admin/ai-studio.html" class="nav-item">ðŸ¤– AI Studio</a>
+                <a href="/admin/auto-news.html" class="nav-item">🔄 Auto-News</a>
+                <a href="/admin/synctune.html" class="nav-item">ðŸŽµ SyncTune</a>
+                <a href="/admin/tools.html" class="nav-item">ðŸ§° CÃ´ng cá»¥</a>
                 <div class="nav-divider"></div>
-                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
-                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+                <a href="/" class="nav-item" target="_blank">ðŸŒ Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">ðŸšª ÄÄƒng xuáº¥t</a>
             </nav>
         </aside>
 
         <main class="admin-main">
             <header class="admin-header">
-                <h1>🖼️ Quản lý hình ảnh</h1>
+                <h1>ðŸ–¼ï¸ Quáº£n lÃ½ hÃ¬nh áº£nh</h1>
             </header>
 
             <div class="admin-content">
                 <!-- Drag & Drop Multi Upload -->
                 <div class="card" style="margin-bottom: 24px;">
                     <div class="card-header">
-                        <h3>Upload hình ảnh</h3>
+                        <h3>Upload hÃ¬nh áº£nh</h3>
                     </div>
                     <div style="padding: 24px;">
                         <div class="drop-zone" id="dropZone" onclick="document.getElementById('multiFiles').click()">
-                            <p class="drop-zone-text">📁 <strong>Kéo thả</strong> hoặc <strong>click</strong> để chọn
-                                ảnh (hỗ trợ nhiều ảnh)</p>
+                            <p class="drop-zone-text">ðŸ“ <strong>KÃ©o tháº£</strong> hoáº·c <strong>click</strong> Ä‘á»ƒ chá»n
+                                áº£nh (há»— trá»£ nhiá»u áº£nh)</p>
                         </div>
                         <input type="file" id="multiFiles" accept="image/*" multiple style="display:none"
                             onchange="handleFiles(this.files)">
                         <div class="upload-preview" id="uploadPreview"></div>
                         <button class="btn btn-primary" id="btnUploadAll" style="margin-top: 16px; display: none;"
-                            onclick="uploadAll()">🚀 Upload tất cả</button>
+                            onclick="uploadAll()">ðŸš€ Upload táº¥t cáº£</button>
                     </div>
                 </div>
 
@@ -156,17 +157,17 @@
                 <div class="image-stats" id="imageStats"></div>
                 <div class="search-bar">
                     <input type="text" id="imageSearch" class="form-input"
-                        placeholder="🔍 Tìm kiếm theo tên, alt text..." oninput="filterImages()">
+                        placeholder="ðŸ” TÃ¬m kiáº¿m theo tÃªn, alt text..." oninput="filterImages()">
                     <select id="imageSortBy" class="form-select" style="width: auto;" onchange="filterImages()">
-                        <option value="newest">Mới nhất</option>
-                        <option value="oldest">Cũ nhất</option>
-                        <option value="name">Tên A-Z</option>
+                        <option value="newest">Má»›i nháº¥t</option>
+                        <option value="oldest">CÅ© nháº¥t</option>
+                        <option value="name">TÃªn A-Z</option>
                     </select>
                 </div>
 
                 <!-- Images Grid -->
                 <div class="image-grid" id="imagesGrid">
-                    <p style="grid-column: 1/-1; text-align: center; padding: 60px;">Đang tải...</p>
+                    <p style="grid-column: 1/-1; text-align: center; padding: 60px;">Äang táº£i...</p>
                 </div>
             </div>
         </main>
@@ -199,7 +200,7 @@
                 pendingFiles.push(file);
                 const div = document.createElement('div');
                 div.className = 'upload-preview-item';
-                div.innerHTML = `<img src="${URL.createObjectURL(file)}"><button class="remove" onclick="removePending(${pendingFiles.length - 1}, this)">✕</button>`;
+                div.innerHTML = `<img src="${URL.createObjectURL(file)}"><button class="remove" onclick="removePending(${pendingFiles.length - 1}, this)">âœ•</button>`;
                 preview.appendChild(div);
             }
             if (pendingFiles.length > 0) document.getElementById('btnUploadAll').style.display = 'inline-flex';
@@ -218,20 +219,20 @@
             const btn = document.getElementById('btnUploadAll');
             const files = pendingFiles.filter(Boolean);
             if (files.length === 0) return;
-            btn.disabled = true; btn.textContent = `⏳ Upload 0/${files.length}...`;
+            btn.disabled = true; btn.textContent = `â³ Upload 0/${files.length}...`;
             let success = 0;
             for (let i = 0; i < files.length; i++) {
                 try {
                     await uploadImageFile(files[i]);
                     success++;
                 } catch (e) { console.error(e); }
-                btn.textContent = `⏳ Upload ${success}/${files.length}...`;
+                btn.textContent = `â³ Upload ${success}/${files.length}...`;
             }
-            showToast(`✅ Upload ${success}/${files.length} ảnh thành công!`, 'success');
+            showToast(`âœ… Upload ${success}/${files.length} áº£nh thÃ nh cÃ´ng!`, 'success');
             pendingFiles = [];
             document.getElementById('uploadPreview').innerHTML = '';
             btn.style.display = 'none';
-            btn.disabled = false; btn.textContent = '🚀 Upload tất cả';
+            btn.disabled = false; btn.textContent = 'ðŸš€ Upload táº¥t cáº£';
             await loadAllImages();
         }
 
@@ -242,14 +243,14 @@
                 updateStats();
                 filterImages();
             } catch (error) {
-                document.getElementById('imagesGrid').innerHTML = `<p style="color: red; grid-column: 1/-1; text-align: center;">Lỗi: ${error.message}</p>`;
+                document.getElementById('imagesGrid').innerHTML = `<p style="color: red; grid-column: 1/-1; text-align: center;">Lá»—i: ${error.message}</p>`;
             }
         }
 
         function updateStats() {
             const el = document.getElementById('imageStats');
             el.innerHTML = `
-                <div class="stat">📊 Tổng: <strong>${allImages.length}</strong> ảnh</div>
+                <div class="stat">ðŸ“Š Tá»•ng: <strong>${allImages.length}</strong> áº£nh</div>
             `;
         }
 
@@ -273,7 +274,7 @@
         function renderImages(images) {
             const grid = document.getElementById('imagesGrid');
             if (images.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;">Không tìm thấy ảnh nào.</p>';
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;">KhÃ´ng tÃ¬m tháº¥y áº£nh nÃ o.</p>';
                 return;
             }
 
@@ -282,10 +283,10 @@
                     <img src="${img.url}" alt="${escapeHtml(img.alt_text || img.filename || '')}" loading="lazy">
                     <div class="image-card-info" style="padding: 12px;">
                         <p style="font-weight: 600; font-size: 0.85rem; color: #334155; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(img.filename || '')}">${escapeHtml((img.filename || '').substring(0, 35))}</p>
-                        <p style="font-size: 0.78rem; color: #94a3b8; margin: 0 0 8px;">${escapeHtml(img.alt_text || 'Chưa có alt text')}</p>
+                        <p style="font-size: 0.78rem; color: #94a3b8; margin: 0 0 8px;">${escapeHtml(img.alt_text || 'ChÆ°a cÃ³ alt text')}</p>
                         <div style="display: flex; gap: 6px;">
-                            <button onclick="copyImageUrl('${img.url}')" style="font-size:0.78rem;background:#6366f1;color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;">📋 Copy</button>
-                            <button onclick="confirmDeleteImage('${img.id}')" style="font-size:0.78rem;background:#ef4444;color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;">🗑️ Xóa</button>
+                            <button onclick="copyImageUrl('${img.url}')" style="font-size:0.78rem;background:#6366f1;color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;">ðŸ“‹ Copy</button>
+                            <button onclick="confirmDeleteImage('${img.id}')" style="font-size:0.78rem;background:#ef4444;color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;">ðŸ—‘ï¸ XÃ³a</button>
                         </div>
                     </div>
                 </div>
@@ -293,17 +294,17 @@
         }
 
         function copyImageUrl(url) {
-            navigator.clipboard.writeText(url).then(() => showToast('📋 Đã copy URL!', 'success'));
+            navigator.clipboard.writeText(url).then(() => showToast('ðŸ“‹ ÄÃ£ copy URL!', 'success'));
         }
 
         async function confirmDeleteImage(id) {
-            if (!confirm('Xóa ảnh này?')) return;
+            if (!confirm('XÃ³a áº£nh nÃ y?')) return;
             try {
                 await API.deleteImage(id);
-                showToast('✅ Đã xóa!', 'success');
+                showToast('âœ… ÄÃ£ xÃ³a!', 'success');
                 await loadAllImages();
             } catch (e) {
-                showToast('Lỗi: ' + e.message, 'error');
+                showToast('Lá»—i: ' + e.message, 'error');
             }
         }
     </script>

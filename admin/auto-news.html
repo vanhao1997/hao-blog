@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-News Clone - Admin</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/css/admin.css">
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #22c55e;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <a href="index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
+            <nav class="admin-nav">
+                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
+                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
+                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
+                <a href="/admin/newsletter.html" class="nav-item">📧 Subscribers</a>
+                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
+                <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
+                <a href="/admin/auto-news.html" class="nav-item active">🔄 Auto-News</a>
+                <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
+                <a href="/admin/tools.html" class="nav-item">🧰 Công cụ</a>
+                <a href="/admin/settings.html" class="nav-item">⚙️ Cấu hình</a>
+                <div class="nav-divider"></div>
+                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>🔄 Auto-News Cloner (RSS)</h1>
+                <div class="user-info">
+                    <span id="userName">Admin</span>
+                    <div class="user-avatar">A</div>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div class="card">
+                    <div class="card-header"
+                        style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3>Hệ Thống Tự Động Cập Nhật Tin Tức</h3>
+                            <p style="color: #64748b; font-size: 0.9rem; margin-top: 4px;">Cào RSS từ báo lớn -> Lọc từ
+                                khóa -> AI Viết lại Output chuẩn SEO -> Đăng lên Blog</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-weight: 600; color: #334155;">Kích hoạt Bot Cronjob</span>
+                            <label class="switch">
+                                <input type="checkbox" id="setAutoCloneStatus">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding: 24px;">
+                        <form id="autoNewsForm" style="display: flex; flex-direction: column; gap: 20px;">
+                            <div>
+                                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Nguồn RSS
+                                    Feeds</label>
+                                <textarea id="setRssSources" class="form-input"
+                                    style="width: 100%; min-height: 100px; font-family: monospace; resize: vertical; padding: 12px;"
+                                    placeholder="https://vnexpress.net/rss/so-hoa.rss&#10;https://cafef.vn/cong-nghe.rss"></textarea>
+                                <small style="color: #64748b; margin-top: 6px; display: block;">Mỗi đường link RSS nằm
+                                    trên một dòng.</small>
+                            </div>
+
+                            <div>
+                                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Từ Khóa Lọc
+                                    (Keywords Filter)</label>
+                                <input type="text" id="setKeywords" class="form-input"
+                                    style="width: 100%; padding: 12px;"
+                                    placeholder="AI, Marketing, Facebook, Tiktok, SEO...">
+                                <small style="color: #64748b; margin-top: 6px; display: block;">Hệ thống CHỈ cào bài khi
+                                    tiêu đề gốc chứa ít nhất 1 từ khóa này (ngăn cách bởi dấu phẩy). Bỏ trống để cào tất
+                                    cả.</small>
+                            </div>
+
+                            <div>
+                                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Trạng Thái Hậu Kỳ
+                                    (Sau khi AI viết xong)</label>
+                                <select id="setPostStatus" class="form-input"
+                                    style="width: 100%; padding: 12px; cursor: pointer;">
+                                    <option value="draft">📁 Lưu thành Bản Nháp (Khuyên dùng - Để Admin duyệt lại)
+                                    </option>
+                                    <option value="publish">🚀 Xuất bản ngay lập tức</option>
+                                </select>
+                            </div>
+
+                            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 10px 0;">
+
+                            <div
+                                style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px dashed #cbd5e1; display:flex; flex-direction:column; gap:12px;">
+                                <h4 style="font-weight: 700; color: #0f172a;">⚡ Cấu hình Cronjob Bắt Buộc (cPanel)</h4>
+                                <p style="color: #64748b; font-size: 0.9rem; margin: 0;">Sao chép và dán lệnh sau vào
+                                    công cụ <b>Cron Jobs</b> trên Azdigi / cPanel. Chạy mỗi 1 giờ (
+                                    <code>0 * * * *</code> ).</p>
+                                <code
+                                    style="display: block; background: #1e293b; color: #22c55e; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; user-select: all;">wget -q -O /dev/null "https://nguyenvanhao.name.vn/api/cron-news.php?token=hao_cron_secret_1997"</code>
+                                <small style="color: #ef4444; font-weight: 500;">Lưu ý: API Key AI (OpenRouter) phải
+                                    được cài đặt trong mục "Cấu hình" thì Auto-News mới gọi được bot.</small>
+                            </div>
+
+                            <div style="display: flex; gap: 12px; margin-top: 10px;">
+                                <button type="submit" class="btn btn-primary" id="btnSaveAutoNews"
+                                    style="padding: 12px 32px;">💾 Lưu Cấu Hình Bot</button>
+                                <button type="button" class="btn btn-secondary" id="btnRunManual"
+                                    style="padding: 12px 24px; background: #e2e8f0; color: #1e293b;">▶️ Chạy Lệnh Cào
+                                    Ngay Lúc Này</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/admin/js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            loadSettings();
+
+            document.getElementById('autoNewsForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btnSaveAutoNews');
+                btn.innerHTML = '⏳ Đang lưu...';
+                btn.disabled = true;
+
+                try {
+                    const payload = {
+                        auto_news_enabled: document.getElementById('setAutoCloneStatus').checked ? "1" : "0",
+                        auto_news_rss: document.getElementById('setRssSources').value,
+                        auto_news_keywords: document.getElementById('setKeywords').value,
+                        auto_news_action: document.getElementById('setPostStatus').value
+                    };
+
+                    const res = await API.request('/settings.php', {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (res.success) {
+                        showToast('Đã lưu cấu hình Bot thành công', 'success');
+                    } else {
+                        showToast('Lỗi: ' + res.error, 'error');
+                    }
+                } catch (e) {
+                    showToast('Lỗi kết nối tới Server', 'error');
+                }
+
+                btn.innerHTML = '💾 Lưu Cấu Hình Bot';
+                btn.disabled = false;
+            });
+
+            document.getElementById('btnRunManual').addEventListener('click', async () => {
+                const btn = document.getElementById('btnRunManual');
+                btn.innerHTML = '⏳ Đang chạy Cron... (Đợi ~60s)';
+                btn.disabled = true;
+
+                try {
+                    const res = await fetch('/api/cron-news.php?token=hao_cron_secret_1997&manual=1');
+                    const text = await res.text();
+
+                    if (res.ok) {
+                        showToast('Cron chạy xong! Kiểm tra bài viết mới nhé.', 'success');
+                        console.log('Cron Output:', text);
+                    } else {
+                        showToast('Cron báo lỗi: ' + res.statusText, 'error');
+                        console.error('Cron Error:', text);
+                    }
+                } catch (e) {
+                    showToast('Cron chạy thất bại.', 'error');
+                }
+
+                btn.innerHTML = '▶️ Chạy Lệnh Cào Ngay Lúc Này';
+                btn.disabled = false;
+            });
+        });
+
+        async function loadSettings() {
+            try {
+                const res = await API.request('/settings.php');
+                if (res && res.data) {
+                    document.getElementById('setAutoCloneStatus').checked = (res.data.auto_news_enabled === "1");
+                    if (res.data.auto_news_rss) document.getElementById('setRssSources').value = res.data.auto_news_rss;
+                    if (res.data.auto_news_keywords) document.getElementById('setKeywords').value = res.data.auto_news_keywords;
+                    if (res.data.auto_news_action) document.getElementById('setPostStatus').value = res.data.auto_news_action;
+                }
+            } catch (error) {
+                showToast('Lỗi tải cấu hình Bot', 'error');
+            }
+        }
+    </script>
+</body>
+
+</html>

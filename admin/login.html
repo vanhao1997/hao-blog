@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập - Admin</title>
+    <title>ÄÄƒng nháº­p - Admin</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -141,7 +141,7 @@
         <div class="login-card">
             <div class="login-header">
                 <div class="login-logo"><span>H</span> Admin Panel</div>
-                <p style="color: #6b7280;">Đăng nhập để quản lý blog</p>
+                <p style="color: #6b7280;">ÄÄƒng nháº­p Ä‘á»ƒ quáº£n lÃ½ blog</p>
             </div>
 
             <form id="loginForm">
@@ -150,14 +150,14 @@
                     <input type="email" id="email" class="form-input" placeholder="admin@example.com" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Mật khẩu</label>
-                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                    <label class="form-label">Máº­t kháº©u</label>
+                    <input type="password" id="password" class="form-input" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required>
                 </div>
-                <button type="submit" class="btn-login" id="loginBtn">Đăng nhập</button>
+                <button type="submit" class="btn-login" id="loginBtn">ÄÄƒng nháº­p</button>
             </form>
 
             <div id="loginError" class="error-msg"></div>
-            <a href="../index.html" class="back-link">← Về trang chủ</a>
+            <a href="../index.html" class="back-link">â† Vá» trang chá»§</a>
         </div>
     </div>
 
@@ -177,7 +177,7 @@
             const btn = document.getElementById('loginBtn');
 
             btn.disabled = true;
-            btn.textContent = 'Đang đăng nhập...';
+            btn.textContent = 'Äang Ä‘Äƒng nháº­p...';
             errorDiv.style.display = 'none';
 
             try {
@@ -185,14 +185,14 @@
                 if (response.success) {
                     window.location.href = 'index';
                 } else {
-                    throw new Error(response.message || 'Đăng nhập thất bại');
+                    throw new Error(response.message || 'ÄÄƒng nháº­p tháº¥t báº¡i');
                 }
             } catch (error) {
                 errorDiv.textContent = error.message;
                 errorDiv.style.display = 'block';
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Đăng nhập';
+                btn.textContent = 'ÄÄƒng nháº­p';
             }
         });
     </script>

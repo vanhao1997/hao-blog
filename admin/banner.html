@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Banner - Admin Panel</title>
+    <title>Táº¡o Banner - Admin Panel</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -349,25 +349,26 @@
                 <span>Admin</span>
             </a>
             <nav class="admin-nav">
-                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
-                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
-                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
-                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
-                <a href="/admin/banner.html" class="nav-item active">🎨 Tạo Banner</a>
-                <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
-                <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
-                <a href="/admin/tools.html" class="nav-item">🧰 Công cụ</a>
+                <a href="/admin/index.html" class="nav-item">ðŸ“Š Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">ðŸ“ BÃ i viáº¿t</a>
+                <a href="/admin/categories.html" class="nav-item">ðŸ“‚ Danh má»¥c</a>
+                <a href="/admin/images.html" class="nav-item">ðŸ–¼ï¸ HÃ¬nh áº£nh</a>
+                <a href="/admin/banner.html" class="nav-item active">ðŸŽ¨ Táº¡o Banner</a>
+                <a href="/admin/ai-studio.html" class="nav-item">ðŸ¤– AI Studio</a>
+                <a href="/admin/auto-news.html" class="nav-item">🔄 Auto-News</a>
+                <a href="/admin/synctune.html" class="nav-item">ðŸŽµ SyncTune</a>
+                <a href="/admin/tools.html" class="nav-item">ðŸ§° CÃ´ng cá»¥</a>
                 <div class="nav-divider"></div>
-                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
-                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+                <a href="/" class="nav-item" target="_blank">ðŸŒ Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">ðŸšª ÄÄƒng xuáº¥t</a>
             </nav>
         </aside>
 
         <main class="admin-main">
             <header class="admin-header">
                 <div class="header-left">
-                    <button id="menuCta" class="action-btn" style="display: none; margin-right: 16px;">☰</button>
-                    <h1>Tạo Banner</h1>
+                    <button id="menuCta" class="action-btn" style="display: none; margin-right: 16px;">â˜°</button>
+                    <h1>Táº¡o Banner</h1>
                 </div>
                 <div class="user-info">
                     <span>Admin</span>
@@ -380,7 +381,7 @@
                     <div class="main-generator-grid">
                         <div class="controls">
                             <div class="input-group">
-                                <div class="section-title">Danh mục</div>
+                                <div class="section-title">Danh má»¥c</div>
                                 <div class="category-tabs">
                                     <button class="category-tab active" data-category="marketing">Marketing</button>
                                     <button class="category-tab" data-category="ai">AI</button>
@@ -389,43 +390,43 @@
                             </div>
 
                             <div class="input-group">
-                                <div class="section-title">Kiểu Template</div>
+                                <div class="section-title">Kiá»ƒu Template</div>
                                 <div class="template-grid" id="templateGrid"></div>
                             </div>
 
                             <div class="input-group">
-                                <label class="banner-label">Tiêu đề bài viết</label>
+                                <label class="banner-label">TiÃªu Ä‘á» bÃ i viáº¿t</label>
                                 <textarea id="inputTitle" class="banner-textarea"
-                                    placeholder="Nhập tiêu đề...">Chiến Lược Digital Marketing Hiệu Quả Cho Doanh Nghiệp Nhỏ</textarea>
+                                    placeholder="Nháº­p tiÃªu Ä‘á»...">Chiáº¿n LÆ°á»£c Digital Marketing Hiá»‡u Quáº£ Cho Doanh Nghiá»‡p Nhá»</textarea>
                             </div>
 
                             <div class="input-group">
-                                <div class="section-title">Màu chủ đạo</div>
+                                <div class="section-title">MÃ u chá»§ Ä‘áº¡o</div>
                                 <div class="btn-grid" id="themeGrid"></div>
                             </div>
 
                             <div class="input-group">
-                                <div class="section-title">Họa tiết nền</div>
+                                <div class="section-title">Há»a tiáº¿t ná»n</div>
                                 <div class="btn-grid" id="patternGrid"></div>
                             </div>
 
                             <div class="input-group">
-                                <div class="section-title">🔤 Font chữ</div>
+                                <div class="section-title">ðŸ”¤ Font chá»¯</div>
                                 <div class="btn-grid" id="fontGrid"></div>
                                 <div class="custom-font-row">
-                                    <input type="text" id="customFontInput" placeholder="Nhập tên Google Font..." />
-                                    <button onclick="loadCustomFont()">Tải font</button>
+                                    <input type="text" id="customFontInput" placeholder="Nháº­p tÃªn Google Font..." />
+                                    <button onclick="loadCustomFont()">Táº£i font</button>
                                 </div>
                             </div>
 
                             <div class="actions">
-                                <button class="btn-action btn-shuffle" id="btnShuffle" title="Ngẫu nhiên vị trí icon">
+                                <button class="btn-action btn-shuffle" id="btnShuffle" title="Ngáº«u nhiÃªn vá»‹ trÃ­ icon">
                                     Shuffle</button>
-                                <button class="btn-action btn-save-lib" id="btnSaveLibrary">Lưu vào thư viện</button>
+                                <button class="btn-action btn-save-lib" id="btnSaveLibrary">LÆ°u vÃ o thÆ° viá»‡n</button>
                             </div>
 
                             <div class="actions">
-                                <button class="btn-action btn-primary-gen" id="btnDownloadPNG">Tải xuống
+                                <button class="btn-action btn-primary-gen" id="btnDownloadPNG">Táº£i xuá»‘ng
                                     (PNG)</button>
                             </div>
                         </div>
@@ -445,7 +446,7 @@
     <script src="../js/api.js?v=2"></script>
     <script src="/admin/js/admin.js?v=20260323c"></script>
     <script>
-        // Auth guard — redirect to login if not authenticated
+        // Auth guard â€” redirect to login if not authenticated
         document.addEventListener('DOMContentLoaded', async () => {
             await checkAuth();
         });
@@ -477,22 +478,22 @@
         // Templates per category
         const templates = {
             marketing: [
-                { name: 'Growth', icons: ['📈', '💰', '🚀', '✨'] },
-                { name: 'Social', icons: ['📱', '💬', '❤️', '🔔'] },
-                { name: 'Analytics', icons: ['📊', '📉', '🎯', '💡'] },
-                { name: 'Ads', icons: ['💸', '🎪', '📣', '⭐'] }
+                { name: 'Growth', icons: ['ðŸ“ˆ', 'ðŸ’°', 'ðŸš€', 'âœ¨'] },
+                { name: 'Social', icons: ['ðŸ“±', 'ðŸ’¬', 'â¤ï¸', 'ðŸ””'] },
+                { name: 'Analytics', icons: ['ðŸ“Š', 'ðŸ“‰', 'ðŸŽ¯', 'ðŸ’¡'] },
+                { name: 'Ads', icons: ['ðŸ’¸', 'ðŸŽª', 'ðŸ“£', 'â­'] }
             ],
             ai: [
-                { name: 'Robot', icons: ['🤖', '⚡', '🧠', '💡'] },
-                { name: 'Neural', icons: ['🧬', '🔮', '✨', '🌐'] },
-                { name: 'Data', icons: ['📡', '🔢', '⚙️', '🔗'] },
-                { name: 'Future', icons: ['🚀', '🌟', '💎', '🔥'] }
+                { name: 'Robot', icons: ['ðŸ¤–', 'âš¡', 'ðŸ§ ', 'ðŸ’¡'] },
+                { name: 'Neural', icons: ['ðŸ§¬', 'ðŸ”®', 'âœ¨', 'ðŸŒ'] },
+                { name: 'Data', icons: ['ðŸ“¡', 'ðŸ”¢', 'âš™ï¸', 'ðŸ”—'] },
+                { name: 'Future', icons: ['ðŸš€', 'ðŸŒŸ', 'ðŸ’Ž', 'ðŸ”¥'] }
             ],
             tool: [
-                { name: 'Build', icons: ['🛠️', '⚙️', '🔧', '📦'] },
-                { name: 'Code', icons: ['💻', '🖥️', '⌨️', '🖱️'] },
-                { name: 'Mobile', icons: ['📱', '📲', '🔌', '🔋'] },
-                { name: 'Cloud', icons: ['☁️', '🌐', '📡', '🔒'] }
+                { name: 'Build', icons: ['ðŸ› ï¸', 'âš™ï¸', 'ðŸ”§', 'ðŸ“¦'] },
+                { name: 'Code', icons: ['ðŸ’»', 'ðŸ–¥ï¸', 'âŒ¨ï¸', 'ðŸ–±ï¸'] },
+                { name: 'Mobile', icons: ['ðŸ“±', 'ðŸ“²', 'ðŸ”Œ', 'ðŸ”‹'] },
+                { name: 'Cloud', icons: ['â˜ï¸', 'ðŸŒ', 'ðŸ“¡', 'ðŸ”’'] }
             ]
         };
 
@@ -514,14 +515,14 @@
         };
 
         const patterns = {
-            grid: { name: 'Dots', icon: '⬤' },
-            lines: { name: 'Lines', icon: '═' },
-            waves: { name: 'Waves', icon: '〰️' },
-            circles: { name: 'Circles', icon: '◯' },
-            triangles: { name: 'Triangles', icon: '△' },
-            hexagons: { name: 'Hex', icon: '⬡' },
-            noise: { name: 'Noise', icon: '▓' },
-            none: { name: 'None', icon: '∅' }
+            grid: { name: 'Dots', icon: 'â¬¤' },
+            lines: { name: 'Lines', icon: 'â•' },
+            waves: { name: 'Waves', icon: 'ã€°ï¸' },
+            circles: { name: 'Circles', icon: 'â—¯' },
+            triangles: { name: 'Triangles', icon: 'â–³' },
+            hexagons: { name: 'Hex', icon: 'â¬¡' },
+            noise: { name: 'Noise', icon: 'â–“' },
+            none: { name: 'None', icon: 'âˆ…' }
         };
 
         function generateRandomPositions() {
@@ -619,14 +620,14 @@
         async function loadCustomFont() {
             const input = document.getElementById('customFontInput');
             const fontName = input.value.trim();
-            if (!fontName) { showToast('Vui lòng nhập tên font', 'error'); return; }
+            if (!fontName) { showToast('Vui lÃ²ng nháº­p tÃªn font', 'error'); return; }
 
             // Check if font already loaded
             if (availableFonts.some(f => f.name.toLowerCase() === fontName.toLowerCase())) {
                 currentFont = availableFonts.find(f => f.name.toLowerCase() === fontName.toLowerCase()).name;
                 buildFontButtons();
                 draw();
-                showToast(`✅ Đã chọn font ${fontName}`, 'success');
+                showToast(`âœ… ÄÃ£ chá»n font ${fontName}`, 'success');
                 return;
             }
 
@@ -637,7 +638,7 @@
             link.href = `https://fonts.googleapis.com/css2?family=${encodedName}:wght@400;700;800;900&display=swap`;
             document.head.appendChild(link);
 
-            showToast(`⏳ Đang tải font "${fontName}"...`, 'info');
+            showToast(`â³ Äang táº£i font "${fontName}"...`, 'info');
 
             // Wait for font to load
             try {
@@ -648,9 +649,9 @@
                 buildFontButtons();
                 draw();
                 input.value = '';
-                showToast(`✅ Đã tải font "${fontName}"!`, 'success');
+                showToast(`âœ… ÄÃ£ táº£i font "${fontName}"!`, 'success');
             } catch (err) {
-                showToast(`❌ Không tìm thấy font "${fontName}" trên Google Fonts`, 'error');
+                showToast(`âŒ KhÃ´ng tÃ¬m tháº¥y font "${fontName}" trÃªn Google Fonts`, 'error');
             }
         }
 
@@ -818,7 +819,7 @@
         }
 
         function slugify(text) {
-            return text.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'd').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 50);
+            return text.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/Ä‘/g, 'd').replace(/Ä/g, 'd').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 50);
         }
 
         document.getElementById('inputTitle').addEventListener('input', draw);
@@ -840,7 +841,7 @@
             const btn = document.getElementById('btnSaveLibrary');
             const originalText = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '⏳ Đang lưu...';
+            btn.innerHTML = 'â³ Äang lÆ°u...';
 
             // Convert canvas to blob
             canvas.toBlob(async (blob) => {
@@ -855,13 +856,13 @@
                 try {
                     const result = await API.uploadImage(formData);
                     if (result && result.success) {
-                        showToast('✅ Đã lưu vào thư viện!', 'success');
+                        showToast('âœ… ÄÃ£ lÆ°u vÃ o thÆ° viá»‡n!', 'success');
                     } else {
-                        throw new Error(result.error || 'Lỗi không xác định');
+                        throw new Error(result.error || 'Lá»—i khÃ´ng xÃ¡c Ä‘á»‹nh');
                     }
                 } catch (error) {
                     console.error('Save failed:', error);
-                    showToast('❌ Lỗi lưu ảnh: ' + error.message, 'error');
+                    showToast('âŒ Lá»—i lÆ°u áº£nh: ' + error.message, 'error');
                 } finally {
                     btn.disabled = false;
                     btn.innerHTML = originalText;

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công cụ Admin - Hao Blog</title>
+    <title>CÃ´ng cá»¥ Admin - Hao Blog</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -150,23 +150,24 @@
         <aside class="admin-sidebar">
             <a href="/admin/index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
             <nav class="admin-nav">
-                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
-                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
-                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
-                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
-                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
-                <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
-                <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
-                <a href="/admin/tools.html" class="nav-item active">🧰 Công cụ</a>
+                <a href="/admin/index.html" class="nav-item">ðŸ“Š Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">ðŸ“ BÃ i viáº¿t</a>
+                <a href="/admin/categories.html" class="nav-item">ðŸ“‚ Danh má»¥c</a>
+                <a href="/admin/images.html" class="nav-item">ðŸ–¼ï¸ HÃ¬nh áº£nh</a>
+                <a href="/admin/banner.html" class="nav-item">ðŸŽ¨ Táº¡o Banner</a>
+                <a href="/admin/ai-studio.html" class="nav-item">ðŸ¤– AI Studio</a>
+                <a href="/admin/auto-news.html" class="nav-item">🔄 Auto-News</a>
+                <a href="/admin/synctune.html" class="nav-item">ðŸŽµ SyncTune</a>
+                <a href="/admin/tools.html" class="nav-item active">ðŸ§° CÃ´ng cá»¥</a>
                 <div class="nav-divider"></div>
-                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
-                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+                <a href="/" class="nav-item" target="_blank">ðŸŒ Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">ðŸšª ÄÄƒng xuáº¥t</a>
             </nav>
         </aside>
 
         <main class="admin-main">
             <header class="admin-header">
-                <h1>🧰 Công cụ Admin</h1>
+                <h1>ðŸ§° CÃ´ng cá»¥ Admin</h1>
             </header>
 
             <div class="admin-content">
@@ -174,39 +175,39 @@
                     <!-- SEO Audit -->
                     <div class="tool-card">
                         <div class="tool-card-header">
-                            <h3>🔍 SEO Audit tự động</h3>
+                            <h3>ðŸ” SEO Audit tá»± Ä‘á»™ng</h3>
                             <button class="btn btn-primary" onclick="runSeoAudit()" id="btnSeoAudit"
-                                style="font-size: 0.85rem;">Quét SEO</button>
+                                style="font-size: 0.85rem;">QuÃ©t SEO</button>
                         </div>
                         <div class="tool-card-body" id="seoAuditBody">
-                            <p style="color: #94a3b8; text-align: center; padding: 20px;">Nhấn "Quét SEO" để kiểm tra
-                                tất cả bài viết đã xuất bản.</p>
+                            <p style="color: #94a3b8; text-align: center; padding: 20px;">Nháº¥n "QuÃ©t SEO" Ä‘á»ƒ kiá»ƒm tra
+                                táº¥t cáº£ bÃ i viáº¿t Ä‘Ã£ xuáº¥t báº£n.</p>
                         </div>
                     </div>
 
                     <!-- Media Cleanup -->
                     <div class="tool-card">
                         <div class="tool-card-header">
-                            <h3>🧹 Media Cleanup</h3>
+                            <h3>ðŸ§¹ Media Cleanup</h3>
                             <button class="btn btn-secondary" onclick="runMediaCleanup()" id="btnMediaCleanup"
-                                style="font-size: 0.85rem;">Quét ảnh orphan</button>
+                                style="font-size: 0.85rem;">QuÃ©t áº£nh orphan</button>
                         </div>
                         <div class="tool-card-body" id="mediaCleanupBody">
-                            <p style="color: #94a3b8; text-align: center; padding: 20px;">Tìm ảnh trong thư viện không
-                                được sử dụng bởi bài viết nào.</p>
+                            <p style="color: #94a3b8; text-align: center; padding: 20px;">TÃ¬m áº£nh trong thÆ° viá»‡n khÃ´ng
+                                Ä‘Æ°á»£c sá»­ dá»¥ng bá»Ÿi bÃ i viáº¿t nÃ o.</p>
                         </div>
                     </div>
 
                     <!-- Backup & Export -->
                     <div class="tool-card">
                         <div class="tool-card-header">
-                            <h3>💾 Backup & Export</h3>
+                            <h3>ðŸ’¾ Backup & Export</h3>
                             <button class="btn btn-primary" onclick="runBackup()" id="btnBackup"
-                                style="font-size: 0.85rem;">📦 Tải backup JSON</button>
+                                style="font-size: 0.85rem;">ðŸ“¦ Táº£i backup JSON</button>
                         </div>
                         <div class="tool-card-body" id="backupBody">
-                            <p style="color: #94a3b8; text-align: center; padding: 20px;">Xuất toàn bộ dữ liệu (bài
-                                viết, danh mục, hình ảnh) ra file JSON.</p>
+                            <p style="color: #94a3b8; text-align: center; padding: 20px;">Xuáº¥t toÃ n bá»™ dá»¯ liá»‡u (bÃ i
+                                viáº¿t, danh má»¥c, hÃ¬nh áº£nh) ra file JSON.</p>
                         </div>
                     </div>
                 </div>
@@ -225,7 +226,7 @@
         async function runSeoAudit() {
             const btn = document.getElementById('btnSeoAudit');
             const body = document.getElementById('seoAuditBody');
-            btn.disabled = true; btn.textContent = '⏳ Đang quét...';
+            btn.disabled = true; btn.textContent = 'â³ Äang quÃ©t...';
             try {
                 const res = await API.request('/tools.php?action=seo-audit');
                 const { data, avg_score, total } = res;
@@ -233,8 +234,8 @@
                 const scoreClass = avg_score >= 80 ? 'score-good' : avg_score >= 50 ? 'score-warn' : 'score-bad';
                 let html = `
                     <div class="stats-row">
-                        <div class="stat-chip" style="background: #f1f5f9; color: #334155;">📝 ${total} bài viết</div>
-                        <div class="stat-chip ${scoreClass}">Điểm TB: ${avg_score}/100</div>
+                        <div class="stat-chip" style="background: #f1f5f9; color: #334155;">ðŸ“ ${total} bÃ i viáº¿t</div>
+                        <div class="stat-chip ${scoreClass}">Äiá»ƒm TB: ${avg_score}/100</div>
                     </div>
                     <div style="max-height: 500px; overflow-y: auto;">
                 `;
@@ -249,15 +250,15 @@
                             </div>
                             <div>
                                 ${post.issues.length === 0
-                            ? '<span class="audit-ok">✅ Perfect</span>'
-                            : `<span class="audit-issues">⚠️ ${post.issues.length} issue(s)</span>`}
+                            ? '<span class="audit-ok">âœ… Perfect</span>'
+                            : `<span class="audit-issues">âš ï¸ ${post.issues.length} issue(s)</span>`}
                             </div>
                         </div>
                     `;
                     if (post.issues.length > 0) {
                         html += `<div style="padding: 4px 16px 12px 72px;">`;
                         post.issues.forEach(issue => {
-                            html += `<div style="font-size: 0.78rem; color: #ef4444; padding: 2px 0;">• ${escapeHtml(issue)}</div>`;
+                            html += `<div style="font-size: 0.78rem; color: #ef4444; padding: 2px 0;">â€¢ ${escapeHtml(issue)}</div>`;
                         });
                         html += `</div>`;
                     }
@@ -266,9 +267,9 @@
                 html += '</div>';
                 body.innerHTML = html;
             } catch (e) {
-                body.innerHTML = `<p style="color: #ef4444;">Lỗi: ${e.message}</p>`;
+                body.innerHTML = `<p style="color: #ef4444;">Lá»—i: ${e.message}</p>`;
             } finally {
-                btn.disabled = false; btn.textContent = 'Quét SEO';
+                btn.disabled = false; btn.textContent = 'QuÃ©t SEO';
             }
         }
 
@@ -278,30 +279,30 @@
         async function runMediaCleanup() {
             const btn = document.getElementById('btnMediaCleanup');
             const body = document.getElementById('mediaCleanupBody');
-            btn.disabled = true; btn.textContent = '⏳ Đang quét...';
+            btn.disabled = true; btn.textContent = 'â³ Äang quÃ©t...';
             try {
                 const res = await API.request('/tools.php?action=media-cleanup');
                 orphanImages = res.orphans || [];
 
                 let html = `
                     <div class="stats-row">
-                        <div class="stat-chip" style="background: #dbeafe; color: #1e40af;">📷 Tổng: ${res.total_images}</div>
-                        <div class="stat-chip" style="background: #dcfce7; color: #166534;">✅ Đang dùng: ${res.used_count}</div>
-                        <div class="stat-chip" style="background: ${orphanImages.length > 0 ? '#fee2e2' : '#f1f5f9'}; color: ${orphanImages.length > 0 ? '#991b1b' : '#475569'};">🗑️ Orphan: ${orphanImages.length}</div>
+                        <div class="stat-chip" style="background: #dbeafe; color: #1e40af;">ðŸ“· Tá»•ng: ${res.total_images}</div>
+                        <div class="stat-chip" style="background: #dcfce7; color: #166534;">âœ… Äang dÃ¹ng: ${res.used_count}</div>
+                        <div class="stat-chip" style="background: ${orphanImages.length > 0 ? '#fee2e2' : '#f1f5f9'}; color: ${orphanImages.length > 0 ? '#991b1b' : '#475569'};">ðŸ—‘ï¸ Orphan: ${orphanImages.length}</div>
                     </div>
                 `;
 
                 if (orphanImages.length === 0) {
-                    html += '<p style="text-align: center; color: #22c55e; font-weight: 600; padding: 16px;">✅ Không có ảnh orphan nào! Thư viện sạch sẽ.</p>';
+                    html += '<p style="text-align: center; color: #22c55e; font-weight: 600; padding: 16px;">âœ… KhÃ´ng cÃ³ áº£nh orphan nÃ o! ThÆ° viá»‡n sáº¡ch sáº½.</p>';
                 } else {
-                    html += `<div style="margin-bottom: 12px;"><button class="btn" style="background: #ef4444; color: #fff; font-size: 0.85rem;" onclick="deleteAllOrphans()">🗑️ Xóa tất cả ${orphanImages.length} ảnh orphan</button></div>`;
+                    html += `<div style="margin-bottom: 12px;"><button class="btn" style="background: #ef4444; color: #fff; font-size: 0.85rem;" onclick="deleteAllOrphans()">ðŸ—‘ï¸ XÃ³a táº¥t cáº£ ${orphanImages.length} áº£nh orphan</button></div>`;
                     html += '<div style="max-height: 400px; overflow-y: auto;">';
                     orphanImages.forEach(img => {
                         html += `
                             <div class="orphan-card">
                                 <img src="${img.url}" alt="${escapeHtml(img.alt_text || '')}">
                                 <div class="orphan-info">
-                                    <strong>${escapeHtml(img.filename || 'Không tên')}</strong><br>
+                                    <strong>${escapeHtml(img.filename || 'KhÃ´ng tÃªn')}</strong><br>
                                     <span style="font-size: 0.75rem; color: #94a3b8;">${img.created_at || ''}</span>
                                 </div>
                             </div>
@@ -311,24 +312,24 @@
                 }
                 body.innerHTML = html;
             } catch (e) {
-                body.innerHTML = `<p style="color: #ef4444;">Lỗi: ${e.message}</p>`;
+                body.innerHTML = `<p style="color: #ef4444;">Lá»—i: ${e.message}</p>`;
             } finally {
-                btn.disabled = false; btn.textContent = 'Quét ảnh orphan';
+                btn.disabled = false; btn.textContent = 'QuÃ©t áº£nh orphan';
             }
         }
 
         async function deleteAllOrphans() {
-            if (!confirm(`Xóa ${orphanImages.length} ảnh orphan? Hành động này không thể hoàn tác!`)) return;
+            if (!confirm(`XÃ³a ${orphanImages.length} áº£nh orphan? HÃ nh Ä‘á»™ng nÃ y khÃ´ng thá»ƒ hoÃ n tÃ¡c!`)) return;
             try {
                 const ids = orphanImages.map(img => img.id);
                 await API.request('/tools.php?action=media-cleanup-delete', {
                     method: 'POST',
                     body: JSON.stringify({ ids })
                 });
-                showToast(`✅ Đã xóa ${ids.length} ảnh orphan!`, 'success');
+                showToast(`âœ… ÄÃ£ xÃ³a ${ids.length} áº£nh orphan!`, 'success');
                 await runMediaCleanup();
             } catch (e) {
-                showToast('Lỗi: ' + e.message, 'error');
+                showToast('Lá»—i: ' + e.message, 'error');
             }
         }
 
@@ -336,7 +337,7 @@
         async function runBackup() {
             const btn = document.getElementById('btnBackup');
             const body = document.getElementById('backupBody');
-            btn.disabled = true; btn.textContent = '⏳ Đang xuất...';
+            btn.disabled = true; btn.textContent = 'â³ Äang xuáº¥t...';
             try {
                 const res = await API.request('/tools.php?action=backup');
                 // Download as JSON file
@@ -350,18 +351,18 @@
 
                 body.innerHTML = `
                     <div class="stats-row">
-                        <div class="stat-chip" style="background: #dcfce7; color: #166534;">✅ Backup thành công!</div>
-                        <div class="stat-chip" style="background: #f1f5f9; color: #475569;">📝 ${res.stats?.posts || 0} bài viết</div>
-                        <div class="stat-chip" style="background: #f1f5f9; color: #475569;">📂 ${res.stats?.categories || 0} danh mục</div>
-                        <div class="stat-chip" style="background: #f1f5f9; color: #475569;">🖼️ ${res.stats?.images || 0} hình ảnh</div>
+                        <div class="stat-chip" style="background: #dcfce7; color: #166534;">âœ… Backup thÃ nh cÃ´ng!</div>
+                        <div class="stat-chip" style="background: #f1f5f9; color: #475569;">ðŸ“ ${res.stats?.posts || 0} bÃ i viáº¿t</div>
+                        <div class="stat-chip" style="background: #f1f5f9; color: #475569;">ðŸ“‚ ${res.stats?.categories || 0} danh má»¥c</div>
+                        <div class="stat-chip" style="background: #f1f5f9; color: #475569;">ðŸ–¼ï¸ ${res.stats?.images || 0} hÃ¬nh áº£nh</div>
                     </div>
-                    <p style="font-size: 0.85rem; color: #64748b;">File backup đã được tải xuống: <strong>hao-blog-backup-${new Date().toISOString().slice(0, 10)}.json</strong></p>
+                    <p style="font-size: 0.85rem; color: #64748b;">File backup Ä‘Ã£ Ä‘Æ°á»£c táº£i xuá»‘ng: <strong>hao-blog-backup-${new Date().toISOString().slice(0, 10)}.json</strong></p>
                 `;
-                showToast('📦 Backup thành công!', 'success');
+                showToast('ðŸ“¦ Backup thÃ nh cÃ´ng!', 'success');
             } catch (e) {
-                body.innerHTML = `<p style="color: #ef4444;">Lỗi: ${e.message}</p>`;
+                body.innerHTML = `<p style="color: #ef4444;">Lá»—i: ${e.message}</p>`;
             } finally {
-                btn.disabled = false; btn.textContent = '📦 Tải backup JSON';
+                btn.disabled = false; btn.textContent = 'ðŸ“¦ Táº£i backup JSON';
             }
         }
     </script>

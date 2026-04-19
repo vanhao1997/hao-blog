@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cấu hình hệ thống - Admin</title>
+    <title>Cáº¥u hÃ¬nh há»‡ thá»‘ng - Admin</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,26 +18,27 @@
         <aside class="admin-sidebar">
             <a href="index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
             <nav class="admin-nav">
-                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
-                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
-                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
-                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
-                <a href="/admin/newsletter.html" class="nav-item">📧 Subscribers</a>
-                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
-                <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
-                <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
-                <a href="/admin/tools.html" class="nav-item">🧰 Công cụ</a>
-                <a href="/admin/settings.html" class="nav-item active">⚙️ Cấu hình</a>
+                <a href="/admin/index.html" class="nav-item">ðŸ“Š Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">ðŸ“ BÃ i viáº¿t</a>
+                <a href="/admin/categories.html" class="nav-item">ðŸ“‚ Danh má»¥c</a>
+                <a href="/admin/images.html" class="nav-item">ðŸ–¼ï¸ HÃ¬nh áº£nh</a>
+                <a href="/admin/newsletter.html" class="nav-item">ðŸ“§ Subscribers</a>
+                <a href="/admin/banner.html" class="nav-item">ðŸŽ¨ Táº¡o Banner</a>
+                <a href="/admin/ai-studio.html" class="nav-item">ðŸ¤– AI Studio</a>
+                <a href="/admin/auto-news.html" class="nav-item">🔄 Auto-News</a>
+                <a href="/admin/synctune.html" class="nav-item">ðŸŽµ SyncTune</a>
+                <a href="/admin/tools.html" class="nav-item">ðŸ§° CÃ´ng cá»¥</a>
+                <a href="/admin/settings.html" class="nav-item active">âš™ï¸ Cáº¥u hÃ¬nh</a>
                 <div class="nav-divider"></div>
-                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
-                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+                <a href="/" class="nav-item" target="_blank">ðŸŒ Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">ðŸšª ÄÄƒng xuáº¥t</a>
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
-                <h1>Cấu hình Website</h1>
+                <h1>Cáº¥u hÃ¬nh Website</h1>
                 <div class="user-info">
                     <span id="userName">Admin</span>
                     <div class="user-avatar">A</div>
@@ -47,7 +48,7 @@
             <div class="admin-content">
                 <div class="card">
                     <div class="card-header">
-                        <h3>Cấu hình Global (Header, Footer, Scripts)</h3>
+                        <h3>Cáº¥u hÃ¬nh Global (Header, Footer, Scripts)</h3>
                     </div>
                     <div class="card-body" style="padding: 24px;">
                         <form id="settingsForm" style="display: flex; flex-direction: column; gap: 20px;">
@@ -56,8 +57,8 @@
                                     (JSON)</label>
                                 <textarea id="setMenu" class="form-input"
                                     style="width: 100%; min-height: 120px; font-family: monospace; resize: vertical; padding: 12px;"></textarea>
-                                <small style="color: #64748b; margin-top: 6px; display: block;">Định dạng JSON:
-                                    <code>[{"name":"Trang chủ","url":"/"}]</code></small>
+                                <small style="color: #64748b; margin-top: 6px; display: block;">Äá»‹nh dáº¡ng JSON:
+                                    <code>[{"name":"Trang chá»§","url":"/"}]</code></small>
                             </div>
 
                             <div>
@@ -65,7 +66,7 @@
                                     (JSON)</label>
                                 <textarea id="setFooter" class="form-input"
                                     style="width: 100%; min-height: 100px; font-family: monospace; resize: vertical; padding: 12px;"></textarea>
-                                <small style="color: #64748b; margin-top: 6px; display: block;">Mảng text:
+                                <small style="color: #64748b; margin-top: 6px; display: block;">Máº£ng text:
                                     <code>{"contact":"...","zalo":"...","address":"..."}</code></small>
                             </div>
 
@@ -74,9 +75,9 @@
                                     (HTML)</label>
                                 <textarea id="setScripts" class="form-input"
                                     style="width: 100%; min-height: 120px; font-family: monospace; resize: vertical; padding: 12px;"
-                                    placeholder="<!-- Chèn Google Analytics, Facebook Pixel vào đây -->"></textarea>
-                                <small style="color: #64748b; margin-top: 6px; display: block;">Mã HTML sẽ được chèn
-                                    trực tiếp vào thẻ &lt;head&gt; của trang web.</small>
+                                    placeholder="<!-- ChÃ¨n Google Analytics, Facebook Pixel vÃ o Ä‘Ã¢y -->"></textarea>
+                                <small style="color: #64748b; margin-top: 6px; display: block;">MÃ£ HTML sáº½ Ä‘Æ°á»£c chÃ¨n
+                                    trá»±c tiáº¿p vÃ o tháº» &lt;head&gt; cá»§a trang web.</small>
                             </div>
 
                             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 10px 0;">
@@ -85,14 +86,14 @@
                                 style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px dashed #cbd5e1; display:flex; flex-direction:column; gap:16px;">
                                 <h4
                                     style="font-weight: 700; color: #0f172a; display:flex; gap:6px; align-items:center;">
-                                    🤖 AI & Telegram Bot Setup</h4>
+                                    ðŸ¤– AI & Telegram Bot Setup</h4>
                                 <div>
                                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">OpenRouter /
                                         Gemini API Key</label>
                                     <input type="password" id="setAiApiKey" class="form-input"
                                         style="width: 100%; padding: 12px;" placeholder="sk-or-v1-xxxxxxxx...">
-                                    <small style="color: #64748b; margin-top: 6px; display: block;">Key dùng cho webhook
-                                        AI viết bài tự động.</small>
+                                    <small style="color: #64748b; margin-top: 6px; display: block;">Key dÃ¹ng cho webhook
+                                        AI viáº¿t bÃ i tá»± Ä‘á»™ng.</small>
                                 </div>
                                 <div>
                                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Telegram Bot
@@ -105,23 +106,23 @@
                                         Chat ID</label>
                                     <input type="text" id="setTeleChatId" class="form-input"
                                         style="width: 100%; padding: 12px;"
-                                        placeholder="VD: 54316788 (ID của Admin để bảo mật)">
-                                    <small style="color: #64748b; margin-top: 6px; display: block;">Tìm @userinfobot
-                                        trên Telegram để lấy ID của bạn.</small>
+                                        placeholder="VD: 54316788 (ID cá»§a Admin Ä‘á»ƒ báº£o máº­t)">
+                                    <small style="color: #64748b; margin-top: 6px; display: block;">TÃ¬m @userinfobot
+                                        trÃªn Telegram Ä‘á»ƒ láº¥y ID cá»§a báº¡n.</small>
                                 </div>
                                 <div style="margin-top: 8px;">
                                     <a href="/api/setup_bot.php" target="_blank" class="btn btn-secondary"
-                                        style="display: inline-block; padding: 8px 16px; font-size: 0.9rem; background: #e2e8f0; color: #1e293b; text-decoration: none; border-radius: 6px; border: 1px solid #cbd5e1;">🔌
-                                        Đăng ký Webhook với Telegram</a>
-                                    <small style="color: #64748b; margin-top: 6px; display: block;">Chạy link này MỘT
-                                        LẦN duy nhất sau khi đã điền và LƯU Bot Token ở trên.</small>
+                                        style="display: inline-block; padding: 8px 16px; font-size: 0.9rem; background: #e2e8f0; color: #1e293b; text-decoration: none; border-radius: 6px; border: 1px solid #cbd5e1;">ðŸ”Œ
+                                        ÄÄƒng kÃ½ Webhook vá»›i Telegram</a>
+                                    <small style="color: #64748b; margin-top: 6px; display: block;">Cháº¡y link nÃ y Má»˜T
+                                        Láº¦N duy nháº¥t sau khi Ä‘Ã£ Ä‘iá»n vÃ  LÆ¯U Bot Token á»Ÿ trÃªn.</small>
                                 </div>
                             </div>
 
                             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 10px 0;">
 
                             <button type="submit" class="btn btn-primary" id="btnSaveSetting"
-                                style="align-self: flex-start; padding: 12px 32px;">💾 Lưu Cấu Hình</button>
+                                style="align-self: flex-start; padding: 12px 32px;">ðŸ’¾ LÆ°u Cáº¥u HÃ¬nh</button>
                         </form>
                     </div>
                 </div>
@@ -139,7 +140,7 @@
             document.getElementById('settingsForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const btn = document.getElementById('btnSaveSetting');
-                btn.innerHTML = '⏳ Đang lưu...';
+                btn.innerHTML = 'â³ Äang lÆ°u...';
                 btn.disabled = true;
 
                 try {
@@ -162,19 +163,19 @@
                     });
 
                     if (res.success) {
-                        showToast('Đã lưu cấu hình thành công', 'success');
+                        showToast('ÄÃ£ lÆ°u cáº¥u hÃ¬nh thÃ nh cÃ´ng', 'success');
                     } else {
-                        showToast('Lỗi: ' + res.error, 'error');
+                        showToast('Lá»—i: ' + res.error, 'error');
                     }
                 } catch (e) {
                     if (e instanceof SyntaxError) {
-                        showToast('Lỗi JSON: File cấu hình Menu/Footer không đúng định dạng', 'error');
+                        showToast('Lá»—i JSON: File cáº¥u hÃ¬nh Menu/Footer khÃ´ng Ä‘Ãºng Ä‘á»‹nh dáº¡ng', 'error');
                     } else {
-                        showToast('Lỗi kết nối', 'error');
+                        showToast('Lá»—i káº¿t ná»‘i', 'error');
                     }
                 }
 
-                btn.innerHTML = '💾 Lưu Cấu Hình';
+                btn.innerHTML = 'ðŸ’¾ LÆ°u Cáº¥u HÃ¬nh';
                 btn.disabled = false;
             });
         });
@@ -191,7 +192,7 @@
                     if (res.data.telegram_chat_id) document.getElementById('setTeleChatId').value = res.data.telegram_chat_id;
                 }
             } catch (error) {
-                showToast('Lỗi tải cấu hình', 'error');
+                showToast('Lá»—i táº£i cáº¥u hÃ¬nh', 'error');
             }
         }
     </script>

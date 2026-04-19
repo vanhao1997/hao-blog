@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý danh mục - Admin</title>
+    <title>Quáº£n lÃ½ danh má»¥c - Admin</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,24 +17,25 @@
         <aside class="admin-sidebar">
             <a href="/admin/index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
             <nav class="admin-nav">
-                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
-                <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
-                <a href="/admin/categories.html" class="nav-item active">📂 Danh mục</a>
-                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
-                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
-                <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
-                <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
-                <a href="/admin/tools.html" class="nav-item">🧰 Công cụ</a>
+                <a href="/admin/index.html" class="nav-item">ðŸ“Š Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item">ðŸ“ BÃ i viáº¿t</a>
+                <a href="/admin/categories.html" class="nav-item active">ðŸ“‚ Danh má»¥c</a>
+                <a href="/admin/images.html" class="nav-item">ðŸ–¼ï¸ HÃ¬nh áº£nh</a>
+                <a href="/admin/banner.html" class="nav-item">ðŸŽ¨ Táº¡o Banner</a>
+                <a href="/admin/ai-studio.html" class="nav-item">ðŸ¤– AI Studio</a>
+                <a href="/admin/auto-news.html" class="nav-item">🔄 Auto-News</a>
+                <a href="/admin/synctune.html" class="nav-item">ðŸŽµ SyncTune</a>
+                <a href="/admin/tools.html" class="nav-item">ðŸ§° CÃ´ng cá»¥</a>
                 <div class="nav-divider"></div>
-                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
-                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
+                <a href="/" class="nav-item" target="_blank">ðŸŒ Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">ðŸšª ÄÄƒng xuáº¥t</a>
             </nav>
         </aside>
 
         <main class="admin-main">
             <header class="admin-header">
-                <h1>Quản lý danh mục</h1>
-                <button class="btn btn-primary" onclick="openCategoryModal()">+ Thêm danh mục</button>
+                <h1>Quáº£n lÃ½ danh má»¥c</h1>
+                <button class="btn btn-primary" onclick="openCategoryModal()">+ ThÃªm danh má»¥c</button>
             </header>
 
             <div class="admin-content">
@@ -42,16 +43,16 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Tên danh mục</th>
+                                <th>TÃªn danh má»¥c</th>
                                 <th>Slug</th>
-                                <th>Màu sắc</th>
-                                <th>Sắp xếp</th>
-                                <th>Hành động</th>
+                                <th>MÃ u sáº¯c</th>
+                                <th>Sáº¯p xáº¿p</th>
+                                <th>HÃ nh Ä‘á»™ng</th>
                             </tr>
                         </thead>
                         <tbody id="categoriesTable">
                             <tr>
-                                <td colspan="3" style="text-align: center; padding: 40px;">Đang tải...</td>
+                                <td colspan="3" style="text-align: center; padding: 40px;">Äang táº£i...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -64,14 +65,14 @@
     <div class="modal-overlay" id="categoryModal">
         <div class="modal">
             <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">Thêm danh mục</h3>
+                <h3 class="modal-title" id="modalTitle">ThÃªm danh má»¥c</h3>
                 <button class="modal-close" onclick="closeCategoryModal()">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="categoryForm">
                     <input type="hidden" id="categoryId">
                     <div class="form-group">
-                        <label class="form-label">Tên danh mục *</label>
+                        <label class="form-label">TÃªn danh má»¥c *</label>
                         <input type="text" id="categoryName" class="form-input" required>
                     </div>
                     <div class="form-group">
@@ -79,7 +80,7 @@
                         <input type="text" id="categorySlug" class="form-input" placeholder="tu-dong-tao-tu-ten">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Màu sắc</label>
+                        <label class="form-label">MÃ u sáº¯c</label>
                         <div style="display: flex; gap: 12px; align-items: center;">
                             <input type="color" id="categoryColor" value="#22C55E"
                                 style="width: 60px; height: 40px; border: none; cursor: pointer; border-radius: 8px;">
@@ -87,7 +88,7 @@
                                 style="flex: 1; font-family: monospace;" placeholder="#22C55E">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Lưu danh mục</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">LÆ°u danh má»¥c</button>
                 </form>
             </div>
         </div>
@@ -105,7 +106,7 @@
 
         // Modal Logic
         async function openCategoryModal(id = null) {
-            document.getElementById('modalTitle').textContent = id ? 'Sửa danh mục' : 'Thêm danh mục';
+            document.getElementById('modalTitle').textContent = id ? 'Sá»­a danh má»¥c' : 'ThÃªm danh má»¥c';
             document.getElementById('categoryForm').reset();
             document.getElementById('categoryId').value = '';
             document.getElementById('categoryModal').classList.add('active');
@@ -145,7 +146,7 @@
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
             btn.disabled = true;
-            btn.textContent = 'Đang lưu...';
+            btn.textContent = 'Äang lÆ°u...';
 
             const result = await saveCategory({
                 id: document.getElementById('categoryId').value || null,
@@ -155,14 +156,14 @@
             });
 
             btn.disabled = false;
-            btn.textContent = 'Lưu danh mục';
+            btn.textContent = 'LÆ°u danh má»¥c';
 
             if (result.success) {
-                showToast('Đã lưu!', 'success');
+                showToast('ÄÃ£ lÆ°u!', 'success');
                 closeCategoryModal();
                 await loadCategoriesManagement();
             } else {
-                showToast('Lỗi: ' + result.error, 'error');
+                showToast('Lá»—i: ' + result.error, 'error');
             }
         });
         // Color Picker Sync
