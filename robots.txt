@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
-Disallow: /.git/
+Allow: /api/sitemap.php
+Allow: /api/rss.php
 
 Sitemap: https://nguyenvanhao.name.vn/sitemap.xml

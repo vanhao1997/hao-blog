@@ -18,6 +18,83 @@
     }, { passive: true });
 })();
 
+// === Back-to-Top Button ===
+(function initBackToTop() {
+    const btn = document.createElement('button');
+    btn.id = 'backToTop';
+    btn.innerHTML = '↑';
+    btn.setAttribute('aria-label', 'Về đầu trang');
+    Object.assign(btn.style, {
+        position: 'fixed', bottom: '24px', right: '24px', width: '48px', height: '48px',
+        borderRadius: '50%', background: '#22C55E', color: '#fff', border: '2px solid #1F2937',
+        fontSize: '1.3rem', fontWeight: '700', cursor: 'pointer', zIndex: '9999',
+        boxShadow: '3px 3px 0 #1F2937', transition: 'all 0.3s ease',
+        opacity: '0', visibility: 'hidden', transform: 'translateY(20px)'
+    });
+    btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    btn.addEventListener('mouseenter', () => { btn.style.transform = 'translateY(-4px)'; btn.style.boxShadow = '4px 6px 0 #1F2937'; });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = btn.dataset.visible === '1' ? 'translateY(0)' : 'translateY(20px)'; btn.style.boxShadow = '3px 3px 0 #1F2937'; });
+    document.body.appendChild(btn);
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            btn.style.opacity = '1'; btn.style.visibility = 'visible'; btn.style.transform = 'translateY(0)';
+            btn.dataset.visible = '1';
+        } else {
+            btn.style.opacity = '0'; btn.style.visibility = 'hidden'; btn.style.transform = 'translateY(20px)';
+            btn.dataset.visible = '0';
+        }
+    }, { passive: true });
+})();
+
+// === CTA Newsletter Banner (injected mid-article) ===
+function injectCTABanner() {
+    const content = document.getElementById('postContent');
+    if (!content) return;
+    const paragraphs = content.querySelectorAll('p');
+    if (paragraphs.length < 4) return;
+
+    const cta = document.createElement('div');
+    cta.className = 'clay-card';
+    Object.assign(cta.style, {
+        margin: '32px 0', padding: '28px', textAlign: 'center',
+        background: 'linear-gradient(135deg, #f0fdf4, #ecfdf5)',
+        borderColor: '#22C55E'
+    });
+    cta.innerHTML = `
+        <p style="font-size: 1.1rem; font-weight: 700; margin: 0 0 8px 0; color: #1F2937;">📬 Nhận bài viết mới mỗi tuần!</p>
+        <p style="color: #6B7280; margin: 0 0 16px 0; font-size: 0.9rem;">Đăng ký newsletter miễn phí để không bỏ lỡ bài viết mới nhất</p>
+        <form id="midArticleCTA" style="display: flex; gap: 8px; max-width: 400px; margin: 0 auto; flex-wrap: wrap; justify-content: center;">
+            <input type="email" placeholder="Email của bạn..." required style="flex:1; min-width: 200px; padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 0.9rem; outline: none;">
+            <button type="submit" style="padding: 10px 20px; background: #22C55E; color: #fff; border: 2px solid #1F2937; border-radius: 12px; font-weight: 700; cursor: pointer; font-family: inherit; box-shadow: 2px 2px 0 #1F2937;">Đăng ký →</button>
+        </form>
+    `;
+    paragraphs[3].after(cta);
+
+    // Connect to newsletter API
+    const form = cta.querySelector('form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailInput = form.querySelector('input');
+        const btn = form.querySelector('button');
+        const email = emailInput.value.trim();
+        if (!email) return;
+        btn.textContent = '⏳'; btn.disabled = true;
+        try {
+            const res = await fetch('/api/newsletter.php', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                btn.textContent = '✅ Đã đăng ký!'; emailInput.value = '';
+                btn.style.background = '#16a34a';
+            } else { btn.textContent = '❌'; }
+        } catch { btn.textContent = '❌'; }
+        setTimeout(() => { btn.textContent = 'Đăng ký →'; btn.disabled = false; btn.style.background = '#22C55E'; }, 3000);
+    });
+}
+
 // === Sidebar Table of Contents with Scroll Spy ===
 function generateTOC() {
     const content = document.getElementById('postContent');
@@ -194,6 +271,9 @@ function renderPost(post) {
 
     // Generate Table of Contents
     generateTOC();
+
+    // Inject newsletter CTA after 3rd paragraph
+    injectCTABanner();
 
     // Author Card
     contentEl.insertAdjacentHTML('beforeend', `
