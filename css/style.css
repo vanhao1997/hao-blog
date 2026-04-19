@@ -581,6 +581,137 @@ p {
     text-align: center;
     padding: var(--space-3);
   }
+
+  /* ── MOBILE: Header ── */
+  .header {
+    padding: var(--space-1) 0;
+  }
+
+  .header-inner {
+    min-height: 48px;
+  }
+
+  .logo {
+    font-size: var(--text-lg);
+  }
+
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 0.9rem;
+  }
+
+  /* ── MOBILE: Hero Section ── */
+  .hero {
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .hero-title {
+    font-size: clamp(1.8rem, 8vw, 2.5rem) !important;
+    line-height: 1.15;
+  }
+
+  .hero-description {
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-5);
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+    justify-content: center;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+  }
+
+  .hero-stats {
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+  }
+
+  .hero-stat-number {
+    font-size: var(--text-2xl);
+  }
+
+  /* Hide floating decorative icons on mobile */
+  .hero-floating {
+    display: none !important;
+  }
+
+  .hero-visual {
+    margin-bottom: var(--space-4);
+  }
+
+  /* ── MOBILE: Section Headers ── */
+  .section-title {
+    font-size: clamp(1.4rem, 6vw, 2rem);
+  }
+
+  .section-description {
+    font-size: var(--text-sm);
+  }
+
+  /* ── MOBILE: Post Cards ── */
+  .posts-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-5);
+  }
+
+  .post-card-body {
+    padding: var(--space-4);
+  }
+
+  .post-card-title {
+    font-size: var(--text-lg);
+  }
+
+  /* ── MOBILE: Filter Buttons ── */
+  .filter-buttons {
+    gap: var(--space-2);
+    padding: 0 var(--space-2);
+  }
+
+  .filter-btn {
+    font-size: var(--text-xs);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* ── MOBILE: Newsletter ── */
+  .newsletter-card {
+    padding: var(--space-6) var(--space-4) !important;
+  }
+
+  .newsletter-title {
+    font-size: var(--text-xl) !important;
+  }
+
+  .newsletter-form {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .newsletter-input {
+    width: 100%;
+  }
+
+  .newsletter-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── MOBILE: Footer ── */
+  .footer {
+    padding: var(--space-10) 0 var(--space-6);
+  }
+
+  .footer-logo {
+    font-size: var(--text-xl);
+  }
 }
 
 /* ============================================
