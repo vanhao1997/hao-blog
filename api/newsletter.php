@@ -63,6 +63,30 @@ switch ($method) {
         }
         break;
 
+    case 'DELETE':
+        // Admin only
+        session_start();
+        if (!isset($_SESSION['user_id'])) {
+            http_response_code(401);
+            echo json_encode(["error" => "Unauthorized"]);
+            exit;
+        }
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(["error" => "Missing ID"]);
+            exit;
+        }
+        try {
+            $stmt = $db->prepare("DELETE FROM newsletter_subscribers WHERE id = ?");
+            $stmt->execute([$id]);
+            echo json_encode(["success" => true, "message" => "Subscribers deleted"]);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(["error" => $e->getMessage()]);
+        }
+        break;
+
     default:
         http_response_code(405);
         echo json_encode(["error" => "Method not allowed"]);
