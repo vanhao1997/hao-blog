@@ -1361,6 +1361,89 @@ p {
   }
 }
 
+@media (max-width: 768px) {
+
+  /* ── MOBILE: About Hero ── */
+  .about-hero {
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .about-hero-inner {
+    gap: var(--space-6);
+  }
+
+  .about-content h1 {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+    margin-bottom: var(--space-4);
+  }
+
+  .about-intro {
+    font-size: var(--text-base);
+    margin-bottom: var(--space-5);
+  }
+
+  /* Smaller hero image on mobile */
+  .about-image-wrapper .clay-card {
+    max-width: 280px !important;
+  }
+
+  .about-image-wrapper .clay-card img {
+    height: 320px !important;
+  }
+
+  /* Hide floating badges on mobile - they overlap content */
+  .about-floating-badge {
+    display: none !important;
+  }
+
+  /* ── MOBILE: Skill Badges ── */
+  .about-skills {
+    gap: var(--space-2);
+  }
+
+  .skill-badge {
+    font-size: var(--text-xs);
+    padding: var(--space-1) var(--space-3);
+    box-shadow: 2px 2px 0px var(--color-black);
+  }
+
+  /* ── MOBILE: Skills Grid ── */
+  .skills-grid-redesign {
+    grid-template-columns: 1fr !important;
+  }
+
+  .skills-grid-redesign .clay-card {
+    padding: 20px 16px !important;
+  }
+
+  .skills-grid-redesign .clay-card div:first-child {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 1.2rem !important;
+  }
+
+  /* ── MOBILE: Timeline Cards ── */
+  .clay-card[style*="display: flex"][style*="gap: 24px"] {
+    flex-direction: column;
+    align-items: center !important;
+    text-align: center;
+    padding: 20px 16px !important;
+    gap: 12px !important;
+  }
+
+  .clay-card[style*="display: flex"][style*="gap: 24px"] div:first-child {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* ── MOBILE: CTA Section ── */
+  .newsletter-card .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* ============================================
    14. CONTACT PAGE
    ============================================ */
