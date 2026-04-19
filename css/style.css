@@ -556,13 +556,15 @@ p {
 
   .nav-list {
     position: fixed;
-    top: 70px;
+    top: 50px;
     left: 0;
     right: 0;
     background: var(--color-background);
-    flex-direction: column;
-    padding: var(--space-6);
-    gap: var(--space-4);
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: var(--space-3) var(--space-2);
+    gap: var(--space-1);
     border-bottom: var(--border-width) solid var(--color-black);
     transform: translateY(-100%);
     opacity: 0;
@@ -577,9 +579,11 @@ p {
   }
 
   .nav-link {
-    display: block;
+    display: inline-block;
     text-align: center;
-    padding: var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-sm);
+    border-radius: var(--radius-sm);
   }
 
   /* ── MOBILE: Header ── */
@@ -629,9 +633,13 @@ p {
   }
 
   .hero-stats {
-    gap: var(--space-6);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: var(--space-4);
     margin-top: var(--space-6);
     padding-top: var(--space-5);
+    text-align: center;
   }
 
   .hero-stat-number {
