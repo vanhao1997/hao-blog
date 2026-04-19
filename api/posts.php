@@ -74,6 +74,7 @@ switch($method) {
             // Filter Params
             $is_published = isset($_GET['is_published']) ? ($_GET['is_published'] === 'true') : null;
             $category_id = $_GET['category_id'] ?? null;
+            $search = $_GET['search'] ?? null;
             $limit = isset($_GET['limit']) ? max(1, min((int)$_GET['limit'], 500)) : 10;
             
             $where = [];
@@ -87,6 +88,15 @@ switch($method) {
             if ($category_id) {
                 $where[] = "p.category_id = ?";
                 $p[] = $category_id;
+            }
+
+            // Search: match title, excerpt, or content
+            if ($search && trim($search) !== '') {
+                $searchTerm = '%' . trim($search) . '%';
+                $where[] = "(p.title LIKE ? OR p.excerpt LIKE ? OR p.content LIKE ?)";
+                $p[] = $searchTerm;
+                $p[] = $searchTerm;
+                $p[] = $searchTerm;
             }
 
             // For public queries, also publish scheduled posts whose time has arrived
