@@ -23,10 +23,9 @@ if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
 
-// Filename Logic
-// Always use timestamp prefix for consistency as requested
-$fileName = time() . '_' . basename($file['name']);
-
+// Filename Logic (Force .webp extension for converted images)
+$originalName = pathinfo($file['name'], PATHINFO_FILENAME);
+$fileName = time() . '_' . preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $originalName)) . '.webp';
 $targetPath = $uploadDir . $fileName;
 $publicUrl = '/uploads/' . $fileName;
 
@@ -38,7 +37,66 @@ if (!in_array($file['type'], $allowedTypes)) {
     exit;
 }
 
-if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+$success = false;
+$sourceImage = null;
+
+// Load image into GD
+switch($file['type']) {
+    case 'image/jpeg': $sourceImage = @imagecreatefromjpeg($file['tmp_name']); break;
+    case 'image/png':  $sourceImage = @imagecreatefrompng($file['tmp_name']); break;
+    case 'image/gif':  $sourceImage = @imagecreatefromgif($file['tmp_name']); break;
+    case 'image/webp': $sourceImage = @imagecreatefromwebp($file['tmp_name']); break;
+}
+
+if ($sourceImage) {
+    // Enable alpha blending for PNG/WebP with transparency
+    if ($file['type'] == 'image/png' || $file['type'] == 'image/webp') {
+        imagealphablending($sourceImage, true);
+        imagesavealpha($sourceImage, true);
+    }
+
+    $width = imagesx($sourceImage);
+    $height = imagesy($sourceImage);
+    
+    // Draw Watermark (Bottom Right corner)
+    $watermarkText = "nguyenvanhao.name.vn";
+    $font = 5; // Built-in font size (1-5)
+    $fw = imagefontwidth($font) * strlen($watermarkText);
+    $fh = imagefontheight($font);
+    
+    // Prevent drawing if image is too small
+    if ($width > 200 && $height > 100) {
+        $x = $width - $fw - 10;
+        $y = $height - $fh - 10;
+        
+        // Allocate colors
+        // Semi-transparent black background for text readability
+        $bgColor = imagecolorallocatealpha($sourceImage, 0, 0, 0, 60); 
+        // Semi-transparent white text
+        $textColor = imagecolorallocatealpha($sourceImage, 255, 255, 255, 30);
+        
+        // Draw background box
+        imagefilledrectangle($sourceImage, $x - 6, $y - 6, $x + $fw + 6, $y + $fh + 6, $bgColor);
+        // Draw text
+        imagestring($sourceImage, $font, $x, $y, $watermarkText, $textColor);
+    }
+
+    // Save as WEBP (Quality: 80% to save space)
+    if (imagewebp($sourceImage, $targetPath, 80)) {
+        $success = true;
+    }
+    imagedestroy($sourceImage);
+} 
+
+// Fallback if GD fails or image creation fails
+if (!$success) {
+    $fileName = time() . '_' . basename($file['name']);
+    $targetPath = $uploadDir . $fileName;
+    $publicUrl = '/uploads/' . $fileName;
+    $success = move_uploaded_file($file['tmp_name'], $targetPath);
+}
+
+if ($success) {
     $response = [
         'success' => true,
         'url' => $publicUrl,
