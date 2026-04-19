@@ -339,6 +339,13 @@
         <div class="editor-topbar-right">
             <button class="btn btn-ghost" id="btnPreview" onclick="previewPost()">👁️ Xem trước</button>
             <button class="btn btn-secondary" id="btnSaveDraft" onclick="submitPost(false)">📝 Lưu nháp</button>
+            <div
+                style="display: flex; align-items: center; gap: 6px; padding: 0 8px; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0;">
+                <input type="checkbox" id="triggerWebhook" title="Bắn thông báo xuất bản sang Kênh MXH qua Webhook"
+                    style="cursor: pointer; width: 16px; height: 16px;">
+                <label for="triggerWebhook" style="font-size: 0.85rem; cursor: pointer; color: #64748b;"
+                    title="Bắn thông báo xuất bản sang Kênh MXH qua Webhook">Ping Social</label>
+            </div>
             <button class="btn btn-primary" id="btnPublish" onclick="submitPost(true)">🚀 Xuất bản</button>
         </div>
     </div>
@@ -707,6 +714,18 @@
                     localStorage.removeItem('editor_autosave_time');
                     document.getElementById('editorStatus').textContent = isPublished ? 'Published' : 'Draft';
                     document.getElementById('lastSavedInfo').textContent = '💾 Đã lưu ' + new Date().toLocaleTimeString('vi-VN');
+
+                    if (isPublished && document.getElementById('triggerWebhook').checked) {
+                        try {
+                            const whRes = await fetch('/api/webhook-publish.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ post_id: result.id || currentPostId })
+                            });
+                            if (whRes.ok) showToast('📣 Đã bắn Webhook', 'info');
+                            else showToast('⚠️ Webhook lỗi', 'error');
+                        } catch (e) { console.error('Webhook error:', e); }
+                    }
                 } else {
                     showToast('Lỗi: ' + (result.error || 'Không xác định'), 'error');
                 }
