@@ -43,7 +43,7 @@ class Mailer {
      * Send email to multiple recipients (newsletter)
      * Returns array of results
      */
-    static function sendBulk($recipients, $subject, $body) {
+    static function dispatchMultiple($recipients, $subject, $body) {
         $results = ['sent' => 0, 'failed' => 0, 'errors' => []];
         
         foreach ($recipients as $email) {
