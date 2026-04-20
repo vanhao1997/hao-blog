@@ -154,7 +154,6 @@ async function loadAllPosts() {
                     ? `<button onclick="publishNow('${pid}', false)" title="Gỡ xuống" style="font-size:0.78rem;background:#f59e0b;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">📥 Gỡ</button>`
                     : `<button onclick="publishNow('${pid}', true)" title="Đăng ngay" style="font-size:0.78rem;background:#22c55e;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">🚀 Đăng</button>`
                 }
-            <button onclick="translatePost('${pid}')" title="Dịch tự động ra 3 ngôn ngữ" style="font-size:0.78rem;background:#8b5cf6;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">🌐 Dịch</button>
             <button onclick="confirmDeletePost('${pid}')" title="Xóa" style="font-size:0.78rem;background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">🗑️ Xóa</button>
           </div>
         </td>
@@ -619,7 +618,6 @@ window.slugify = slugify;
 window.prettifyFilename = prettifyFilename;
 window.copyImageLink = copyImageLink;
 window.showToast = showToast;
-window.translatePost = translatePost;
 
 // Global HTML escape helper
 function escapeHtml(str) {

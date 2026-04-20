@@ -9,20 +9,6 @@ $method = $_SERVER['REQUEST_METHOD'];
 $id = $_GET['id'] ?? null;
 $slug = $_GET['slug'] ?? null;
 
-// Handle Languages
-$lang = $_GET['lang'] ?? $_SERVER['HTTP_X_LANG'] ?? 'vi';
-$isTranslated = in_array($lang, ['en', 'fr', 'ja']);
-
-$postSelects = "p.*";
-$joinTranslation = "";
-
-if ($isTranslated) {
-    // Safe to use standard concatenation since $lang is verified against allowlist
-    $postSelects = "p.id, p.category_id, p.slug, p.featured_image, p.created_at, p.updated_at, p.is_published, p.views, p.scheduled_at, p.published_at, p.source_url, COALESCE(pt.title, p.title) as title, COALESCE(pt.excerpt, p.excerpt) as excerpt, COALESCE(pt.content, p.content) as content";
-    $joinTranslation = " LEFT JOIN post_translations pt ON pt.post_id = p.id AND pt.lang = '$lang'";
-}
-
-
 function generateUniqueSlug($db, $slug, $excludeId = null) {
     $originalSlug = $slug;
     $count = 1;
@@ -69,7 +55,7 @@ switch($method) {
             echo json_encode($stmt->fetch());
             exit;
         } elseif ($id) {
-            $stmt = $db->prepare("SELECT $postSelects, c.name as category_name, c.slug as category_slug, c.color as category_color FROM posts p LEFT JOIN categories c ON p.category_id = c.id $joinTranslation WHERE p.id = ?");
+            $stmt = $db->prepare("SELECT p.*, c.name as category_name, c.slug as category_slug, c.color as category_color FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.id = ?");
             $stmt->execute([$id]);
             $post = $stmt->fetch();
             echo json_encode($post);
@@ -80,7 +66,7 @@ switch($method) {
                 $updateViews->execute([$_GET['slug']]);
             } catch (\Throwable $e) {} // Ignore if views column doesn't exist yet
 
-            $stmt = $db->prepare("SELECT $postSelects, c.name as category_name, c.slug as category_slug, c.color as category_color FROM posts p LEFT JOIN categories c ON p.category_id = c.id $joinTranslation WHERE p.slug = ?");
+            $stmt = $db->prepare("SELECT p.*, c.name as category_name, c.slug as category_slug, c.color as category_color FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.slug = ?");
             $stmt->execute([$_GET['slug']]);
             $post = $stmt->fetch();
             echo json_encode($post);
@@ -112,10 +98,9 @@ switch($method) {
                 }
             }
             
-            $sql = "SELECT $postSelects, c.name as category_name, c.slug as category_slug, c.color as category_color 
+            $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug, c.color as category_color 
                     FROM posts p 
-                    LEFT JOIN categories c ON p.category_id = c.id
-                    $joinTranslation";
+                    LEFT JOIN categories c ON p.category_id = c.id";
             
             if (count($where) > 0) {
                 $sql .= " WHERE " . implode(" AND ", $where);
