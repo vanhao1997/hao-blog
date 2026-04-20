@@ -159,7 +159,7 @@ switch($method) {
                 }
             } catch(PDOException $e) {
                 http_response_code(500);
-                echo json_encode(["error" => $e->getMessage()]);
+                echo json_encode(["error" => "Lỗi hệ thống. Vui lòng thử lại."]);
             }
             exit;
         }
@@ -205,7 +205,7 @@ switch($method) {
                 echo json_encode(["success" => true, "message" => "Post created", "id" => $newId, "slug" => $slug]);
             } catch(PDOException $e) {
                 http_response_code(500);
-                echo json_encode(["error" => $e->getMessage()]);
+                echo json_encode(["error" => "Lỗi hệ thống. Vui lòng thử lại."]);
             }
         } else {
             http_response_code(400);
@@ -275,7 +275,7 @@ switch($method) {
 
             } catch(PDOException $e) {
                 http_response_code(500);
-                echo json_encode(["error" => $e->getMessage()]);
+                echo json_encode(["error" => "Lỗi hệ thống. Vui lòng thử lại."]);
             }
         } else {
             http_response_code(400);
@@ -298,7 +298,7 @@ switch($method) {
                 echo json_encode(["success" => true, "message" => "Post deleted"]);
             } catch(PDOException $e) {
                 http_response_code(500);
-                echo json_encode(["error" => $e->getMessage()]);
+                echo json_encode(["error" => "Lỗi hệ thống. Vui lòng thử lại."]);
             }
         }
         break;

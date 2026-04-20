@@ -8,6 +8,13 @@ api/.env
 # Error logs
 error_log
 api/error_log
+*.log
+
+# Backups (contain sensitive DB data)
+backups/
+
+# Uploads (large binary files)
+uploads/
 
 # Node modules
 node_modules/

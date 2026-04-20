@@ -1,0 +1,17 @@
+# Protect sensitive files from direct web access
+<FilesMatch "\.(env|log|bak|sql|md)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block access to config files
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Block access to error logs
+<Files "error_log">
+    Order Allow,Deny
+    Deny from all
+</Files>

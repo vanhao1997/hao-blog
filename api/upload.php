@@ -1,11 +1,24 @@
 <?php
-header('Access-Control-Allow-Origin: *');
+session_start();
 header('Content-Type: application/json');
 require_once 'db.php';
+
+// Handle CORS preflight
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
+    exit;
+}
+
+// Auth check — only admin can upload
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
     exit;
 }
 
@@ -20,7 +33,7 @@ if (!$file) {
 
 $uploadDir = '../uploads/';
 if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+    mkdir($uploadDir, 0755, true);
 }
 
 // Filename Logic (Force .webp extension for converted images)

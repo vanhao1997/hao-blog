@@ -1,13 +1,13 @@
 <?php
 ini_set('max_execution_time', 300);
+require_once 'config.php';
 require_once 'db.php';
 
 $database = new Database();
 $db = $database->getConnection();
 
 // --- 1. Security & Settings ---
-$CRON_SECRET = "hao_cron_secret_1997";
-if ($_GET['token'] !== $CRON_SECRET) {
+if (empty(CRON_SECRET) || ($_GET['token'] ?? '') !== CRON_SECRET) {
     http_response_code(403);
     die("Unauthorized.");
 }

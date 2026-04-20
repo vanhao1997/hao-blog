@@ -3,19 +3,19 @@
  * Automated Database Backup Cron Script
  * Run via cPanel Cron Job:
  * /usr/bin/php /path/to/hao-blog/api/cron_backup.php
- * OR via wget:
- * wget -qO- "https://nguyenvanhao.name.vn/api/cron_backup.php?key=hao-blog-secure-kronos-2026"
+ * OR via wget with CRON_SECRET from .env:
+ * wget -qO- "https://nguyenvanhao.name.vn/api/cron_backup.php?key=YOUR_SECRET"
  */
 
-// Default secret key to prevent unauthorized execution
-define('CRON_SECRET', 'hao-blog-secure-kronos-2026');
+// Use centralized CRON_SECRET from config.php
+require_once 'config.php';
 
 // Validate key from GET param or CLI arguments
 $isCli = (php_sapi_name() === 'cli');
 $keyParam = $_GET['key'] ?? '';
 
 // If running in CLI, bypass the key check or pass it as an argument
-if (!$isCli && $keyParam !== CRON_SECRET) {
+if (!$isCli && (empty(CRON_SECRET) || $keyParam !== CRON_SECRET)) {
     http_response_code(403);
     die("Unauthorized");
 }

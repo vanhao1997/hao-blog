@@ -36,6 +36,17 @@ define('DB_NAME', $_ENV['DB_NAME'] ?? '');
 define('DB_USER', $_ENV['DB_USER'] ?? '');
 define('DB_PASS', $_ENV['DB_PASS'] ?? '');
 
+// Mail Configuration from .env
+define('MAIL_FROM', $_ENV['MAIL_FROM'] ?? '');
+define('MAIL_FROM_NAME', $_ENV['MAIL_FROM_NAME'] ?? 'Hao Blog');
+define('SMTP_HOST', $_ENV['SMTP_HOST'] ?? '');
+define('SMTP_PORT', $_ENV['SMTP_PORT'] ?? 465);
+define('SMTP_USER', $_ENV['SMTP_USER'] ?? '');
+define('SMTP_PASS', $_ENV['SMTP_PASS'] ?? '');
+
+// Cron Security from .env
+define('CRON_SECRET', $_ENV['CRON_SECRET'] ?? '');
+
 // Error Reporting (Production: hide errors, log only)
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
