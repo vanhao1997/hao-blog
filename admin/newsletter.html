@@ -737,8 +737,8 @@
             btn.disabled = true;
             btn.textContent = '⏳ Đang gửi...';
             try {
-                const res = await API.request('/newsletter.php', {
-                    method: 'POST',
+                const res = await API.request('/contact.php', {
+                    method: 'PUT',
                     body: JSON.stringify({ action: 'test_mail' })
                 });
                 if (res.success) {
@@ -776,8 +776,8 @@
             btn.textContent = '⏳ Đang gửi...';
 
             try {
-                const res = await API.request('/newsletter.php', {
-                    method: 'POST',
+                const res = await API.request('/contact.php', {
+                    method: 'PUT',
                     body: JSON.stringify({ action: 'send_newsletter', subject, body })
                 });
                 if (res.success) {

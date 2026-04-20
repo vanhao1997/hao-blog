@@ -58,7 +58,7 @@ class Mailer {
      */
     static function send($to, $subject, $body, $replyTo = null) {
         $mail = self::getMailer();
-        if (!$mail) return false;
+        if (!$mail) return "Không thể khởi tạo SMTP (kiểm tra SMTP_USER/SMTP_PASS trong .env)";
         
         try {
             if ($replyTo) {
@@ -70,10 +70,10 @@ class Mailer {
             $mail->Body    = self::wrapTemplate($subject, $body);
             $mail->AltBody = strip_tags($body);
             
-            return $mail->send();
+            $mail->send();
+            return true;
         } catch (Exception $e) {
-            error_log("Email error: {$mail->ErrorInfo}");
-            return false;
+            return "SMTP Error: " . $mail->ErrorInfo;
         }
     }
     

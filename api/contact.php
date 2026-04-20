@@ -152,21 +152,96 @@ switch ($method) {
                 <p style='margin:24px 0 0;color:#64748b;font-size:14px;'>Trân trọng,<br><strong>" . MAIL_FROM_NAME . "</strong></p>
             ";
             
-            if (!file_exists(__DIR__ . '/mailer.php')) {
+            if (!$mailerLoaded) {
                 echo json_encode(["success" => false, "error" => "Thiếu module mailer"]);
                 exit;
             }
-            require_once __DIR__ . '/mailer.php';
             
-            $success = Mailer::send($contact['email'], $subject, $htmlBody, MAIL_FROM);
+            $result = Mailer::send($contact['email'], $subject, $htmlBody, MAIL_FROM);
             
-            if ($success) {
+            if ($result === true) {
                 $update = $db->prepare("UPDATE contact_submissions SET status = 'replied' WHERE id = ?");
                 $update->execute([$id]);
-                echo json_encode(["success" => true, "message" => "Đã gửi email trả lời!"]);
+                echo json_encode(["success" => true, "message" => "Đã gửi email trả lời đến {$contact['email']}"]);
             } else {
-                echo json_encode(["success" => false, "error" => "Lỗi cấu hình server mail"]);
+                $errorDetail = is_string($result) ? $result : "Lỗi SMTP không xác định";
+                echo json_encode(["success" => false, "error" => $errorDetail]);
             }
+            exit;
+        }
+        
+        // ACTION: TEST MAIL
+        if (isset($data->action) && $data->action === 'test_mail') {
+            if (!$mailerLoaded) {
+                echo json_encode(["success" => false, "error" => "Thiếu module mailer"]);
+                exit;
+            }
+            $testTo = isset($data->to) ? trim($data->to) : MAIL_FROM;
+            $htmlBody = "
+                <div style='text-align:center;'>
+                    <div style='font-size:3rem;margin-bottom:16px;'>✅</div>
+                    <h2 style='margin:0 0 12px;color:#0f172a;'>Email đang hoạt động!</h2>
+                    <p style='color:#64748b;line-height:1.6;'>
+                        Hệ thống gửi email từ <strong>nguyenvanhao.name.vn</strong> đang hoạt động bình thường.<br>
+                        Gửi lúc: " . date('d/m/Y H:i:s') . "
+                    </p>
+                </div>
+            ";
+            
+            $result = Mailer::send($testTo, 'Test Email - Hao Blog', $htmlBody);
+            if ($result === true) {
+                echo json_encode(["success" => true, "message" => "Đã gửi test email đến {$testTo}"]);
+            } else {
+                $errorDetail = is_string($result) ? $result : "Lỗi SMTP không xác định";
+                echo json_encode(["success" => false, "error" => $errorDetail]);
+            }
+            exit;
+        }
+        
+        // ACTION: SEND NEWSLETTER
+        if (isset($data->action) && $data->action === 'send_newsletter') {
+            if (!$mailerLoaded) {
+                echo json_encode(["success" => false, "error" => "Thiếu module mailer"]);
+                exit;
+            }
+            
+            $subject = isset($data->subject) ? trim($data->subject) : '';
+            $body = isset($data->body) ? trim($data->body) : '';
+            
+            if (!$subject || !$body) {
+                http_response_code(400);
+                echo json_encode(["error" => "Thiếu tiêu đề hoặc nội dung newsletter"]);
+                exit;
+            }
+            
+            $stmt = $db->query("SELECT email FROM newsletter_subscribers WHERE is_active = 1");
+            $subscribers = $stmt->fetchAll();
+            
+            if (empty($subscribers)) {
+                echo json_encode(["success" => false, "error" => "Không có subscriber nào đang active"]);
+                exit;
+            }
+            
+            $emails = array_column($subscribers, 'email');
+            $htmlBody = "
+                <div style='line-height:1.7;font-size:15px;color:#334155;'>" . $body . "</div>
+                <hr style='border:none;border-top:1px solid #e2e8f0;margin:24px 0;'>
+                <p style='color:#94a3b8;font-size:12px;text-align:center;'>
+                    Bạn nhận email này vì đã đăng ký nhận bản tin từ nguyenvanhao.name.vn
+                </p>
+            ";
+            
+            if (function_exists('set_time_limit')) {
+                @set_time_limit(300);
+            }
+            
+            $results = Mailer::dispatchMultiple($emails, $subject, $htmlBody);
+            
+            echo json_encode([
+                "success" => true,
+                "message" => "Đã gửi {$results['sent']}/{$results['sent'] + $results['failed']} email",
+                "details" => $results
+            ]);
             exit;
         }
         
