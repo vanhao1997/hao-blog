@@ -166,7 +166,7 @@
                 <div class="clay-card contact-form-wrapper" id="contactForm">
                     <h3 style="margin-bottom: 24px;">Gửi tin nhắn</h3>
 
-                    <form id="contactFormPage" action="https://formspree.io/f/mlggdnlv" method="POST">
+                    <form id="contactFormPage">
                         <div class="form-group">
                             <label class="form-label" for="name">Họ và tên *</label>
                             <input type="text" id="name" name="name" class="form-input" placeholder="Nhập họ và tên..."
@@ -206,19 +206,25 @@
                             btn.textContent = 'Đang gửi...';
                             status.style.display = 'none';
                             try {
-                                const res = await fetch(this.action, {
+                                const res = await fetch('/api/contact.php', {
                                     method: 'POST',
-                                    body: new FormData(this),
-                                    headers: { 'Accept': 'application/json' }
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        name: document.getElementById('name').value,
+                                        email: document.getElementById('email').value,
+                                        subject: document.getElementById('subject').value,
+                                        message: document.getElementById('message').value
+                                    })
                                 });
-                                if (res.ok) {
+                                const data = await res.json();
+                                if (data.success) {
                                     this.reset();
                                     showThankYouPopup();
                                 } else {
-                                    throw new Error('failed');
+                                    throw new Error(data.error || 'Gửi thất bại');
                                 }
                             } catch (err) {
-                                status.textContent = '❌ Có lỗi xảy ra. Vui lòng thử lại hoặc liên hệ qua email.';
+                                status.textContent = '❌ ' + (err.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
                                 status.style.color = '#EF4444';
                                 status.style.display = 'block';
                             }

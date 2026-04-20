@@ -4,12 +4,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscribers - Admin</title>
+    <title>Subscribers & Liên hệ - Admin</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/admin/css/admin.css">
+    <style>
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #94a3b8;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: #334155;
+        }
+
+        .tab-btn.active {
+            color: #22C55E;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #22C55E;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .tab-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .tab-badge.muted {
+            background: #94a3b8;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Contact message cards */
+        .message-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .message-card:hover {
+            border-color: #22C55E;
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
+        }
+
+        .message-card.unread {
+            border-left: 4px solid #3b82f6;
+            background: #f0f9ff;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .message-sender {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 1rem;
+        }
+
+        .message-email {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .message-date {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .message-subject {
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+
+        .message-preview {
+            color: #64748b;
+            font-size: 0.9rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 600px;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .status-new {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .status-read {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .status-replied {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        /* Message detail modal */
+        .message-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .message-modal.active {
+            display: flex;
+        }
+
+        .message-modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-modal-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .message-modal-body {
+            padding: 24px;
+        }
+
+        .message-modal-body .field {
+            margin-bottom: 16px;
+        }
+
+        .message-modal-body .field-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .message-modal-body .field-value {
+            color: #0f172a;
+            line-height: 1.6;
+        }
+
+        .message-modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
 
 <body>
@@ -38,7 +267,7 @@
         <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
-                <h1>Quản lý Subscribers</h1>
+                <h1>📧 Subscribers & Liên hệ</h1>
                 <div class="user-info">
                     <span id="userName">Admin</span>
                     <div class="user-avatar">A</div>
@@ -46,38 +275,73 @@
             </header>
 
             <div class="admin-content">
-                <div class="card">
-                    <div class="card-header" style="justify-content: space-between;">
-                        <h3 id="subscriberCount">Tổng: 0 người đăng ký</h3>
-                        <div class="card-actions">
-                            <button id="btnExportCsv" class="btn btn-primary" style="display:none;">📥 Export
-                                CSV</button>
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="subscribers">
+                        📧 Subscribers
+                        <span class="tab-badge muted" id="subscriberBadge">0</span>
+                    </button>
+                    <button class="tab-btn" data-tab="contacts">
+                        💬 Tin nhắn liên hệ
+                        <span class="tab-badge" id="contactBadge" style="display:none;">0</span>
+                    </button>
+                </div>
+
+                <!-- Tab 1: Subscribers -->
+                <div class="tab-content active" id="tab-subscribers">
+                    <div class="card">
+                        <div class="card-header" style="justify-content: space-between;">
+                            <h3 id="subscriberCount">Tổng: 0 người đăng ký</h3>
+                            <div class="card-actions">
+                                <button id="btnExportCsv" class="btn btn-primary" style="display:none;">📥 Export
+                                    CSV</button>
+                            </div>
+                        </div>
+
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Email</th>
+                                    <th>Ngày đăng ký</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscribersList">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 40px; color: #9ca3af;">Đang
+                                        tải...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Contact Messages -->
+                <div class="tab-content" id="tab-contacts">
+                    <div class="card">
+                        <div class="card-header" style="justify-content: space-between;">
+                            <h3 id="contactCount">Tổng: 0 tin nhắn</h3>
+                            <div class="card-actions">
+                                <button id="btnExportContacts" class="btn btn-primary" style="display:none;">📥 Export
+                                    CSV</button>
+                            </div>
+                        </div>
+                        <div id="contactsList">
+                            <div class="empty-state">
+                                <div class="icon">💬</div>
+                                <h3>Đang tải...</h3>
+                            </div>
                         </div>
                     </div>
-
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Email</th>
-                                <th>Ngày đăng ký</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody id="subscribersList">
-                            <tr>
-                                <td colspan="5" style="text-align: center; padding: 40px; color: #9ca3af;">Đang tải...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Confirm Dialog -->
+    <!-- Confirm Delete Subscriber Modal -->
     <div class="modal" id="confirmDeleteModal">
         <div class="modal-content" style="max-width: 400px; text-align: center; padding: 32px 24px;">
             <div style="font-size: 3rem; margin-bottom: 16px;">⚠️</div>
@@ -91,35 +355,70 @@
         </div>
     </div>
 
+    <!-- Message Detail Modal -->
+    <div class="message-modal" id="messageModal">
+        <div class="message-modal-content">
+            <div class="message-modal-header">
+                <div>
+                    <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0;" id="modalSubject">Chủ đề</h2>
+                    <p style="color: #64748b; font-size: 0.85rem; margin: 4px 0 0;" id="modalMeta"></p>
+                </div>
+                <button class="modal-close" onclick="document.getElementById('messageModal').classList.remove('active')"
+                    style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#94a3b8;">&times;</button>
+            </div>
+            <div class="message-modal-body">
+                <div class="field">
+                    <div class="field-label">Từ</div>
+                    <div class="field-value" id="modalFrom"></div>
+                </div>
+                <div class="field">
+                    <div class="field-label">Email</div>
+                    <div class="field-value"><a id="modalEmail" href="#" style="color: #2563eb;"></a></div>
+                </div>
+                <div class="field">
+                    <div class="field-label">Tin nhắn</div>
+                    <div class="field-value" id="modalMessage"
+                        style="white-space: pre-wrap; background:#f8fafc; padding:16px; border-radius:8px; border:1px solid #e2e8f0;">
+                    </div>
+                </div>
+            </div>
+            <div class="message-modal-footer">
+                <button class="btn btn-secondary" id="btnMarkStatus"></button>
+                <a class="btn btn-primary" id="btnReplyEmail" href="#" target="_blank">📧 Trả lời qua Email</a>
+                <button class="btn" id="btnDeleteContact" style="background:#ef4444; color:#fff;">🗑️ Xóa</button>
+            </div>
+        </div>
+    </div>
+
     <script src="/js/api.js"></script>
     <script src="/admin/js/admin.js"></script>
     <script>
         let currentSubscribers = [];
+        let currentContacts = [];
         let deleteSubscriberId = null;
+        let currentContactId = null;
 
+        // =========================
+        // TAB LOGIC
+        // =========================
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // =========================
+        // SUBSCRIBERS
+        // =========================
         document.addEventListener('DOMContentLoaded', async () => {
             await checkAuth();
-            await loadSubscribers();
+            await Promise.all([loadSubscribers(), loadContacts()]);
 
-            document.getElementById('btnExportCsv').addEventListener('click', () => {
-                if (!currentSubscribers.length) return;
-
-                // Construct CSV
-                let csvContent = "data:text/csv;charset=utf-8,ID,Email,SubscribedAt,Status\n";
-                currentSubscribers.forEach(row => {
-                    const status = row.is_active == 1 ? "Active" : "Inactive";
-                    csvContent += `${row.id},${row.email},${row.subscribed_at},${status}\n`;
-                });
-
-                // Download
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `subscribers_${new Date().toISOString().split('T')[0]}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-            });
+            document.getElementById('btnExportCsv').addEventListener('click', exportSubscribersCsv);
+            document.getElementById('btnExportContacts').addEventListener('click', exportContactsCsv);
 
             document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
                 if (deleteSubscriberId) {
@@ -147,9 +446,10 @@
                 if (res.data) {
                     currentSubscribers = res.data;
                     document.getElementById('subscriberCount').textContent = `Tổng: ${res.total} người đăng ký`;
+                    document.getElementById('subscriberBadge').textContent = res.total;
+
                     const btnExport = document.getElementById('btnExportCsv');
-                    if (res.total > 0) btnExport.style.display = 'inline-flex';
-                    else btnExport.style.display = 'none';
+                    btnExport.style.display = res.total > 0 ? 'inline-flex' : 'none';
 
                     const tbody = document.getElementById('subscribersList');
                     if (res.total === 0) {
@@ -163,12 +463,12 @@
                             <td><strong>${escapeHtml(sub.email)}</strong></td>
                             <td>${formatDate(sub.subscribed_at)}</td>
                             <td>
-                                <span class="status-badge" style="\${sub.is_active == 1 ? 'background: #dcfce7; color: #16a34a;' : 'background: #fee2e2; color: #dc2626;'}">
-                                    \${sub.is_active == 1 ? 'Active' : 'Inactive'}
+                                <span class="status-badge" style="${sub.is_active == 1 ? 'background: #dcfce7; color: #16a34a;' : 'background: #fee2e2; color: #dc2626;'}">
+                                    ${sub.is_active == 1 ? 'Active' : 'Inactive'}
                                 </span>
                             </td>
                             <td>
-                                <button class="action-btn" style="color: #dc2626;" onclick="showDeleteSubscriber(\${sub.id})" title="Xóa">
+                                <button class="action-btn" style="color: #dc2626;" onclick="showDeleteSubscriber(${sub.id})" title="Xóa">
                                     🗑️
                                 </button>
                             </td>
@@ -180,10 +480,191 @@
             }
         }
 
+        function exportSubscribersCsv() {
+            if (!currentSubscribers.length) return;
+            let csvContent = "data:text/csv;charset=utf-8,ID,Email,SubscribedAt,Status\n";
+            currentSubscribers.forEach(row => {
+                const status = row.is_active == 1 ? "Active" : "Inactive";
+                csvContent += `${row.id},${row.email},${row.subscribed_at},${status}\n`;
+            });
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csvContent));
+            link.setAttribute("download", `subscribers_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        }
+
         window.showDeleteSubscriber = function (id) {
             deleteSubscriberId = id;
             document.getElementById('confirmDeleteModal').style.display = 'flex';
         };
+
+        // =========================
+        // CONTACT MESSAGES
+        // =========================
+        async function loadContacts() {
+            try {
+                const res = await API.request('/contact.php');
+                if (res.data) {
+                    currentContacts = res.data;
+                    document.getElementById('contactCount').textContent = `Tổng: ${res.total} tin nhắn`;
+
+                    const badge = document.getElementById('contactBadge');
+                    if (res.new_count > 0) {
+                        badge.textContent = res.new_count;
+                        badge.style.display = 'inline-block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+
+                    const btnExport = document.getElementById('btnExportContacts');
+                    btnExport.style.display = res.total > 0 ? 'inline-flex' : 'none';
+
+                    const container = document.getElementById('contactsList');
+                    if (res.total === 0) {
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <div class="icon">💬</div>
+                                <h3>Chưa có tin nhắn nào</h3>
+                                <p>Tin nhắn từ trang Liên hệ sẽ hiển thị ở đây</p>
+                            </div>`;
+                        return;
+                    }
+
+                    container.innerHTML = res.data.map(msg => {
+                        const statusClass = msg.status === 'new' ? 'unread' : '';
+                        const statusBadge = {
+                            'new': '<span class="status-badge status-new">🔵 Mới</span>',
+                            'read': '<span class="status-badge status-read">👁️ Đã đọc</span>',
+                            'replied': '<span class="status-badge status-replied">✅ Đã trả lời</span>'
+                        }[msg.status] || '';
+
+                        return `
+                            <div class="message-card ${statusClass}" onclick="openMessage(${msg.id})">
+                                <div class="message-header">
+                                    <div>
+                                        <span class="message-sender">${escapeHtml(msg.name)}</span>
+                                        <span class="message-email"> — ${escapeHtml(msg.email)}</span>
+                                    </div>
+                                    <span class="message-date">${formatDate(msg.created_at)}</span>
+                                </div>
+                                <div class="message-subject">${escapeHtml(msg.subject || '(Không có chủ đề)')}</div>
+                                <div class="message-preview">${escapeHtml(msg.message)}</div>
+                                <div class="message-actions">
+                                    ${statusBadge}
+                                </div>
+                            </div>`;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error("Failed to load contacts", error);
+                document.getElementById('contactsList').innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">⚠️</div>
+                        <h3>Lỗi tải dữ liệu</h3>
+                        <p>${error.message}</p>
+                    </div>`;
+            }
+        }
+
+        window.openMessage = async function (id) {
+            const msg = currentContacts.find(m => m.id == id);
+            if (!msg) return;
+
+            currentContactId = id;
+            document.getElementById('modalSubject').textContent = msg.subject || '(Không có chủ đề)';
+            document.getElementById('modalMeta').textContent = formatDate(msg.created_at);
+            document.getElementById('modalFrom').textContent = msg.name;
+            document.getElementById('modalEmail').textContent = msg.email;
+            document.getElementById('modalEmail').href = `mailto:${msg.email}`;
+            document.getElementById('modalMessage').textContent = msg.message;
+            document.getElementById('btnReplyEmail').href = `mailto:${msg.email}?subject=Re: ${encodeURIComponent(msg.subject || '')}`;
+
+            // Update status button
+            const statusBtn = document.getElementById('btnMarkStatus');
+            if (msg.status === 'new') {
+                statusBtn.textContent = '👁️ Đánh dấu đã đọc';
+                statusBtn.onclick = () => updateContactStatus(id, 'read');
+            } else if (msg.status === 'read') {
+                statusBtn.textContent = '✅ Đánh dấu đã trả lời';
+                statusBtn.onclick = () => updateContactStatus(id, 'replied');
+            } else {
+                statusBtn.textContent = '🔵 Đánh dấu mới';
+                statusBtn.onclick = () => updateContactStatus(id, 'new');
+            }
+
+            document.getElementById('btnDeleteContact').onclick = () => deleteContact(id);
+
+            document.getElementById('messageModal').classList.add('active');
+
+            // Auto mark as read if new
+            if (msg.status === 'new') {
+                await updateContactStatus(id, 'read');
+            }
+        };
+
+        async function updateContactStatus(id, status) {
+            try {
+                const res = await API.request('/contact.php', 'PUT', { id, status });
+                if (res.success) {
+                    showToast('Đã cập nhật trạng thái');
+                    await loadContacts();
+                    // Update modal button
+                    const msg = currentContacts.find(m => m.id == id);
+                    if (msg) {
+                        const statusBtn = document.getElementById('btnMarkStatus');
+                        if (status === 'read') {
+                            statusBtn.textContent = '✅ Đánh dấu đã trả lời';
+                            statusBtn.onclick = () => updateContactStatus(id, 'replied');
+                        } else if (status === 'replied') {
+                            statusBtn.textContent = '🔵 Đánh dấu mới';
+                            statusBtn.onclick = () => updateContactStatus(id, 'new');
+                        } else {
+                            statusBtn.textContent = '👁️ Đánh dấu đã đọc';
+                            statusBtn.onclick = () => updateContactStatus(id, 'read');
+                        }
+                    }
+                }
+            } catch (e) {
+                showToast('Lỗi cập nhật', 'error');
+            }
+        }
+
+        async function deleteContact(id) {
+            if (!confirm('Bạn có chắc muốn xóa tin nhắn này?')) return;
+            try {
+                const res = await API.request(`/contact.php?id=${id}`, 'DELETE');
+                if (res.success) {
+                    showToast('Đã xóa tin nhắn');
+                    document.getElementById('messageModal').classList.remove('active');
+                    await loadContacts();
+                }
+            } catch (e) {
+                showToast('Lỗi xóa tin nhắn', 'error');
+            }
+        }
+
+        function exportContactsCsv() {
+            if (!currentContacts.length) return;
+            let csvContent = "data:text/csv;charset=utf-8,ID,Name,Email,Subject,Message,Status,CreatedAt\n";
+            currentContacts.forEach(row => {
+                const msg = row.message.replace(/"/g, '""');
+                const subj = (row.subject || '').replace(/"/g, '""');
+                csvContent += `${row.id},"${row.name}","${row.email}","${subj}","${msg}",${row.status},${row.created_at}\n`;
+            });
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csvContent));
+            link.setAttribute("download", `contacts_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        }
+
+        // Close modal on outside click
+        document.getElementById('messageModal').addEventListener('click', function (e) {
+            if (e.target === this) this.classList.remove('active');
+        });
     </script>
 </body>
 
