@@ -37,21 +37,27 @@ const ModalFeature = {
                 if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Đang gửi...'; }
 
                 try {
-                    const res = await fetch(modalContactForm.action, {
+                    const res = await fetch('/api/contact.php', {
                         method: 'POST',
-                        body: new FormData(modalContactForm),
-                        headers: { 'Accept': 'application/json' }
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: modalContactForm.querySelector('[name="name"]')?.value || 'Khách',
+                            email: modalContactForm.querySelector('[name="email"]')?.value || '',
+                            subject: modalContactForm.querySelector('[name="subject"]')?.value || 'Liên hệ nhanh',
+                            message: modalContactForm.querySelector('[name="message"]')?.value || ''
+                        })
                     });
+                    const data = await res.json();
 
-                    if (res.ok) {
+                    if (data.success) {
                         modalContactForm.reset();
                         closeModal();
                         this.showThankYou();
                     } else {
-                        throw new Error('failed');
+                        throw new Error(data.error || 'Gửi thất bại');
                     }
                 } catch (err) {
-                    alert('❌ Có lỗi xảy ra. Vui lòng thử lại hoặc liên hệ qua email.');
+                    alert('❌ ' + (err.message || 'Có lỗi xảy ra. Vui lòng thử lại hoặc liên hệ qua email.'));
                 }
 
                 if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Gửi tin nhắn →'; }
