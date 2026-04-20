@@ -9,11 +9,6 @@
  *   POST action=test    — Send test email
  */
 
-// Global error handler to prevent empty responses
-set_error_handler(function($severity, $message, $file, $line) {
-    throw new ErrorException($message, 0, $severity, $file, $line);
-});
-
 // Wrap everything in try-catch
 try {
     // Start session and buffer output to prevent "headers already sent" from included files
@@ -43,8 +38,18 @@ try {
         exit;
     }
     
-    $data = json_decode(file_get_contents("php://input"));
-    $action = $data->action ?? '';
+    // Fetch input
+    $input = file_get_contents("php://input");
+    $data = json_decode($input);
+    
+    // Validate json
+    if (!$data) {
+         http_response_code(400);
+         echo json_encode(["error" => "Invalid JSON payload"]);
+         exit;
+    }
+    
+    $action = isset($data->action) ? $data->action : '';
     
     $database = new Database();
     $db = $database->getConnection();
@@ -54,8 +59,8 @@ try {
         // REPLY to contact message
         // =====================
         case 'reply':
-            $contactId = $data->contact_id ?? null;
-            $replyBody = trim($data->body ?? '');
+            $contactId = isset($data->contact_id) ? $data->contact_id : null;
+            $replyBody = isset($data->body) ? trim($data->body) : '';
             
             if (!$contactId || !$replyBody) {
                 http_response_code(400);
@@ -73,7 +78,8 @@ try {
                 exit;
             }
             
-            $subject = "Re: " . ($contact['subject'] ?: 'Tin nhắn từ nguyenvanhao.name.vn');
+            $contactSubject = $contact['subject'] ? $contact['subject'] : 'Tin nhắn từ nguyenvanhao.name.vn';
+            $subject = "Re: " . $contactSubject;
             $htmlBody = "
                 <p style='margin:0 0 8px;color:#64748b;font-size:14px;'>Xin chào <strong>{$contact['name']}</strong>,</p>
                 <div style='line-height:1.7;font-size:15px;color:#334155;margin:16px 0;white-space:pre-wrap;'>" . nl2br(htmlspecialchars($replyBody)) . "</div>
@@ -95,8 +101,8 @@ try {
         // NEWSLETTER to all subscribers
         // =====================
         case 'newsletter':
-            $subject = trim($data->subject ?? '');
-            $body = trim($data->body ?? '');
+            $subject = isset($data->subject) ? trim($data->subject) : '';
+            $body = isset($data->body) ? trim($data->body) : '';
             
             if (!$subject || !$body) {
                 http_response_code(400);
@@ -121,7 +127,9 @@ try {
                 </p>
             ";
             
-            set_time_limit(300);
+            if (function_exists('set_time_limit')) {
+                @set_time_limit(300);
+            }
             $results = Mailer::sendBulk($emails, $subject, $htmlBody);
             
             echo json_encode([
@@ -135,7 +143,7 @@ try {
         // TEST email
         // =====================
         case 'test':
-            $testTo = trim($data->to ?? MAIL_FROM);
+            $testTo = isset($data->to) ? trim($data->to) : MAIL_FROM;
             
             $htmlBody = "
                 <div style='text-align:center;'>
@@ -165,7 +173,6 @@ try {
     ob_end_flush();
 
 } catch (\Throwable $e) {
-    restore_error_handler(); // CRITICAL: Stop loop
     $ob = ob_get_length() ? ob_get_clean() : '';
     
     http_response_code(500);
@@ -177,9 +184,7 @@ try {
         "success" => false,
         "error" => "Server error: " . $e->getMessage(),
         "file" => basename($e->getFile()),
-        "line" => $e->getLine(),
-        "accidental_output" => $accidental_output ?? '',
-        "buffered" => $ob
+        "line" => $e->getLine()
     ]);
 }
 ?>
