@@ -149,9 +149,10 @@
                                 <h4 style="font-weight: 700; color: #0f172a;">⚡ Cấu hình Cronjob Bắt Buộc (cPanel)</h4>
                                 <p style="color: #64748b; font-size: 0.9rem; margin: 0;">Sao chép và dán lệnh sau vào
                                     công cụ <b>Cron Jobs</b> trên Azdigi / cPanel. Chạy mỗi 1 giờ (
-                                    <code>0 * * * *</code> ).</p>
+                                    <code>0 * * * *</code> ).
+                                </p>
                                 <code
-                                    style="display: block; background: #1e293b; color: #22c55e; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; user-select: all;">wget -q -O /dev/null "https://nguyenvanhao.name.vn/api/cron-news.php?token=hao_cron_secret_1997"</code>
+                                    style="display: block; background: #1e293b; color: #22c55e; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; user-select: all;">wget -q -O /dev/null "https://nguyenvanhao.name.vn/api/cron-news.php?token=hao_secure_cron_2026_x7k9"</code>
                                 <small style="color: #ef4444; font-weight: 500;">Lưu ý: API Key AI (OpenRouter) phải
                                     được cài đặt trong mục "Cấu hình" thì Auto-News mới gọi được bot.</small>
                             </div>
@@ -215,7 +216,7 @@
                 btn.disabled = true;
 
                 try {
-                    const res = await fetch('/api/cron-news.php?token=hao_cron_secret_1997&manual=1');
+                    const res = await fetch('/api/cron-news.php?token=hao_secure_cron_2026_x7k9&manual=1');
                     const text = await res.text();
 
                     if (res.ok) {
