@@ -18,7 +18,7 @@ async function checkAuth() {
         }
         return user;
     } catch (e) {
-        window.location.href = '/admin/login.html';
+        window.location.href = '/admin/login';
         return null;
     }
 }
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             await API.logout();
-            window.location.href = '/admin/login.html';
+            window.location.href = '/admin/login';
         });
     }
 });
@@ -91,7 +91,7 @@ async function loadRecentPosts() {
         if (!tbody) return;
 
         if (!posts || posts.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 40px; color: #9ca3af;">Chưa có bài viết. <a href="posts.html">Tạo bài viết đầu tiên</a></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 40px; color: #9ca3af;">Chưa có bài viết. <a href="posts">Tạo bài viết đầu tiên</a></td></tr>';
             return;
         }
 
@@ -298,7 +298,7 @@ async function editPost(id) {
     // User said "click edit then fields empty". exact behavior depends on HTML.
     // Checking posts.html would be wise. But assuming standard modal pattern from category example.
 
-    window.location.href = `/admin/editor.html?id=${id}`;
+    window.location.href = `/admin/editor?id=${id}`;
 }
 
 // Confirm Delete Post — shows styled confirmation popup

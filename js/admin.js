@@ -4,7 +4,7 @@
 async function checkAuth() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
-        window.location.href = 'login.html';
+        window.location.href = 'login';
         return null;
     }
 
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             await supabaseClient.auth.signOut();
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         });
     }
 });
