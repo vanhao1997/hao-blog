@@ -424,7 +424,7 @@
                 if (deleteSubscriberId) {
                     document.getElementById('confirmDeleteBtn').textContent = 'Đang xóa...';
                     try {
-                        const res = await API.request(`/newsletter.php?id=${deleteSubscriberId}`, 'DELETE');
+                        const res = await API.request(`/newsletter.php?id=${deleteSubscriberId}`, { method: 'DELETE' });
                         if (res.success) {
                             showToast('Đã xóa subscriber');
                             document.getElementById('confirmDeleteModal').style.display = 'none';
@@ -463,7 +463,7 @@
                             <td><strong>${escapeHtml(sub.email)}</strong></td>
                             <td>${formatDate(sub.subscribed_at)}</td>
                             <td>
-                                <span class="status-badge" style="${sub.is_active == 1 ? 'background: #dcfce7; color: #16a34a;' : 'background: #fee2e2; color: #dc2626;'}">
+                                <span class="status-badge" style="${sub.is_active == 1 ? 'background:#dcfce7;color:#16a34a;' : 'background:#fee2e2;color:#dc2626;'}">
                                     ${sub.is_active == 1 ? 'Active' : 'Inactive'}
                                 </span>
                             </td>
@@ -606,7 +606,7 @@
 
         async function updateContactStatus(id, status) {
             try {
-                const res = await API.request('/contact.php', 'PUT', { id, status });
+                const res = await API.request('/contact.php', { method: 'PUT', body: JSON.stringify({ id, status }) });
                 if (res.success) {
                     showToast('Đã cập nhật trạng thái');
                     await loadContacts();
@@ -634,7 +634,7 @@
         async function deleteContact(id) {
             if (!confirm('Bạn có chắc muốn xóa tin nhắn này?')) return;
             try {
-                const res = await API.request(`/contact.php?id=${id}`, 'DELETE');
+                const res = await API.request(`/contact.php?id=${id}`, { method: 'DELETE' });
                 if (res.success) {
                     showToast('Đã xóa tin nhắn');
                     document.getElementById('messageModal').classList.remove('active');
