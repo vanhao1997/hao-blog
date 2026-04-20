@@ -292,8 +292,12 @@
                     <div class="card">
                         <div class="card-header" style="justify-content: space-between;">
                             <h3 id="subscriberCount">Tổng: 0 người đăng ký</h3>
-                            <div class="card-actions">
-                                <button id="btnExportCsv" class="btn btn-primary" style="display:none;">📥 Export
+                            <div class="card-actions" style="display:flex;gap:8px;">
+                                <button id="btnTestEmail" class="btn btn-secondary" title="Gửi test email">🧪 Test
+                                    Email</button>
+                                <button id="btnSendNewsletter" class="btn btn-primary" style="display:none;">📨 Gửi
+                                    Newsletter</button>
+                                <button id="btnExportCsv" class="btn btn-secondary" style="display:none;">📥 Export
                                     CSV</button>
                             </div>
                         </div>
@@ -384,8 +388,55 @@
             </div>
             <div class="message-modal-footer">
                 <button class="btn btn-secondary" id="btnMarkStatus"></button>
-                <a class="btn btn-primary" id="btnReplyEmail" href="#" target="_blank">📧 Trả lời qua Email</a>
+                <a class="btn" id="btnReplyEmail" href="#" target="_blank" style="background:#64748b;color:#fff;">📧 Mở
+                    Email</a>
+                <button class="btn" style="background:#3b82f6;color:#fff;" id="btnComposeReply">✍️ Soạn trả lời</button>
                 <button class="btn" id="btnDeleteContact" style="background:#ef4444; color:#fff;">🗑️ Xóa</button>
+            </div>
+            <!-- Reply Compose (hidden by default) -->
+            <div id="replyCompose" style="display:none;padding:0 24px 24px;">
+                <div class="field-label" style="margin-bottom:8px;">📧 Soạn email trả lời</div>
+                <textarea id="replyBody" rows="5"
+                    style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:14px;resize:vertical;box-sizing:border-box;"
+                    placeholder="Nhập nội dung trả lời..."></textarea>
+                <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end;">
+                    <button class="btn btn-secondary"
+                        onclick="document.getElementById('replyCompose').style.display='none'">Hủy</button>
+                    <button class="btn btn-primary" id="btnSendReply">📤 Gửi trả lời</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter Compose Modal -->
+    <div class="message-modal" id="newsletterModal">
+        <div class="message-modal-content">
+            <div class="message-modal-header">
+                <div>
+                    <h2 style="font-size:1.25rem;font-weight:700;margin:0;">📨 Gửi Newsletter</h2>
+                    <p style="color:#64748b;font-size:0.85rem;margin:4px 0 0;" id="nlRecipientCount"></p>
+                </div>
+                <button onclick="document.getElementById('newsletterModal').classList.remove('active')"
+                    style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#94a3b8;">&times;</button>
+            </div>
+            <div class="message-modal-body">
+                <div class="field">
+                    <div class="field-label">Tiêu đề email *</div>
+                    <input type="text" id="nlSubject"
+                        style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit;"
+                        placeholder="Ví dụ: Bản tin tháng 4/2026">
+                </div>
+                <div class="field">
+                    <div class="field-label">Nội dung (HTML hoặc text) *</div>
+                    <textarea id="nlBody" rows="10"
+                        style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:14px;resize:vertical;"
+                        placeholder="Nhập nội dung newsletter..."></textarea>
+                </div>
+            </div>
+            <div class="message-modal-footer">
+                <button class="btn btn-secondary"
+                    onclick="document.getElementById('newsletterModal').classList.remove('active')">Hủy</button>
+                <button class="btn btn-primary" id="btnConfirmNewsletter">📤 Gửi cho tất cả Subscribers</button>
             </div>
         </div>
     </div>
@@ -449,7 +500,14 @@
                     document.getElementById('subscriberBadge').textContent = res.total;
 
                     const btnExport = document.getElementById('btnExportCsv');
-                    btnExport.style.display = res.total > 0 ? 'inline-flex' : 'none';
+                    const btnNewsletter = document.getElementById('btnSendNewsletter');
+                    if (res.total > 0) {
+                        btnExport.style.display = 'inline-flex';
+                        btnNewsletter.style.display = 'inline-flex';
+                    } else {
+                        btnExport.style.display = 'none';
+                        btnNewsletter.style.display = 'none';
+                    }
 
                     const tbody = document.getElementById('subscribersList');
                     if (res.total === 0) {
@@ -664,6 +722,119 @@
         // Close modal on outside click
         document.getElementById('messageModal').addEventListener('click', function (e) {
             if (e.target === this) this.classList.remove('active');
+        });
+        document.getElementById('newsletterModal').addEventListener('click', function (e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+
+        // =========================
+        // EMAIL FEATURES
+        // =========================
+
+        // Test Email
+        document.getElementById('btnTestEmail').addEventListener('click', async () => {
+            const btn = document.getElementById('btnTestEmail');
+            btn.disabled = true;
+            btn.textContent = '⏳ Đang gửi...';
+            try {
+                const res = await API.request('/send-mail.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'test' })
+                });
+                if (res.success) {
+                    showToast(res.message);
+                } else {
+                    showToast(res.error || 'Gửi thất bại', 'error');
+                }
+            } catch (e) {
+                showToast('Lỗi: ' + e.message, 'error');
+            }
+            btn.disabled = false;
+            btn.textContent = '🧪 Test Email';
+        });
+
+        // Send Newsletter modal
+        document.getElementById('btnSendNewsletter').addEventListener('click', () => {
+            const activeCount = currentSubscribers.filter(s => s.is_active == 1).length;
+            document.getElementById('nlRecipientCount').textContent = `Sẽ gửi cho ${activeCount} subscribers đang active`;
+            document.getElementById('nlSubject').value = '';
+            document.getElementById('nlBody').value = '';
+            document.getElementById('newsletterModal').classList.add('active');
+        });
+
+        document.getElementById('btnConfirmNewsletter').addEventListener('click', async () => {
+            const subject = document.getElementById('nlSubject').value.trim();
+            const body = document.getElementById('nlBody').value.trim();
+
+            if (!subject || !body) {
+                showToast('Vui lòng nhập tiêu đề và nội dung', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btnConfirmNewsletter');
+            btn.disabled = true;
+            btn.textContent = '⏳ Đang gửi...';
+
+            try {
+                const res = await API.request('/send-mail.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'newsletter', subject, body })
+                });
+                if (res.success) {
+                    showToast(res.message);
+                    document.getElementById('newsletterModal').classList.remove('active');
+                } else {
+                    showToast(res.error || 'Gửi thất bại', 'error');
+                }
+            } catch (e) {
+                showToast('Lỗi: ' + e.message, 'error');
+            }
+            btn.disabled = false;
+            btn.textContent = '📤 Gửi cho tất cả Subscribers';
+        });
+
+        // Compose Reply toggle
+        document.getElementById('btnComposeReply').addEventListener('click', () => {
+            const compose = document.getElementById('replyCompose');
+            compose.style.display = compose.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('replyBody').value = '';
+            document.getElementById('replyBody').focus();
+        });
+
+        // Send Reply
+        document.getElementById('btnSendReply').addEventListener('click', async () => {
+            const body = document.getElementById('replyBody').value.trim();
+            if (!body) {
+                showToast('Vui lòng nhập nội dung trả lời', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btnSendReply');
+            btn.disabled = true;
+            btn.textContent = '⏳ Đang gửi...';
+
+            try {
+                const res = await API.request('/send-mail.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'reply', contact_id: currentContactId, body })
+                });
+                if (res.success) {
+                    showToast(res.message);
+                    document.getElementById('replyCompose').style.display = 'none';
+                    document.getElementById('replyBody').value = '';
+                    await loadContacts();
+                    // Update modal status button
+                    const statusBtn = document.getElementById('btnMarkStatus');
+                    statusBtn.textContent = '🔵 Đánh dấu mới';
+                    statusBtn.onclick = () => updateContactStatus(currentContactId, 'new');
+                } else {
+                    showToast(res.error || 'Gửi thất bại', 'error');
+                }
+            } catch (e) {
+                showToast('Lỗi: ' + e.message, 'error');
+            }
+            btn.disabled = false;
+            btn.textContent = '📤 Gửi trả lời';
         });
     </script>
 </body>

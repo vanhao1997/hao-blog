@@ -15,6 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once 'db.php';
 
+// Load mailer for notifications (non-fatal if missing)
+$mailerLoaded = false;
+if (file_exists(__DIR__ . '/mailer.php')) {
+    require_once 'mailer.php';
+    $mailerLoaded = true;
+}
+
 $database = new Database();
 $db = $database->getConnection();
 
@@ -63,6 +70,17 @@ switch ($method) {
                 htmlspecialchars($subject),
                 htmlspecialchars($message)
             ]);
+            
+            // Send email notification to admin
+            if ($mailerLoaded) {
+                try {
+                    Mailer::notifyNewContact($name, $email, $subject, $message);
+                } catch (\Throwable $e) {
+                    // Non-fatal: log but still return success
+                    error_log("Mailer notification failed: " . $e->getMessage());
+                }
+            }
+            
             echo json_encode(["success" => true, "message" => "Tin nhắn đã được gửi thành công!"]);
         } catch (PDOException $e) {
             http_response_code(500);
