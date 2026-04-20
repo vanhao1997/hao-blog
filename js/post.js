@@ -106,19 +106,26 @@ function generateTOC() {
     });
 
     // Scroll Spy: highlight current section
-    const tocLinks = tocList.querySelectorAll('a');
+    const tocLinks = Array.from(tocList.querySelectorAll('a'));
     let ticking = false;
+    let currentActiveIndex = -1;
 
     function updateActiveLink() {
         let current = 0;
         headings.forEach((h, i) => {
             if (h.getBoundingClientRect().top <= 120) current = i;
         });
-        tocLinks.forEach(link => link.classList.remove('active'));
-        if (tocLinks[current]) {
-            tocLinks[current].classList.add('active');
-            // Scroll the sidebar to keep active link visible
-            tocLinks[current].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+
+        if (current !== currentActiveIndex) {
+            tocLinks.forEach(link => link.classList.remove('active'));
+            if (tocLinks[current]) {
+                tocLinks[current].classList.add('active');
+
+                // Scroll the sidebar itself, rather than using scrollIntoView which causes page jitter
+                const sidebarScrollTop = tocLinks[current].offsetTop - 100;
+                tocSidebar.scrollTo({ top: sidebarScrollTop, behavior: 'smooth' });
+            }
+            currentActiveIndex = current;
         }
         ticking = false;
     }
