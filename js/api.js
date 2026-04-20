@@ -11,6 +11,11 @@ class API {
             'Content-Type': 'application/json'
         };
 
+        const currentLang = localStorage.getItem('blog_lang');
+        if (currentLang) {
+            defaultHeaders['X-Lang'] = currentLang;
+        }
+
         const config = {
             ...options,
             cache: 'no-store',

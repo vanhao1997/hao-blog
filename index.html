@@ -74,6 +74,9 @@
   <link rel="stylesheet" href="/css/style.css?v=1.5">
   <link rel="stylesheet" href="/css/animations.css?v=1.4">
   <link rel="stylesheet" href="/css/phosphor/style.css">
+
+  <!-- Multi-Language -->
+  <script src="/js/lang.js"></script>
 </head>
 
 <body>
@@ -121,14 +124,15 @@
         </button>
 
         <ul class="nav-list" id="navList">
-          <li><a href="/" class="nav-link active">Trang chủ</a></li>
+          <li><a href="/" class="nav-link active" data-i18n="nav_home">Trang chủ</a></li>
           <li><a href="/blog" class="nav-link">Blog</a></li>
           <li><a href="/gioi-thieu" class="nav-link">Giới thiệu</a></li>
-          <li><a href="/lien-he" class="nav-link">Liên hệ</a></li>
-          <li><a href="/toolkit/" class="nav-link">Công cụ</a></li>
+          <li><a href="/lien-he" class="nav-link" data-i18n="nav_contact">Liên hệ</a></li>
+          <li><a href="/toolkit/" class="nav-link" data-i18n="tools">Công cụ</a></li>
         </ul>
 
-        <button class="btn btn-primary hide-mobile" id="contactBtn">Liên hệ ngay</button>
+        <div id="langSwitcherContainer" class="hide-mobile" style="margin-right: 16px;"></div>
+        <button class="btn btn-primary hide-mobile" id="contactBtn" data-i18n="nav_contact">Liên hệ ngay</button>
       </nav>
     </div>
   </header>
