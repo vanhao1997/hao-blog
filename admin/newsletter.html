@@ -293,6 +293,8 @@
                         <div class="card-header" style="justify-content: space-between;">
                             <h3 id="subscriberCount">Tổng: 0 người đăng ký</h3>
                             <div class="card-actions" style="display:flex;gap:8px;">
+                                <button id="btnBulkDeleteSubscribers" class="btn btn-danger" style="display:none;">🗑️
+                                    Xóa Lựa Chọn</button>
                                 <button id="btnTestEmail" class="btn btn-secondary" title="Gửi test email">🧪 Test
                                     Email</button>
                                 <button id="btnSendNewsletter" class="btn btn-primary" style="display:none;">📨 Gửi
@@ -305,6 +307,8 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
+                                    <th style="width: 40px; text-align: center;"><input type="checkbox"
+                                            id="selectAllSubs" onchange="toggleSelectAllSubs(this)"></th>
                                     <th>ID</th>
                                     <th>Email</th>
                                     <th>Ngày đăng ký</th>
@@ -329,6 +333,8 @@
                         <div class="card-header" style="justify-content: space-between;">
                             <h3 id="contactCount">Tổng: 0 tin nhắn</h3>
                             <div class="card-actions">
+                                <button id="btnBulkDeleteContacts" class="btn btn-danger" style="display:none;">🗑️ Xóa
+                                    Lựa Chọn</button>
                                 <button id="btnExportContacts" class="btn btn-primary" style="display:none;">📥 Export
                                     CSV</button>
                             </div>
@@ -448,6 +454,7 @@
         let currentContacts = [];
         let deleteSubscriberId = null;
         let currentContactId = null;
+        let selectedEmailsForNewsletter = null;
 
         // =========================
         // TAB LOGIC
@@ -517,6 +524,7 @@
 
                     tbody.innerHTML = res.data.map(sub => `
                         <tr>
+                            <td style="text-align: center;"><input type="checkbox" class="sub-checkbox" value="${sub.email}" data-id="${sub.id}" onchange="updateSubscribersBulkActions()"></td>
                             <td>#${sub.id}</td>
                             <td><strong>${escapeHtml(sub.email)}</strong></td>
                             <td>${formatDate(sub.subscribed_at)}</td>
@@ -532,6 +540,8 @@
                             </td>
                         </tr>
                     `).join('');
+                    document.getElementById('selectAllSubs').checked = false;
+                    updateSubscribersBulkActions();
                 }
             } catch (error) {
                 console.error("Failed to load subscribers", error);
@@ -557,6 +567,49 @@
             deleteSubscriberId = id;
             document.getElementById('confirmDeleteModal').style.display = 'flex';
         };
+
+        window.toggleSelectAllSubs = function (checkbox) {
+            const boxes = document.querySelectorAll('.sub-checkbox');
+            boxes.forEach(box => box.checked = checkbox.checked);
+            updateSubscribersBulkActions();
+        }
+
+        window.updateSubscribersBulkActions = function () {
+            const checkedBoxes = document.querySelectorAll('.sub-checkbox:checked');
+            const bulkDeleteBtn = document.getElementById('btnBulkDeleteSubscribers');
+            const newsletterBtn = document.getElementById('btnSendNewsletter');
+            if (checkedBoxes.length > 0) {
+                bulkDeleteBtn.style.display = 'inline-flex';
+                newsletterBtn.textContent = `📨 Gửi Newsletter (${checkedBoxes.length})`;
+            } else {
+                bulkDeleteBtn.style.display = 'none';
+                newsletterBtn.textContent = `📨 Gửi Newsletter`;
+            }
+        }
+
+        document.getElementById('btnBulkDeleteSubscribers').addEventListener('click', async () => {
+            const checkedBoxes = document.querySelectorAll('.sub-checkbox:checked');
+            if (checkedBoxes.length === 0) return;
+            if (!confirm(`Bạn có chắc muốn xóa ${checkedBoxes.length} email đã chọn?`)) return;
+
+            const btn = document.getElementById('btnBulkDeleteSubscribers');
+            btn.textContent = 'Đang xóa...';
+            btn.disabled = true;
+
+            let successCount = 0;
+            for (let box of checkedBoxes) {
+                const id = box.dataset.id;
+                try {
+                    const res = await API.request(`/newsletter.php?id=${id}`, { method: 'DELETE' });
+                    if (res.success) successCount++;
+                } catch (e) { console.error('Delete error', e); }
+            }
+
+            showToast(`Đã xóa ${successCount} subscriber`);
+            btn.textContent = '🗑️ Xóa Lựa Chọn';
+            btn.disabled = false;
+            loadSubscribers();
+        });
 
         // =========================
         // CONTACT MESSAGES
@@ -590,7 +643,10 @@
                         return;
                     }
 
-                    container.innerHTML = res.data.map(msg => {
+                    container.innerHTML = `<div style="margin-bottom: 16px; padding: 0 12px; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="selectAllContacts" onchange="toggleSelectAllContacts(this)" style="transform: scale(1.2);"> 
+                                <label for="selectAllContacts" style="font-weight: 600; color: #475569; cursor: pointer;">Chọn tất cả</label>
+                            </div>` + res.data.map(msg => {
                         const statusClass = msg.status === 'new' ? 'unread' : '';
                         const statusBadge = {
                             'new': '<span class="status-badge status-new">🔵 Mới</span>',
@@ -599,21 +655,26 @@
                         }[msg.status] || '';
 
                         return `
-                            <div class="message-card ${statusClass}" onclick="openMessage(${msg.id})">
-                                <div class="message-header">
-                                    <div>
-                                        <span class="message-sender">${escapeHtml(msg.name)}</span>
-                                        <span class="message-email"> — ${escapeHtml(msg.email)}</span>
+                            <div class="message-card ${statusClass}" style="display: flex; gap: 16px; align-items: flex-start;">
+                                <input type="checkbox" class="contact-checkbox" value="${msg.id}" data-id="${msg.id}" onchange="updateContactsBulkActions(event)" style="margin-top: 5px; transform: scale(1.2); cursor: pointer;">
+                                <div style="flex: 1;" onclick="openMessage(${msg.id})">
+                                    <div class="message-header">
+                                        <div>
+                                            <span class="message-sender">${escapeHtml(msg.name)}</span>
+                                            <span class="message-email"> — ${escapeHtml(msg.email)}</span>
+                                        </div>
+                                        <span class="message-date">${formatDate(msg.created_at)}</span>
                                     </div>
-                                    <span class="message-date">${formatDate(msg.created_at)}</span>
-                                </div>
-                                <div class="message-subject">${escapeHtml(msg.subject || '(Không có chủ đề)')}</div>
-                                <div class="message-preview">${escapeHtml(msg.message)}</div>
-                                <div class="message-actions">
-                                    ${statusBadge}
+                                    <div class="message-subject">${escapeHtml(msg.subject || '(Không có chủ đề)')}</div>
+                                    <div class="message-preview">${escapeHtml(msg.message)}</div>
+                                    <div class="message-actions">
+                                        ${statusBadge}
+                                    </div>
                                 </div>
                             </div>`;
                     }).join('');
+                    document.getElementById('selectAllContacts').checked = false;
+                    updateContactsBulkActions();
                 }
             } catch (error) {
                 console.error("Failed to load contacts", error);
@@ -625,6 +686,48 @@
                     </div>`;
             }
         }
+
+        window.toggleSelectAllContacts = function (checkbox) {
+            const boxes = document.querySelectorAll('.contact-checkbox');
+            boxes.forEach(box => box.checked = checkbox.checked);
+            updateContactsBulkActions();
+        }
+
+        window.updateContactsBulkActions = function (event) {
+            if (event) event.stopPropagation(); // prevent opening modal when clicking checkbox
+            const checkedBoxes = document.querySelectorAll('.contact-checkbox:checked');
+            const bulkDeleteBtn = document.getElementById('btnBulkDeleteContacts');
+            if (checkedBoxes.length > 0) {
+                bulkDeleteBtn.style.display = 'inline-flex';
+                bulkDeleteBtn.textContent = `🗑️ Xóa (${checkedBoxes.length})`;
+            } else {
+                bulkDeleteBtn.style.display = 'none';
+            }
+        }
+
+        document.getElementById('btnBulkDeleteContacts').addEventListener('click', async () => {
+            const checkedBoxes = document.querySelectorAll('.contact-checkbox:checked');
+            if (checkedBoxes.length === 0) return;
+            if (!confirm(`Bạn có chắc muốn xóa ${checkedBoxes.length} tin nhắn liên hệ đã chọn?`)) return;
+
+            const btn = document.getElementById('btnBulkDeleteContacts');
+            btn.textContent = 'Đang xóa...';
+            btn.disabled = true;
+
+            let successCount = 0;
+            for (let box of checkedBoxes) {
+                const id = box.dataset.id;
+                try {
+                    const res = await API.request(`/contact.php?id=${id}`, { method: 'DELETE' });
+                    if (res.success) successCount++;
+                } catch (e) { console.error('Delete error', e); }
+            }
+
+            showToast(`Đã xóa ${successCount} tin nhắn`);
+            btn.textContent = '🗑️ Xóa Lựa Chọn';
+            btn.disabled = false;
+            loadContacts();
+        });
 
         window.openMessage = async function (id) {
             const msg = currentContacts.find(m => m.id == id);
@@ -755,8 +858,18 @@
 
         // Send Newsletter modal
         document.getElementById('btnSendNewsletter').addEventListener('click', () => {
+            const checkedBoxes = Array.from(document.querySelectorAll('.sub-checkbox:checked'));
+            const selectedEmails = checkedBoxes.map(cb => cb.value);
             const activeCount = currentSubscribers.filter(s => s.is_active == 1).length;
-            document.getElementById('nlRecipientCount').textContent = `Sẽ gửi cho ${activeCount} subscribers đang active`;
+
+            if (selectedEmails.length > 0) {
+                document.getElementById('nlRecipientCount').textContent = `Sẽ gửi cho ${selectedEmails.length} subscribers đã chọn`;
+                selectedEmailsForNewsletter = selectedEmails;
+            } else {
+                document.getElementById('nlRecipientCount').textContent = `Sẽ gửi cho ${activeCount} subscribers đang active (Mặc định chọn tất cả)`;
+                selectedEmailsForNewsletter = null; // null means send to all active
+            }
+
             document.getElementById('nlSubject').value = '';
             document.getElementById('nlBody').value = '';
             document.getElementById('newsletterModal').classList.add('active');
@@ -776,13 +889,21 @@
             btn.textContent = '⏳ Đang gửi...';
 
             try {
+                let payload = { action: 'send_newsletter', subject, body };
+                if (selectedEmailsForNewsletter) {
+                    payload.emails = selectedEmailsForNewsletter;
+                }
                 const res = await API.request('/contact.php', {
                     method: 'PUT',
-                    body: JSON.stringify({ action: 'send_newsletter', subject, body })
+                    body: JSON.stringify(payload)
                 });
                 if (res.success) {
                     showToast(res.message);
                     document.getElementById('newsletterModal').classList.remove('active');
+                    // Reset checked boxes
+                    document.getElementById('selectAllSubs').checked = false;
+                    document.querySelectorAll('.sub-checkbox').forEach(cb => cb.checked = false);
+                    updateSubscribersBulkActions();
                 } else {
                     showToast(res.error || 'Gửi thất bại', 'error');
                 }
@@ -790,7 +911,7 @@
                 showToast('Lỗi: ' + e.message, 'error');
             }
             btn.disabled = false;
-            btn.textContent = '📤 Gửi cho tất cả Subscribers';
+            btn.textContent = '📤 Gửi Newsletter Xác Nhận';
         });
 
         // Compose Reply toggle

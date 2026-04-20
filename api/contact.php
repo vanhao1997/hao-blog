@@ -205,6 +205,7 @@ switch ($method) {
             
             $subject = isset($data->subject) ? trim($data->subject) : '';
             $body = isset($data->body) ? trim($data->body) : '';
+            $customEmails = isset($data->emails) && is_array($data->emails) ? $data->emails : [];
             
             if (!$subject || !$body) {
                 http_response_code(400);
@@ -212,15 +213,19 @@ switch ($method) {
                 exit;
             }
             
-            $stmt = $db->query("SELECT email FROM newsletter_subscribers WHERE is_active = 1");
-            $subscribers = $stmt->fetchAll();
-            
-            if (empty($subscribers)) {
-                echo json_encode(["success" => false, "error" => "Không có subscriber nào đang active"]);
-                exit;
+            if (!empty($customEmails)) {
+                $emails = $customEmails;
+            } else {
+                $stmt = $db->query("SELECT email FROM newsletter_subscribers WHERE is_active = 1");
+                $subscribers = $stmt->fetchAll();
+                
+                if (empty($subscribers)) {
+                    echo json_encode(["success" => false, "error" => "Không có subscriber nào đang active"]);
+                    exit;
+                }
+                
+                $emails = array_column($subscribers, 'email');
             }
-            
-            $emails = array_column($subscribers, 'email');
             $htmlBody = "
                 <div style='line-height:1.7;font-size:15px;color:#334155;'>" . $body . "</div>
                 <hr style='border:none;border-top:1px solid #e2e8f0;margin:24px 0;'>
