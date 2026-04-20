@@ -237,9 +237,12 @@ switch ($method) {
             
             $results = Mailer::dispatchMultiple($emails, $subject, $htmlBody);
             
+            $totalSent = $results['sent'];
+            $totalAll = $results['sent'] + $results['failed'];
+            
             echo json_encode([
                 "success" => true,
-                "message" => "Đã gửi {$results['sent']}/{$results['sent'] + $results['failed']} email",
+                "message" => "Đã gửi {$totalSent}/{$totalAll} email",
                 "details" => $results
             ]);
             exit;
