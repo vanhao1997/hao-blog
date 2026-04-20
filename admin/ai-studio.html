@@ -181,18 +181,18 @@
     <aside class="admin-sidebar">
         <a href="/admin/index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
         <nav class="admin-nav">
-            <a href="/admin/index.html" class="nav-item">ðŸ“Š Dashboard</a>
-            <a href="/admin/posts.html" class="nav-item">ðŸ“ BÃ i viáº¿t</a>
-            <a href="/admin/categories.html" class="nav-item">ðŸ“‚ Danh má»¥c</a>
-            <a href="/admin/images.html" class="nav-item">ðŸ–¼ï¸ HÃ¬nh áº£nh</a>
-            <a href="/admin/banner.html" class="nav-item">ðŸŽ¨ Táº¡o Banner</a>
-            <a href="/admin/ai-studio.html" class="nav-item active">ðŸ¤– AI Studio</a>
+            <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
+            <a href="/admin/posts.html" class="nav-item">📝 Bài viết</a>
+            <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
+            <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
+            <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
+            <a href="/admin/ai-studio.html" class="nav-item active">🤖 AI Studio</a>
             <a href="/admin/auto-news.html" class="nav-item">🔄 Auto-News</a>
-                <a href="/admin/synctune.html" class="nav-item">ðŸŽµ SyncTune</a>
-            <a href="/admin/tools.html" class="nav-item">ðŸ§° CÃ´ng cá»¥</a>
+            <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
+            <a href="/admin/tools.html" class="nav-item">🧰 Công cụ</a>
             <div class="nav-divider"></div>
-            <a href="/" class="nav-item" target="_blank">ðŸŒ Xem trang</a>
-            <a href="#" class="nav-item logout" id="logoutBtn">ðŸšª ÄÄƒng xuáº¥t</a>
+            <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
+            <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
         </nav>
     </aside>
 
@@ -201,7 +201,7 @@
         <header
             class="flex-none w-full p-4 md:px-8 md:py-5 flex justify-between items-center bg-white border-b border-slate-200">
             <div class="flex items-center gap-4">
-                <button class="md:hidden text-2xl text-slate-600">â˜°</button>
+                <button class="md:hidden text-2xl text-slate-600">☰</button>
                 <div class="flex items-center gap-3">
                     <span class="font-bold text-xl text-slate-800 tracking-tight">AI Studio</span>
                     <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">v3.0 SEO
@@ -231,14 +231,14 @@
                         <h1
                             class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-900 via-indigo-800 to-emerald-700 bg-clip-text text-transparent">
                             AI Studio</h1>
-                        <p class="text-slate-500 text-lg max-w-lg mx-auto">CÃ o dá»¯ liá»‡u, viáº¿t bÃ i SEO, táº¡o banner â€” táº¥t
-                            cáº£ tá»± Ä‘á»™ng trong 1 click.</p>
+                        <p class="text-slate-500 text-lg max-w-lg mx-auto">Cào dữ liệu, viết bài SEO, tạo banner — tất
+                            cả tự động trong 1 click.</p>
                     </div>
                     <!-- Mode Switch -->
                     <div class="flex justify-center">
                         <div class="mode-switch">
-                            <button class="mode-btn active" onclick="switchMode('url')" id="modeUrl">ðŸ”— CÃ o URL</button>
-                            <button class="mode-btn" onclick="switchMode('keyword')" id="modeKw">âœï¸ Viáº¿t tá»«
+                            <button class="mode-btn active" onclick="switchMode('url')" id="modeUrl">🔗 Cào URL</button>
+                            <button class="mode-btn" onclick="switchMode('keyword')" id="modeKw">✍️ Viết từ
                                 Keyword</button>
                         </div>
                     </div>
@@ -248,9 +248,9 @@
                             class="inline-flex items-center gap-3 bg-white rounded-lg px-4 py-2 shadow-sm border border-slate-200">
                             <select id="providerSelect" onchange="switchProvider(this.value)"
                                 class="bg-slate-50 border border-slate-200 outline-none text-slate-800 font-bold text-sm cursor-pointer px-3 py-1.5 rounded-md">
-                                <option value="gemini">ðŸŒ Gemini</option>
-                                <option value="openrouter">ðŸŸ  OpenRouter (Qwen)</option>
-                                <option value="insightdev">ðŸ”® InsightDev</option>
+                                <option value="gemini">🌐 Gemini</option>
+                                <option value="openrouter">🟠 OpenRouter (Qwen)</option>
+                                <option value="insightdev">🔮 InsightDev</option>
                             </select>
                             <select id="modelSelect" onchange="switchModel(this.value)"
                                 class="bg-transparent border-none outline-none text-slate-800 font-semibold text-sm cursor-pointer pr-6 appearance-none"
@@ -262,7 +262,7 @@
                         <input type="text" id="customModelInput"
                             oninput="localStorage.setItem('seo_custom_model', this.value)"
                             class="hidden w-full max-w-sm px-4 py-2 mt-2 bg-white rounded-lg border border-slate-200 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-400 shadow-sm"
-                            placeholder="Nháº­p tÃªn model (vd: nvidia/nemotron-3-...)">
+                            placeholder="Nhập tên model (vd: nvidia/nemotron-3-...)">
                     </div>
                     <div class="relative group">
                         <div
@@ -272,11 +272,11 @@
                             class="relative bg-white rounded-xl p-2 shadow-2xl shadow-indigo-100/50 flex items-center border border-slate-100">
                             <div class="pl-4 text-slate-400"><i data-lucide="link-2" class="w-5 h-5" id="inputIcon"></i>
                             </div>
-                            <input type="text" id="mainInput" required placeholder="DÃ¡n URL bÃ i viáº¿t táº¡i Ä‘Ã¢y..."
+                            <input type="text" id="mainInput" required placeholder="Dán URL bài viết tại đây..."
                                 class="w-full p-4 bg-transparent border-none outline-none text-slate-800 placeholder-slate-400 font-medium">
                             <button type="submit"
                                 class="bg-slate-900 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 font-bold text-sm whitespace-nowrap">
-                                <i data-lucide="sparkles" class="w-4 h-4"></i> Táº¡o bÃ i
+                                <i data-lucide="sparkles" class="w-4 h-4"></i> Tạo bài
                             </button>
                         </form>
                     </div>
@@ -292,8 +292,8 @@
                 <div class="text-center space-y-6 w-full max-w-md">
                     <span class="loader border-slate-200 border-b-indigo-600"></span>
                     <div class="space-y-2">
-                        <h3 class="text-2xl font-semibold text-slate-800" id="loadingTitle">Äang xá»­ lÃ½...</h3>
-                        <p class="text-slate-500" id="loadingText">BÆ°á»›c 1/3: CÃ o dá»¯ liá»‡u vÃ  phÃ¢n tÃ­ch ná»™i dung...</p>
+                        <h3 class="text-2xl font-semibold text-slate-800" id="loadingTitle">Đang xử lý...</h3>
+                        <p class="text-slate-500" id="loadingText">Bước 1/3: Cào dữ liệu và phân tích nội dung...</p>
                     </div>
                     <div class="progress-bar w-full">
                         <div class="progress-fill" id="progressBar" style="width: 10%"></div>
@@ -312,7 +312,7 @@
                     <button onclick="resetApp()"
                         class="flex items-center gap-2 text-slate-500 hover:text-indigo-600 transition-colors group text-sm font-medium px-2 py-1 rounded hover:bg-indigo-50">
                         <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
-                        <span>Táº¡o bÃ i má»›i</span>
+                        <span>Tạo bài mới</span>
                     </button>
                     <div class="flex gap-2">
                         <button onclick="saveStudioPost(false, true)" id="btnPreview"
@@ -321,11 +321,11 @@
                         </button>
                         <button onclick="saveStudioPost(false, false)" id="btnSave"
                             class="flex items-center gap-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-4 py-2.5 rounded-lg text-sm font-bold transition-all active:scale-95 border border-indigo-200">
-                            <i data-lucide="save" class="w-4 h-4"></i> <span>LÆ°u nhÃ¡p</span>
+                            <i data-lucide="save" class="w-4 h-4"></i> <span>Lưu nháp</span>
                         </button>
                         <button onclick="saveStudioPost(true, false)" id="btnPublish"
                             class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-emerald-200 active:scale-95">
-                            <i data-lucide="send" class="w-4 h-4"></i> <span>ÄÄƒng ngay</span>
+                            <i data-lucide="send" class="w-4 h-4"></i> <span>Đăng ngay</span>
                         </button>
                     </div>
                 </div>
@@ -362,10 +362,10 @@
                             <div>
                                 <label
                                     class="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Danh
-                                    má»¥c</label>
+                                    mục</label>
                                 <select id="res-category" onchange="drawBanner()"
                                     class="w-full text-sm bg-slate-50 border border-slate-200 p-3 rounded-lg outline-none focus:border-indigo-400">
-                                    <option value="">â€” Chá»n danh má»¥c â€”</option>
+                                    <option value="">— Chọn danh mục —</option>
                                 </select>
                             </div>
                             <div>
@@ -405,7 +405,7 @@
                                 class="w-full h-auto rounded-lg border border-slate-200"></canvas>
                             <button onclick="saveBannerImage(event)" type="button"
                                 class="w-full mt-3 bg-slate-100 hover:bg-indigo-50 text-indigo-600 font-semibold py-2 rounded border border-slate-200 transition-colors flex justify-center items-center gap-2">
-                                <i data-lucide="download" class="w-4 h-4"></i> LÆ°u hÃ¬nh vÃ o kho áº£nh
+                                <i data-lucide="download" class="w-4 h-4"></i> Lưu hình vào kho ảnh
                             </button>
                             <div id="bannerSaveStatus" class="text-xs text-center mt-2 hidden"></div>
                         </div>
@@ -425,7 +425,7 @@
                         <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
                             <div
                                 class="mb-3 px-2 py-1.5 bg-amber-50 border border-amber-200 rounded-md flex items-center gap-2 text-xs text-amber-700 font-medium">
-                                <span>âœï¸</span> Báº¡n cÃ³ thá»ƒ chá»‰nh sá»­a trá»±c tiáº¿p ná»™i dung bÃªn dÆ°á»›i trÆ°á»›c khi Ä‘Äƒng bÃ i
+                                <span>✏️</span> Bạn có thể chỉnh sửa trực tiếp nội dung bên dưới trước khi đăng bài
                             </div>
                             <div id="res-content" class="prose prose-slate max-w-none" contenteditable="true"
                                 style="outline: none; min-height: 200px; border: 1px dashed transparent; border-radius: 8px; padding: 4px; transition: border-color 0.2s;"
@@ -448,23 +448,23 @@
                     </div>
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">ðŸŒ Gemini API Key</label>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">🌐 Gemini API Key</label>
                             <input type="password" id="apiKeyInput" placeholder="AIza..."
                                 class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 outline-none text-sm font-medium">
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">ðŸ”® InsightDev API Key</label>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">🔮 InsightDev API Key</label>
                             <input type="password" id="insightdevApiKeyInput" placeholder="your-api-key"
                                 class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 outline-none text-sm font-medium">
-                            <p class="text-xs text-slate-400 mt-1.5 flex items-center gap-1">Láº¥y key táº¡i <a
+                            <p class="text-xs text-slate-400 mt-1.5 flex items-center gap-1">Lấy key tại <a
                                     href="https://insightdev.id.vn/" target="_blank"
                                     class="text-indigo-500 hover:underline font-medium">insightdev.id.vn</a></p>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">ðŸŸ  OpenRouter API Key</label>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">🟠 OpenRouter API Key</label>
                             <input type="password" id="openrouterApiKeyInput" placeholder="sk-or-v1-..."
                                 class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 outline-none text-sm font-medium">
-                            <p class="text-xs text-slate-400 mt-1.5 flex items-center gap-1">Láº¥y key táº¡i <a
+                            <p class="text-xs text-slate-400 mt-1.5 flex items-center gap-1">Lấy key tại <a
                                     href="https://openrouter.ai/settings/keys" target="_blank"
                                     class="text-indigo-500 hover:underline font-medium">openrouter.ai/keys</a></p>
                         </div>
@@ -520,9 +520,9 @@
         const bCtx = bannerCanvas.getContext('2d');
 
         const bannerTemplates = {
-            marketing: [{ name: 'Growth', icons: ['ðŸ“ˆ', 'ðŸ’°', 'ðŸš€', 'âœ¨'] }, { name: 'Social', icons: ['ðŸ“±', 'ðŸ’¬', 'â¤ï¸', 'ðŸ””'] }, { name: 'Analytics', icons: ['ðŸ“Š', 'ðŸ“‰', 'ðŸŽ¯', 'ðŸ’¡'] }, { name: 'Ads', icons: ['ðŸ’¸', 'ðŸŽª', 'ðŸ“£', 'â­'] }],
-            ai: [{ name: 'Robot', icons: ['ðŸ¤–', 'âš¡', 'ðŸ§ ', 'ðŸ’¡'] }, { name: 'Neural', icons: ['ðŸ§¬', 'ðŸ”®', 'âœ¨', 'ðŸŒ'] }, { name: 'Data', icons: ['ðŸ“¡', 'ðŸ”¢', 'âš™ï¸', 'ðŸ”—'] }, { name: 'Future', icons: ['ðŸš€', 'ðŸŒŸ', 'ðŸ’Ž', 'ðŸ”¥'] }],
-            tool: [{ name: 'Build', icons: ['ðŸ› ï¸', 'âš™ï¸', 'ðŸ”§', 'ðŸ“¦'] }, { name: 'Code', icons: ['ðŸ’»', 'ðŸ–¥ï¸', 'âŒ¨ï¸', 'ðŸ–±ï¸'] }]
+            marketing: [{ name: 'Growth', icons: ['📈', '💰', '🚀', '✨'] }, { name: 'Social', icons: ['📱', '💬', '❤️', '🔔'] }, { name: 'Analytics', icons: ['📊', '📉', '🎯', '💡'] }, { name: 'Ads', icons: ['💸', '🎪', '📣', '⭐'] }],
+            ai: [{ name: 'Robot', icons: ['🤖', '⚡', '🧠', '💡'] }, { name: 'Neural', icons: ['🧬', '🔮', '✨', '🌐'] }, { name: 'Data', icons: ['📡', '🔢', '⚙️', '🔗'] }, { name: 'Future', icons: ['🚀', '🌟', '💎', '🔥'] }],
+            tool: [{ name: 'Build', icons: ['🛠️', '⚙️', '🔧', '📦'] }, { name: 'Code', icons: ['💻', '🖥️', '⌨️', '🖱️'] }]
         };
         const categoryLabels = { marketing: 'DIGITAL MARKETING', ai: 'AI & TOOL', tool: 'TOOL & RESOURCES' };
         const bannerThemes = {
@@ -612,7 +612,7 @@
             if (!state.bannerBlob) return;
             const btn = event.currentTarget;
             const original = btn.innerHTML;
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Äang lÆ°u...';
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Đang lưu...';
             btn.disabled = true;
 
             try {
@@ -626,13 +626,13 @@
 
                 if (uploadData.success) {
                     state.savedBannerUrl = uploadData.url;
-                    document.getElementById('bannerSaveStatus').innerHTML = '<span class="text-emerald-600 font-medium">âœ… ÄÃ£ lÆ°u vÃ o kho áº£nh thÆ° viá»‡n</span>';
+                    document.getElementById('bannerSaveStatus').innerHTML = '<span class="text-emerald-600 font-medium">✅ Đã lưu vào kho ảnh thư viện</span>';
                     document.getElementById('bannerSaveStatus').classList.remove('hidden');
                 } else {
                     throw new Error(uploadData.error || 'Upload failed');
                 }
             } catch (e) {
-                document.getElementById('bannerSaveStatus').innerHTML = `<span class="text-red-500">âŒ ${e.message}</span>`;
+                document.getElementById('bannerSaveStatus').innerHTML = `<span class="text-red-500">❌ ${e.message}</span>`;
                 document.getElementById('bannerSaveStatus').classList.remove('hidden');
             } finally {
                 btn.innerHTML = original;
@@ -669,8 +669,8 @@
 
         function detectCategory(title) {
             const lower = (title || '').toLowerCase();
-            if (/ai|tool|cÃ´ng cá»¥|automation|prompt|chatgpt|gemini/.test(lower)) return 'ai';
-            if (/code|láº­p trÃ¬nh|dev|script|api/.test(lower)) return 'tool';
+            if (/ai|tool|công cụ|automation|prompt|chatgpt|gemini/.test(lower)) return 'ai';
+            if (/code|lập trình|dev|script|api/.test(lower)) return 'tool';
             return 'marketing';
         }
 
@@ -685,10 +685,10 @@
             document.getElementById('modeKw').classList.toggle('active', mode === 'keyword');
             const input = document.getElementById('mainInput');
             if (mode === 'url') {
-                input.placeholder = 'DÃ¡n URL bÃ i viáº¿t táº¡i Ä‘Ã¢y...';
+                input.placeholder = 'Dán URL bài viết tại đây...';
                 input.type = 'url';
             } else {
-                input.placeholder = 'Nháº­p keyword hoáº·c chá»§ Ä‘á» (VD: KOL Marketing 2026)...';
+                input.placeholder = 'Nhập keyword hoặc chủ đề (VD: KOL Marketing 2026)...';
                 input.type = 'text';
             }
         }
@@ -698,89 +698,89 @@
         // ============================================================
         const providerModels = {
             gemini: [
-                { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro (Máº¡nh nháº¥t)' },
-                { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash (Free â­ KhuyÃªn dÃ¹ng)' },
+                { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro (Mạnh nhất)' },
+                { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash (Free ⭐ Khuyên dùng)' },
                 { value: 'gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash Lite (Free Nhanh)' },
             ],
             openrouter: [
                 // --- Qwen ---
-                { group: 'ðŸŸ  Qwen (Alibaba)' },
-                { value: 'openrouter:qwen/qwen3-235b-a22b', label: 'Qwen3 235B â€” Máº¡nh nháº¥t' },
-                { value: 'openrouter:qwen/qwen3-30b-a3b', label: 'Qwen3 30B â€” Nhanh' },
+                { group: '🟠 Qwen (Alibaba)' },
+                { value: 'openrouter:qwen/qwen3-235b-a22b', label: 'Qwen3 235B — Mạnh nhất' },
+                { value: 'openrouter:qwen/qwen3-30b-a3b', label: 'Qwen3 30B — Nhanh' },
                 { value: 'openrouter:qwen/qwen-max', label: 'Qwen Max' },
-                { value: 'openrouter:qwen/qwen-plus', label: 'Qwen Plus â€” Tiáº¿t kiá»‡m' },
-                { value: 'openrouter:qwen/qwen-turbo', label: 'Qwen Turbo â€” Ráº» nháº¥t' },
+                { value: 'openrouter:qwen/qwen-plus', label: 'Qwen Plus — Tiết kiệm' },
+                { value: 'openrouter:qwen/qwen-turbo', label: 'Qwen Turbo — Rẻ nhất' },
                 { value: 'openrouter:qwen/qwen2.5-coder-32b-instruct', label: 'Qwen 2.5 Coder 32B' },
                 { value: 'openrouter:qwen/qvq-72b-preview', label: 'QVQ 72B Vision' },
                 // --- DeepSeek ---
-                { group: 'ðŸ”µ DeepSeek' },
-                { value: 'openrouter:deepseek/deepseek-r1', label: 'DeepSeek R1 â€” Reasoning' },
+                { group: '🔵 DeepSeek' },
+                { value: 'openrouter:deepseek/deepseek-r1', label: 'DeepSeek R1 — Reasoning' },
                 { value: 'openrouter:deepseek/deepseek-chat', label: 'DeepSeek V3 Chat' },
                 { value: 'openrouter:deepseek/deepseek-r1-distill-llama-70b', label: 'DeepSeek R1 Distill 70B' },
                 // --- Meta Llama ---
-                { group: 'ðŸ¦™ Meta Llama' },
+                { group: '🦙 Meta Llama' },
                 { value: 'openrouter:meta-llama/llama-4-maverick', label: 'Llama 4 Maverick' },
                 { value: 'openrouter:meta-llama/llama-4-scout', label: 'Llama 4 Scout' },
                 { value: 'openrouter:meta-llama/llama-3.3-70b-instruct', label: 'Llama 3.3 70B' },
-                { value: 'openrouter:meta-llama/llama-3.1-405b-instruct', label: 'Llama 3.1 405B â€” Lá»›n nháº¥t' },
-                { value: 'openrouter:meta-llama/llama-3.1-8b-instruct', label: 'Llama 3.1 8B â€” Free' },
+                { value: 'openrouter:meta-llama/llama-3.1-405b-instruct', label: 'Llama 3.1 405B — Lớn nhất' },
+                { value: 'openrouter:meta-llama/llama-3.1-8b-instruct', label: 'Llama 3.1 8B — Free' },
                 // --- Google ---
-                { group: 'ðŸŒ Google Gemini' },
+                { group: '🌐 Google Gemini' },
                 { value: 'openrouter:google/gemini-2.5-pro-preview', label: 'Gemini 2.5 Pro Preview' },
                 { value: 'openrouter:google/gemini-2.5-flash-preview', label: 'Gemini 2.5 Flash Preview' },
                 { value: 'openrouter:google/gemma-3-27b-it', label: 'Gemma 3 27B' },
                 // --- Mistral ---
-                { group: 'ðŸ”· Mistral AI' },
+                { group: '🔷 Mistral AI' },
                 { value: 'openrouter:mistralai/mistral-large-2411', label: 'Mistral Large' },
                 { value: 'openrouter:mistralai/mistral-medium-3', label: 'Mistral Medium 3' },
                 { value: 'openrouter:mistralai/mistral-small-3.1-24b-instruct', label: 'Mistral Small 3.1 24B' },
-                { value: 'openrouter:mistralai/codestral-2501', label: 'Codestral â€” Code' },
+                { value: 'openrouter:mistralai/codestral-2501', label: 'Codestral — Code' },
                 // --- Anthropic ---
-                { group: 'ðŸŸ£ Anthropic Claude' },
+                { group: '🟣 Anthropic Claude' },
                 { value: 'openrouter:anthropic/claude-sonnet-4', label: 'Claude Sonnet 4' },
                 { value: 'openrouter:anthropic/claude-3.5-sonnet', label: 'Claude 3.5 Sonnet' },
-                { value: 'openrouter:anthropic/claude-3.5-haiku', label: 'Claude 3.5 Haiku â€” Nhanh' },
+                { value: 'openrouter:anthropic/claude-3.5-haiku', label: 'Claude 3.5 Haiku — Nhanh' },
                 // --- OpenAI ---
-                { group: 'ðŸŸ¢ OpenAI' },
+                { group: '🟢 OpenAI' },
                 { value: 'openrouter:openai/gpt-4.1', label: 'GPT-4.1' },
                 { value: 'openrouter:openai/gpt-4.1-mini', label: 'GPT-4.1 Mini' },
-                { value: 'openrouter:openai/gpt-4.1-nano', label: 'GPT-4.1 Nano â€” Ráº»' },
-                { value: 'openrouter:openai/o4-mini', label: 'o4-mini â€” Reasoning' },
+                { value: 'openrouter:openai/gpt-4.1-nano', label: 'GPT-4.1 Nano — Rẻ' },
+                { value: 'openrouter:openai/o4-mini', label: 'o4-mini — Reasoning' },
                 // --- Cohere ---
-                { group: 'ðŸŸ¤ Cohere' },
-                { value: 'openrouter:cohere/command-a', label: 'Command A â€” Má»›i nháº¥t' },
+                { group: '🟤 Cohere' },
+                { value: 'openrouter:cohere/command-a', label: 'Command A — Mới nhất' },
                 { value: 'openrouter:cohere/command-r-plus-08-2024', label: 'Command R+' },
                 // --- NVIDIA ---
-                { group: 'ðŸŸ© NVIDIA' },
+                { group: '🟩 NVIDIA' },
                 { value: 'openrouter:nvidia/llama-3.1-nemotron-70b-instruct', label: 'Nemotron 70B' },
-                // --- TÃ¹y chá»‰nh (Custom) ---
-                { group: 'âœï¸ KhÃ¡c' },
-                { value: 'openrouter:custom', label: 'TÃ¹y chá»‰nh (Tá»± nháº­p tÃªn)' },
+                // --- Tùy chỉnh (Custom) ---
+                { group: '✏️ Khác' },
+                { value: 'openrouter:custom', label: 'Tùy chỉnh (Tự nhập tên)' },
             ],
             insightdev: [
                 // Anthropic
-                { value: 'insightdev:anthropic:opus-4.5', label: 'ðŸŸ£ Claude Opus 4.5' },
-                { value: 'insightdev:anthropic:haiku-4-5-20251001', label: 'ðŸŸ£ Claude 4.5 Haiku' },
-                { value: 'insightdev:anthropic:sonnet-4-5-20250929', label: 'ðŸŸ£ Claude 4.5 Sonnet' },
-                { value: 'insightdev:anthropic:sonnet-4-5-20250929-thinking', label: 'ðŸŸ£ Claude 4.5 Sonnet (Thinking)' },
-                { value: 'insightdev:anthropic:opus-4-1-20250805', label: 'ðŸŸ£ Claude Opus 4.1' },
+                { value: 'insightdev:anthropic:opus-4.5', label: '🟣 Claude Opus 4.5' },
+                { value: 'insightdev:anthropic:haiku-4-5-20251001', label: '🟣 Claude 4.5 Haiku' },
+                { value: 'insightdev:anthropic:sonnet-4-5-20250929', label: '🟣 Claude 4.5 Sonnet' },
+                { value: 'insightdev:anthropic:sonnet-4-5-20250929-thinking', label: '🟣 Claude 4.5 Sonnet (Thinking)' },
+                { value: 'insightdev:anthropic:opus-4-1-20250805', label: '🟣 Claude Opus 4.1' },
                 // OpenAI
-                { value: 'insightdev:openai:gpt-5.1-chat', label: 'ðŸŸ¢ GPT-5.1 Chat' },
-                { value: 'insightdev:openai:gpt-5', label: 'ðŸŸ¢ GPT-5' },
-                { value: 'insightdev:openai:gpt-4.1', label: 'ðŸŸ¢ GPT-4.1' },
-                { value: 'insightdev:openai:gpt-4.1-mini', label: 'ðŸŸ¢ GPT-4.1 Mini' },
-                { value: 'insightdev:openai:gpt-oss-20b', label: 'ðŸŸ¢ GPT-OSS 20B' },
+                { value: 'insightdev:openai:gpt-5.1-chat', label: '🟢 GPT-5.1 Chat' },
+                { value: 'insightdev:openai:gpt-5', label: '🟢 GPT-5' },
+                { value: 'insightdev:openai:gpt-4.1', label: '🟢 GPT-4.1' },
+                { value: 'insightdev:openai:gpt-4.1-mini', label: '🟢 GPT-4.1 Mini' },
+                { value: 'insightdev:openai:gpt-oss-20b', label: '🟢 GPT-OSS 20B' },
                 // DeepSeek
-                { value: 'insightdev:deepseek:deepseek-v3-0324', label: 'ðŸ”µ DeepSeek V3' },
-                { value: 'insightdev:deepseek:deepseek-r1-0528', label: 'ðŸ”µ DeepSeek R1' },
+                { value: 'insightdev:deepseek:deepseek-v3-0324', label: '🔵 DeepSeek V3' },
+                { value: 'insightdev:deepseek:deepseek-r1-0528', label: '🔵 DeepSeek R1' },
                 // Grok
-                { value: 'insightdev:grok:grok-4', label: 'âš¡ Grok 4' },
-                { value: 'insightdev:grok:grok-3', label: 'âš¡ Grok 3' },
+                { value: 'insightdev:grok:grok-4', label: '⚡ Grok 4' },
+                { value: 'insightdev:grok:grok-3', label: '⚡ Grok 3' },
                 // Gemini (via InsightDev)
-                { value: 'insightdev:gemini:gemini-3-pro-preview-11-2025', label: 'ðŸŒ Gemini 3 Pro Preview' },
-                { value: 'insightdev:gemini:gemini-2.5-pro-preview-0605', label: 'ðŸŒ Gemini 2.5 Pro Preview' },
-                { value: 'insightdev:gemini:gemini-2.5-pro', label: 'ðŸŒ Gemini 2.5 Pro' },
-                { value: 'insightdev:gemini:gemini-2.5-flash', label: 'ðŸŒ Gemini 2.5 Flash' },
+                { value: 'insightdev:gemini:gemini-3-pro-preview-11-2025', label: '🌐 Gemini 3 Pro Preview' },
+                { value: 'insightdev:gemini:gemini-2.5-pro-preview-0605', label: '🌐 Gemini 2.5 Pro Preview' },
+                { value: 'insightdev:gemini:gemini-2.5-pro', label: '🌐 Gemini 2.5 Pro' },
+                { value: 'insightdev:gemini:gemini-2.5-flash', label: '🌐 Gemini 2.5 Flash' },
             ]
         };
 
@@ -803,7 +803,7 @@
             const models = providerModels[provider] || [];
             let currentGroup = null;
             models.forEach(m => {
-                // Group header â†’ create <optgroup>
+                // Group header → create <optgroup>
                 if (m.group) {
                     currentGroup = document.createElement('optgroup');
                     currentGroup.label = m.group;
@@ -861,7 +861,7 @@
             if (geminiKey) { state.apiKey = geminiKey; localStorage.setItem('seo_api_key', geminiKey); }
             if (insightdevKey) { state.insightdevApiKey = insightdevKey; localStorage.setItem('insightdev_api_key', insightdevKey); }
             if (openrouterKey) { state.openrouterApiKey = openrouterKey; localStorage.setItem('openrouter_api_key', openrouterKey); }
-            if (geminiKey || insightdevKey || openrouterKey) { toggleSettings(); showToast('âœ… API Keys saved!'); }
+            if (geminiKey || insightdevKey || openrouterKey) { toggleSettings(); showToast('✅ API Keys saved!'); }
         }
         function resetApp() { switchView('input'); state.data = null; state.bannerBlob = null; document.getElementById('mainInput').value = ''; }
         function showToast(msg) {
@@ -882,7 +882,7 @@
         }
 
         // ============================================================
-        // AI API CALLS â€” Multi-provider (Gemini + InsightDev)
+        // AI API CALLS — Multi-provider (Gemini + InsightDev)
         // ============================================================
         async function callAI(prompt) {
             // Route to InsightDev API if model starts with 'insightdev:'
@@ -929,7 +929,7 @@
 
             if (!raw) {
                 const blockReason = data.candidates?.[0]?.finishReason;
-                throw new Error(`Gemini khÃ´ng tráº£ vá» ná»™i dung (reason: ${blockReason || 'unknown'}). Vui lÃ²ng thá»­ láº¡i.`);
+                throw new Error(`Gemini không trả về nội dung (reason: ${blockReason || 'unknown'}). Vui lòng thử lại.`);
             }
 
             return parseAIJson(raw);
@@ -938,7 +938,7 @@
         // --- InsightDev API (OpenAI-compatible) ---
         async function callInsightDevAI(prompt) {
             if (!state.insightdevApiKey) {
-                throw new Error('ChÆ°a cáº¥u hÃ¬nh InsightDev API Key. VÃ o Settings Ä‘á»ƒ nháº­p key.');
+                throw new Error('Chưa cấu hình InsightDev API Key. Vào Settings để nhập key.');
             }
 
             const modelName = state.model.replace('insightdev:', '');
@@ -977,7 +977,7 @@
 
             if (!raw) {
                 const finishReason = data.choices?.[0]?.finish_reason;
-                throw new Error(`InsightDev khÃ´ng tráº£ vá» ná»™i dung (reason: ${finishReason || 'unknown'}). Vui lÃ²ng thá»­ láº¡i.`);
+                throw new Error(`InsightDev không trả về nội dung (reason: ${finishReason || 'unknown'}). Vui lòng thử lại.`);
             }
 
             console.log('[InsightDev] Raw response length:', raw.length);
@@ -987,14 +987,14 @@
         // --- OpenRouter API (Qwen + others) ---
         async function callOpenRouterAI(prompt) {
             if (!state.openrouterApiKey) {
-                throw new Error('ChÆ°a cáº¥u hÃ¬nh OpenRouter API Key. VÃ o Settings Ä‘á»ƒ nháº­p key.');
+                throw new Error('Chưa cấu hình OpenRouter API Key. Vào Settings để nhập key.');
             }
 
             let modelName = state.model.replace('openrouter:', '');
             if (modelName === 'custom') {
                 const customInput = document.getElementById('customModelInput');
                 const customVal = customInput ? customInput.value.trim() : '';
-                if (!customVal) throw new Error('Vui lÃ²ng nháº­p tÃªn model OpenRouter (vÃ­ dá»¥: nvidia/nemotron-3-super-120b-a12b:free)');
+                if (!customVal) throw new Error('Vui lòng nhập tên model OpenRouter (ví dụ: nvidia/nemotron-3-super-120b-a12b:free)');
                 modelName = customVal;
             }
 
@@ -1034,7 +1034,7 @@
 
             if (!raw) {
                 const finishReason = data.choices?.[0]?.finish_reason;
-                throw new Error(`OpenRouter khÃ´ng tráº£ vá» ná»™i dung (reason: ${finishReason || 'unknown'}). Vui lÃ²ng thá»­ láº¡i.`);
+                throw new Error(`OpenRouter không trả về nội dung (reason: ${finishReason || 'unknown'}). Vui lòng thử lại.`);
             }
 
             console.log('[OpenRouter] Raw response length:', raw.length);
@@ -1129,8 +1129,8 @@ Source Content:
 ${urlOrText.substring(0, 30000)}
 ---
 
-## SEO Requirements (MANDATORY â€” the generated article MUST score 80+/100 on SEO analysis):
-1. **Title Tag**: 55-65 characters. Main keyword MUST appear near the beginning. Use power words (HÆ°á»›ng dáº«n, Chiáº¿n lÆ°á»£c, BÃ­ quyáº¿t, Top, etc.).
+## SEO Requirements (MANDATORY — the generated article MUST score 80+/100 on SEO analysis):
+1. **Title Tag**: 55-65 characters. Main keyword MUST appear near the beginning. Use power words (Hướng dẫn, Chiến lược, Bí quyết, Top, etc.).
 2. **Meta Description**: 145-160 characters. MUST include main keyword + clear CTA.
 3. **Keywords**: Return 5-8 LSI keywords. The FIRST keyword is the main keyword.
 4. **Article Structure (ALL items are REQUIRED)**:
@@ -1140,7 +1140,7 @@ ${urlOrText.substring(0, 30000)}
    - Include **bold** for important terms and key phrases.
    - Include at least 1 comparison **table** using markdown table format (with | and ---).
    - Include at least 1 **numbered list** or **bullet list** with 3+ items of actionable tips.
-   - MUST end with "## CÃ¢u há»i thÆ°á»ng gáº·p (FAQ)" section containing 3-5 Q&A pairs, each question as ### heading.
+   - MUST end with "## Câu hỏi thường gặp (FAQ)" section containing 3-5 Q&A pairs, each question as ### heading.
    - Do NOT add a Table of Contents section (it is auto-generated by the system).
 5. **Content Quality**:
    - Write in natural, engaging Vietnamese. Avoid robotic, direct translation tone.
@@ -1150,7 +1150,7 @@ ${urlOrText.substring(0, 30000)}
    - Strictly NO mention of the original source brand name or competitors.
    - NO external text links to the original site.
    - DO NOT use citation symbols [1], [2],..
-   - DO NOT write self-referencing sentences ("BÃ i viáº¿t nÃ y...").
+   - DO NOT write self-referencing sentences ("Bài viết này...").
 7. **LENGTH**: Minimum 2000 words. Deep, comprehensive, information-rich.
 8. **Clean Output**: Return ONLY valid raw JSON without any markdown formatting wrappers like \`\`\`json.
 
@@ -1168,8 +1168,8 @@ Output Format:
 Role: Senior SEO Content Specialist & Expert Writer focused on the Vietnamese market.
 Task: Write a top-ranking, original SEO blog post about "${keyword}" for "nguyenvanhao.name.vn".
 
-## SEO Requirements (MANDATORY â€” the generated article MUST score 80+/100 on SEO analysis):
-1. **Title Tag**: 55-65 characters. "${keyword}" MUST appear near the beginning. Use power words (HÆ°á»›ng dáº«n, Chiáº¿n lÆ°á»£c, BÃ­ quyáº¿t, Top, etc.).
+## SEO Requirements (MANDATORY — the generated article MUST score 80+/100 on SEO analysis):
+1. **Title Tag**: 55-65 characters. "${keyword}" MUST appear near the beginning. Use power words (Hướng dẫn, Chiến lược, Bí quyết, Top, etc.).
 2. **Meta Description**: 145-160 characters. MUST include "${keyword}" + clear value proposition.
 3. **Keywords**: Return the main keyword + 5-7 LSI/related keywords. The FIRST keyword is the main keyword.
 4. **Article Structure (ALL items are REQUIRED)**:
@@ -1179,7 +1179,7 @@ Task: Write a top-ranking, original SEO blog post about "${keyword}" for "nguyen
    - Use **bold** for important terms/phrases that support SEO.
    - Include at least 1 **comparison table** using markdown table format (with | and ---).
    - Include at least 1 **numbered/bullet list** with 3+ items of actionable tips.
-   - MUST end with "## CÃ¢u há»i thÆ°á»ng gáº·p (FAQ)" â€” 3-5 Q&A pairs, each question as ### heading.
+   - MUST end with "## Câu hỏi thường gặp (FAQ)" — 3-5 Q&A pairs, each question as ### heading.
    - End with conclusion + CTA.
    - Do NOT add a Table of Contents (it is auto-generated by the system).
 5. **Content Quality**:
@@ -1191,7 +1191,7 @@ Task: Write a top-ranking, original SEO blog post about "${keyword}" for "nguyen
 6. **Constraints**:
    - DO NOT use citation symbols [1], [2],..
    - DO NOT write word count summaries.
-   - DO NOT write self-referencing sentences ("BÃ i viáº¿t nÃ y...").
+   - DO NOT write self-referencing sentences ("Bài viết này...").
 7. **LENGTH**: 2000-2500 words minimum. Deep, comprehensive, information-rich.
 8. **Clean Output**: Return ONLY valid raw JSON without any markdown formatting wrappers like \`\`\`json.
 
@@ -1213,12 +1213,12 @@ Output Format:
             if (!input) return;
             // Validate correct API key exists for selected model
             if (state.model.startsWith('insightdev:') && !state.insightdevApiKey) {
-                document.getElementById('errorText').textContent = 'ChÆ°a cáº¥u hÃ¬nh InsightDev API Key. VÃ o Settings Ä‘á»ƒ nháº­p key.';
+                document.getElementById('errorText').textContent = 'Chưa cấu hình InsightDev API Key. Vào Settings để nhập key.';
                 document.getElementById('errorMsg').classList.remove('hidden');
                 return;
             }
             if (state.model.startsWith('openrouter:') && !state.openrouterApiKey) {
-                document.getElementById('errorText').textContent = 'ChÆ°a cáº¥u hÃ¬nh OpenRouter API Key. VÃ o Settings Ä‘á»ƒ nháº­p key.';
+                document.getElementById('errorText').textContent = 'Chưa cấu hình OpenRouter API Key. Vào Settings để nhập key.';
                 document.getElementById('errorMsg').classList.remove('hidden');
                 return;
             }
@@ -1228,19 +1228,19 @@ Output Format:
             try {
                 // Step 1
                 updateProgress(1, currentMode === 'url'
-                    ? 'BÆ°á»›c 1/3: CÃ o dá»¯ liá»‡u vÃ  phÃ¢n tÃ­ch ná»™i dung...'
-                    : 'BÆ°á»›c 1/3: NghiÃªn cá»©u keyword vÃ  lÃªn dÃ n Ã½...');
+                    ? 'Bước 1/3: Cào dữ liệu và phân tích nội dung...'
+                    : 'Bước 1/3: Nghiên cứu keyword và lên dàn ý...');
 
-                // Step 2 â€” AI writes
+                // Step 2 — AI writes
                 await new Promise(r => setTimeout(r, 500));
-                updateProgress(2, 'BÆ°á»›c 2/3: AI Ä‘ang viáº¿t bÃ i SEO 2000-2500 tá»« (TOC + FAQ + Table)...');
+                updateProgress(2, 'Bước 2/3: AI đang viết bài SEO 2000-2500 từ (TOC + FAQ + Table)...');
 
                 const prompt = currentMode === 'url' ? buildPromptURL(await fetchUrlContent(input)) : buildPromptKeyword(input);
                 const data = await callAI(prompt);
                 state.data = data;
 
-                // Step 3 â€” Generate banner
-                updateProgress(3, 'BÆ°á»›c 3/3: Tá»± Ä‘á»™ng táº¡o banner...');
+                // Step 3 — Generate banner
+                updateProgress(3, 'Bước 3/3: Tự động tạo banner...');
                 await new Promise(r => setTimeout(r, 300));
 
                 bTitle = data.seo_title || 'Untitled';
@@ -1292,8 +1292,8 @@ Output Format:
             const wordCount = words.length;
             const h2s = (content.match(/^## /gm) || []).length;
             const h3s = (content.match(/^### /gm) || []).length;
-            const hasFAQ = /FAQ|CÃ¢u há»i thÆ°á»ng gáº·p/i.test(content);
-            const hasTOC = /Ná»™i dung bÃ i viáº¿t|Má»¥c lá»¥c/i.test(content);
+            const hasFAQ = /FAQ|Câu hỏi thường gặp/i.test(content);
+            const hasTOC = /Nội dung bài viết|Mục lục/i.test(content);
             const hasTable = content.includes('|---') || content.includes('| ---');
             const hasList = (content.match(/^[\-\*] |^\d+\. /gm) || []).length;
             const titleLen = title.length;
@@ -1305,19 +1305,19 @@ Output Format:
             const kwInIntro = mainKw && content.split('\n').slice(0, 5).join(' ').toLowerCase().includes(mainKw.toLowerCase());
 
             const checks = [
-                { label: `Sá»‘ tá»«: ${wordCount}`, ok: wordCount >= 1800, detail: wordCount >= 1800 ? 'âœ“ Äá»§ dÃ i' : `Cáº§n thÃªm ${1800 - wordCount} tá»«` },
-                { label: `Title: ${titleLen} kÃ½ tá»±`, ok: titleLen >= 50 && titleLen <= 70, detail: titleLen >= 50 && titleLen <= 70 ? 'âœ“ Tá»‘i Æ°u' : titleLen < 50 ? 'QuÃ¡ ngáº¯n' : 'QuÃ¡ dÃ i' },
-                { label: `Description: ${descLen} kÃ½ tá»±`, ok: descLen >= 140 && descLen <= 165, detail: descLen >= 140 && descLen <= 165 ? 'âœ“ Tá»‘i Æ°u' : descLen < 140 ? 'QuÃ¡ ngáº¯n' : 'QuÃ¡ dÃ i' },
-                { label: `H2 headings: ${h2s}`, ok: h2s >= 4, detail: h2s >= 4 ? 'âœ“ Tá»‘t' : 'Cáº§n â‰¥4 H2' },
-                { label: `H3 sub-headings: ${h3s}`, ok: h3s >= 2, detail: h3s >= 2 ? 'âœ“ CÃ³ cáº¥u trÃºc' : 'Cáº§n thÃªm H3' },
-                { label: 'Keyword trong Title', ok: kwInTitle, detail: kwInTitle ? 'âœ“ CÃ³' : 'âœ— Thiáº¿u' },
-                { label: 'Keyword trong Description', ok: kwInDesc, detail: kwInDesc ? 'âœ“ CÃ³' : 'âœ— Thiáº¿u' },
-                { label: 'Keyword trong H2', ok: kwInH2, detail: kwInH2 ? 'âœ“ CÃ³' : 'âœ— Thiáº¿u' },
-                { label: 'Keyword trong Ä‘oáº¡n Ä‘áº§u', ok: kwInIntro, detail: kwInIntro ? 'âœ“ CÃ³' : 'âœ— Thiáº¿u' },
-                { label: 'Má»¥c lá»¥c (TOC)', ok: hasTOC, detail: hasTOC ? 'âœ“ CÃ³' : 'âœ— Thiáº¿u' },
-                { label: 'Pháº§n FAQ', ok: hasFAQ, detail: hasFAQ ? 'âœ“ CÃ³' : 'âœ— Thiáº¿u' },
-                { label: 'Báº£ng so sÃ¡nh', ok: hasTable, detail: hasTable ? 'âœ“ CÃ³' : 'âœ— Thiáº¿u' },
-                { label: `Danh sÃ¡ch: ${hasList} má»¥c`, ok: hasList >= 3, detail: hasList >= 3 ? 'âœ“ Äá»§' : 'Cáº§n thÃªm' },
+                { label: `Số từ: ${wordCount}`, ok: wordCount >= 1800, detail: wordCount >= 1800 ? '✓ Đủ dài' : `Cần thêm ${1800 - wordCount} từ` },
+                { label: `Title: ${titleLen} ký tự`, ok: titleLen >= 50 && titleLen <= 70, detail: titleLen >= 50 && titleLen <= 70 ? '✓ Tối ưu' : titleLen < 50 ? 'Quá ngắn' : 'Quá dài' },
+                { label: `Description: ${descLen} ký tự`, ok: descLen >= 140 && descLen <= 165, detail: descLen >= 140 && descLen <= 165 ? '✓ Tối ưu' : descLen < 140 ? 'Quá ngắn' : 'Quá dài' },
+                { label: `H2 headings: ${h2s}`, ok: h2s >= 4, detail: h2s >= 4 ? '✓ Tốt' : 'Cần ≥4 H2' },
+                { label: `H3 sub-headings: ${h3s}`, ok: h3s >= 2, detail: h3s >= 2 ? '✓ Có cấu trúc' : 'Cần thêm H3' },
+                { label: 'Keyword trong Title', ok: kwInTitle, detail: kwInTitle ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Keyword trong Description', ok: kwInDesc, detail: kwInDesc ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Keyword trong H2', ok: kwInH2, detail: kwInH2 ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Keyword trong đoạn đầu', ok: kwInIntro, detail: kwInIntro ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Mục lục (TOC)', ok: hasTOC, detail: hasTOC ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Phần FAQ', ok: hasFAQ, detail: hasFAQ ? '✓ Có' : '✗ Thiếu' },
+                { label: 'Bảng so sánh', ok: hasTable, detail: hasTable ? '✓ Có' : '✗ Thiếu' },
+                { label: `Danh sách: ${hasList} mục`, ok: hasList >= 3, detail: hasList >= 3 ? '✓ Đủ' : 'Cần thêm' },
             ];
 
             const score = Math.round((checks.filter(c => c.ok).length / checks.length) * 100);
@@ -1329,7 +1329,7 @@ Output Format:
             checklist.innerHTML = checks.map(c => `
                 <div class="flex items-center justify-between text-xs py-1.5 px-2 rounded ${c.ok ? 'bg-emerald-50' : 'bg-red-50'}">
                     <span class="flex items-center gap-1.5 ${c.ok ? 'text-emerald-700' : 'text-red-600'}">
-                        <span>${c.ok ? 'âœ…' : 'âš ï¸'}</span> ${c.label}
+                        <span>${c.ok ? '✅' : '⚠️'}</span> ${c.label}
                     </span>
                     <span class="${c.ok ? 'text-emerald-600' : 'text-red-500'} font-medium">${c.detail}</span>
                 </div>
@@ -1340,7 +1340,7 @@ Output Format:
         // SAVE DRAFT
         // ============================================================
         function slugify(text) {
-            return text.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[Ä‘Ä]/g, 'd').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 80);
+            return text.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 80);
         }
 
         async function saveStudioPost(isPublished = false, isPreview = false) {
@@ -1355,11 +1355,11 @@ Output Format:
 
             btnSave.disabled = true; btnPublish.disabled = true; btnPreview.disabled = true;
             if (isPreview) {
-                btnPreview.innerHTML = 'â³...';
+                btnPreview.innerHTML = '⏳...';
             } else if (isPublished) {
-                btnPublish.innerHTML = 'â³ Äang Ä‘Äƒng...';
+                btnPublish.innerHTML = '⏳ Đang đăng...';
             } else {
-                btnSave.innerHTML = 'â³ Äang lÆ°u...';
+                btnSave.innerHTML = '⏳ Đang lưu...';
             }
 
             try {
@@ -1397,7 +1397,7 @@ Output Format:
                 const response = await fetch('/api/posts.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(postData) });
                 const res = await response.json();
                 if (res.success) {
-                    showToast(isPublished ? 'âœ… ÄÃ£ Ä‘Äƒng bÃ i thÃ nh cÃ´ng!' : 'âœ… ÄÃ£ lÆ°u báº£n nhÃ¡p thÃ nh cÃ´ng!');
+                    showToast(isPublished ? '✅ Đã đăng bài thành công!' : '✅ Đã lưu bản nháp thành công!');
                     if (isPreview || isPublished) {
                         window.open(`/post.html?slug=${postSlug}`, '_blank');
                     }
@@ -1405,7 +1405,7 @@ Output Format:
                     throw new Error(res.error || 'Save failed');
                 }
             } catch (e) {
-                showToast('âŒ Lá»—i: ' + e.message);
+                showToast('❌ Lỗi: ' + e.message);
             } finally {
                 btnSave.disabled = false; btnSave.innerHTML = originalSave;
                 btnPublish.disabled = false; btnPublish.innerHTML = originalPublish;

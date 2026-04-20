@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quáº£n lÃ½ bÃ i viáº¿t - Admin</title>
+    <title>Quản lý bài viết - Admin</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2322C55E'/><text x='50' y='70' font-family='Arial Black' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,37 +72,37 @@
         <aside class="admin-sidebar">
             <a href="index.html" class="admin-logo"><span class="logo-icon">H</span> Admin</a>
             <nav class="admin-nav">
-                <a href="/admin/index.html" class="nav-item">ðŸ“Š Dashboard</a>
-                <a href="/admin/posts.html" class="nav-item active">ðŸ“ BÃ i viáº¿t</a>
-                <a href="/admin/categories.html" class="nav-item">ðŸ“‚ Danh má»¥c</a>
-                <a href="/admin/images.html" class="nav-item">ðŸ–¼ï¸ HÃ¬nh áº£nh</a>
-                <a href="/admin/banner.html" class="nav-item">ðŸŽ¨ Táº¡o Banner</a>
-                <a href="/admin/ai-studio.html" class="nav-item">ðŸ¤– AI Studio</a>
+                <a href="/admin/index.html" class="nav-item">📊 Dashboard</a>
+                <a href="/admin/posts.html" class="nav-item active">📝 Bài viết</a>
+                <a href="/admin/categories.html" class="nav-item">📂 Danh mục</a>
+                <a href="/admin/images.html" class="nav-item">🖼️ Hình ảnh</a>
+                <a href="/admin/banner.html" class="nav-item">🎨 Tạo Banner</a>
+                <a href="/admin/ai-studio.html" class="nav-item">🤖 AI Studio</a>
                 <a href="/admin/auto-news.html" class="nav-item">🔄 Auto-News</a>
-                <a href="/admin/synctune.html" class="nav-item">ðŸŽµ SyncTune</a>
-                <a href="/admin/tools.html" class="nav-item">ðŸ§° CÃ´ng cá»¥</a>
+                <a href="/admin/synctune.html" class="nav-item">🎵 SyncTune</a>
+                <a href="/admin/tools.html" class="nav-item">🧰 Công cụ</a>
                 <div class="nav-divider"></div>
-                <a href="/" class="nav-item" target="_blank">ðŸŒ Xem trang</a>
-                <a href="#" class="nav-item logout" id="logoutBtn">ðŸšª ÄÄƒng xuáº¥t</a>
+                <a href="/" class="nav-item" target="_blank">🌐 Xem trang</a>
+                <a href="#" class="nav-item logout" id="logoutBtn">🚪 Đăng xuất</a>
             </nav>
         </aside>
 
         <main class="admin-main">
             <header class="admin-header">
-                <h1>Quáº£n lÃ½ bÃ i viáº¿t</h1>
-                <button class="btn btn-primary" onclick="window.location.href='/admin/editor.html'">+ ThÃªm bÃ i
-                    viáº¿t</button>
+                <h1>Quản lý bài viết</h1>
+                <button class="btn btn-primary" onclick="window.location.href='/admin/editor.html'">+ Thêm bài
+                    viết</button>
             </header>
 
             <div class="admin-content">
                 <div class="bulk-bar" id="bulkBar">
-                    <span class="bulk-count"><span id="bulkCount">0</span> bÃ i Ä‘Ã£ chá»n</span>
-                    <button class="btn btn-secondary" onclick="bulkAction('publish')">âœ… Xuáº¥t báº£n</button>
-                    <button class="btn btn-secondary" onclick="bulkAction('unpublish')">ðŸ“„ Gá»¡ xuáº¥t báº£n</button>
-                    <button class="btn" style="background:#ef4444;color:#fff;" onclick="bulkAction('delete')">ðŸ—‘ï¸
-                        XÃ³a</button>
-                    <button class="btn btn-secondary" onclick="clearSelection()" style="margin-left:auto;">âœ• Bá»
-                        chá»n</button>
+                    <span class="bulk-count"><span id="bulkCount">0</span> bài đã chọn</span>
+                    <button class="btn btn-secondary" onclick="bulkAction('publish')">✅ Xuất bản</button>
+                    <button class="btn btn-secondary" onclick="bulkAction('unpublish')">📄 Gỡ xuất bản</button>
+                    <button class="btn" style="background:#ef4444;color:#fff;" onclick="bulkAction('delete')">🗑️
+                        Xóa</button>
+                    <button class="btn btn-secondary" onclick="clearSelection()" style="margin-left:auto;">✕ Bỏ
+                        chọn</button>
                 </div>
                 <div class="card">
                     <table class="data-table">
@@ -110,16 +110,16 @@
                             <tr>
                                 <th class="cb-cell"><input type="checkbox" id="selectAll"
                                         onchange="toggleSelectAll(this)"></th>
-                                <th>TiÃªu Ä‘á»</th>
-                                <th>Danh má»¥c</th>
-                                <th>Tráº¡ng thÃ¡i</th>
-                                <th>NgÃ y táº¡o</th>
-                                <th>HÃ nh Ä‘á»™ng</th>
+                                <th>Tiêu đề</th>
+                                <th>Danh mục</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="postsTable">
                             <tr>
-                                <td colspan="6" style="text-align: center; padding: 40px;">Äang táº£i...</td>
+                                <td colspan="6" style="text-align: center; padding: 40px;">Đang tải...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -132,14 +132,14 @@
     <div class="modal-overlay" id="postModal">
         <div class="modal">
             <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">ThÃªm bÃ i viáº¿t</h3>
+                <h3 class="modal-title" id="modalTitle">Thêm bài viết</h3>
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="postForm">
                     <input type="hidden" id="postId">
                     <div class="form-group">
-                        <label class="form-label">TiÃªu Ä‘á» *</label>
+                        <label class="form-label">Tiêu đề *</label>
                         <input type="text" id="postTitle" class="form-input" required>
                     </div>
                     <div class="form-group">
@@ -147,20 +147,20 @@
                         <input type="text" id="postSlug" class="form-input" placeholder="tu-dong-tao-tu-tieu-de">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Danh má»¥c</label>
+                        <label class="form-label">Danh mục</label>
                         <select id="postCategory" class="form-select"></select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">MÃ´ táº£ ngáº¯n</label>
+                        <label class="form-label">Mô tả ngắn</label>
                         <textarea id="postExcerpt" class="form-textarea" rows="2"></textarea>
                     </div>
                     <div class="form-group">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <label class="form-label" style="margin-bottom:0;">Ná»™i dung</label>
+                            <label class="form-label" style="margin-bottom:0;">Nội dung</label>
                             <button type="button" class="btn btn-secondary"
                                 style="font-size: 0.85rem; padding: 6px 12px; display: flex; align-items: center; gap: 6px;"
                                 onclick="document.getElementById('mdInput').click()">
-                                <span>ðŸ“¥</span> Import Markdown
+                                <span>📥</span> Import Markdown
                             </button>
                             <input type="file" id="mdInput" accept=".md,.txt" style="display:none"
                                 onchange="handleMarkdownImport(this)">
@@ -171,30 +171,30 @@
                         <textarea id="postContent" style="min-height: 400px;"></textarea>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">áº¢nh Ä‘áº¡i diá»‡n (URL)</label>
+                        <label class="form-label">Ảnh đại diện (URL)</label>
                         <div style="display: flex; gap: 8px;">
                             <input type="url" id="postImage" class="form-input" placeholder="https://..."
                                 style="flex: 1;">
-                            <button type="button" class="btn btn-secondary" onclick="openImagePicker()">ðŸ–¼ï¸ Chá»n
-                                áº£nh</button>
+                            <button type="button" class="btn btn-secondary" onclick="openImagePicker()">🖼️ Chọn
+                                ảnh</button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">â° Háº¹n giá» Ä‘Äƒng bÃ i (tÃ¹y chá»n)</label>
+                        <label class="form-label">⏰ Hẹn giờ đăng bài (tùy chọn)</label>
                         <input type="datetime-local" id="postSchedule" class="form-input">
-                        <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">Náº¿u Ä‘áº·t thá»i gian, bÃ i viáº¿t sáº½ tá»±
-                            Ä‘á»™ng xuáº¥t báº£n khi Ä‘áº¿n giá».</p>
+                        <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">Nếu đặt thời gian, bài viết sẽ tự
+                            động xuất bản khi đến giờ.</p>
                     </div>
                     <div class="form-actions" style="display: flex; gap: 12px; margin-top: 24px;">
                         <button type="button" class="btn btn-secondary" id="btnSaveDraft" onclick="submitPost(false)"
-                            style="flex: 1;">ðŸ“
-                            LÆ°u nhÃ¡p</button>
+                            style="flex: 1;">📝
+                            Lưu nháp</button>
                         <button type="button" class="btn" id="btnSchedule" onclick="submitScheduled()"
-                            style="flex: 1; background: #818cf8; color: #fff;">â°
-                            Háº¹n giá»</button>
+                            style="flex: 1; background: #818cf8; color: #fff;">⏰
+                            Hẹn giờ</button>
                         <button type="button" class="btn btn-primary" id="btnPublish" onclick="submitPost(true)"
-                            style="flex: 1;">ðŸš€
-                            Xuáº¥t báº£n</button>
+                            style="flex: 1;">🚀
+                            Xuất bản</button>
                     </div>
                 </form>
             </div>
@@ -205,7 +205,7 @@
     <div class="modal-overlay" id="imagePickerModal" style="z-index: 2000;">
         <div class="modal" style="width: 95%; max-width: 1500px; height: 90vh; display: flex; flex-direction: column;">
             <div class="modal-header">
-                <h3 class="modal-title">Chá»n áº£nh tá»« thÆ° viá»‡n</h3>
+                <h3 class="modal-title">Chọn ảnh từ thư viện</h3>
                 <button class="modal-close" onclick="closeImagePicker()">&times;</button>
             </div>
             <div class="modal-body"
@@ -213,7 +213,7 @@
                 <div class="image-grid" id="pickerImagesGrid"
                     style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; overflow-y: auto; padding: 24px; flex: 1; align-content: start;">
                     <!-- Images will be loaded here -->
-                    <p>Äang táº£i...</p>
+                    <p>Đang tải...</p>
                 </div>
             </div>
         </div>
@@ -266,11 +266,11 @@
                 // Insert into TinyMCE
                 if (tinymce.get('postContent')) {
                     tinymce.get('postContent').setContent(html);
-                    showToast('ÄÃ£ import ná»™i dung tá»« Markdown!', 'success');
+                    showToast('Đã import nội dung từ Markdown!', 'success');
                 }
             } catch (e) {
                 console.error('Markdown import error', e);
-                showToast('Lá»—i Ä‘á»c file Markdown: ' + e.message, 'error');
+                showToast('Lỗi đọc file Markdown: ' + e.message, 'error');
             }
             input.value = ''; // Reset
         }
@@ -295,7 +295,7 @@
 
         async function openModal(id = null) {
             currentPostId = id;
-            document.getElementById('modalTitle').textContent = id ? 'Sá»­a bÃ i viáº¿t' : 'ThÃªm bÃ i viáº¿t';
+            document.getElementById('modalTitle').textContent = id ? 'Sửa bài viết' : 'Thêm bài viết';
             document.getElementById('postForm').reset();
             // Clear TinyMCE
             if (tinymce.get('postContent')) tinymce.get('postContent').setContent('');
@@ -321,7 +321,7 @@
                     }
                 } catch (e) {
                     console.error('Error fetching post', e);
-                    showToast('Lá»—i táº£i bÃ i viáº¿t: ' + e.message, 'error');
+                    showToast('Lỗi tải bài viết: ' + e.message, 'error');
                 }
             }
         }
@@ -341,7 +341,7 @@
                 : document.getElementById('btnSaveDraft');
 
             const originalHTML = btn ? btn.innerHTML : '';
-            if (btn) { btn.disabled = true; btn.innerHTML = 'â³ Äang lÆ°u...'; }
+            if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Đang lưu...'; }
 
             try {
                 const postId = document.getElementById('postId').value || null;
@@ -359,15 +359,15 @@
                 const result = await savePost(postData);
 
                 if (result.success) {
-                    showToast(isPublished ? 'ðŸš€ ÄÃ£ xuáº¥t báº£n!' : 'ðŸ“ ÄÃ£ lÆ°u nhÃ¡p!', 'success');
+                    showToast(isPublished ? '🚀 Đã xuất bản!' : '📝 Đã lưu nháp!', 'success');
                     closeModal();
                     await loadAllPosts();
                 } else {
-                    showToast('Lá»—i: ' + (result.error || 'KhÃ´ng xÃ¡c Ä‘á»‹nh'), 'error');
+                    showToast('Lỗi: ' + (result.error || 'Không xác định'), 'error');
                 }
             } catch (err) {
                 console.error('submitPost error:', err);
-                showToast('Lá»—i: ' + err.message, 'error');
+                showToast('Lỗi: ' + err.message, 'error');
             } finally {
                 if (btn) { btn.disabled = false; btn.innerHTML = originalHTML; }
             }
@@ -385,7 +385,7 @@
 
         async function loadPickerImages() {
             const grid = document.getElementById('pickerImagesGrid');
-            grid.innerHTML = '<p style="text-align:center;">Äang táº£i áº£nh...</p>';
+            grid.innerHTML = '<p style="text-align:center;">Đang tải ảnh...</p>';
 
             try {
                 const response = await API.getImages();
@@ -397,7 +397,7 @@
                 }
 
                 if (!images || images.length === 0) {
-                    grid.innerHTML = '<p style="text-align:center; padding: 20px;">ChÆ°a cÃ³ áº£nh nÃ o trong thÆ° viá»‡n.</p>';
+                    grid.innerHTML = '<p style="text-align:center; padding: 20px;">Chưa có ảnh nào trong thư viện.</p>';
                     return;
                 }
 
@@ -414,7 +414,7 @@
                 });
             } catch (error) {
                 console.error('Load images error:', error);
-                grid.innerHTML = `<p style="color: red; text-align:center;">Lá»—i táº£i thÆ° viá»‡n áº£nh: ${error.message}</p>`;
+                grid.innerHTML = `<p style="color: red; text-align:center;">Lỗi tải thư viện ảnh: ${error.message}</p>`;
             }
         }
 
@@ -427,12 +427,12 @@
         async function submitScheduled() {
             const scheduleInput = document.getElementById('postSchedule');
             if (!scheduleInput || !scheduleInput.value) {
-                showToast('â° Vui lÃ²ng chá»n thá»i gian háº¹n giá» trÆ°á»›c!', 'error');
+                showToast('⏰ Vui lòng chọn thời gian hẹn giờ trước!', 'error');
                 return;
             }
             const btn = document.getElementById('btnSchedule');
             const originalHTML = btn.innerHTML;
-            btn.disabled = true; btn.innerHTML = 'â³ Äang lÃªn lá»‹ch...';
+            btn.disabled = true; btn.innerHTML = '⏳ Đang lên lịch...';
 
             try {
                 const postId = document.getElementById('postId').value || null;
@@ -450,12 +450,12 @@
 
                 const result = await savePost(postData);
                 if (result.success) {
-                    showToast('â° ÄÃ£ háº¹n giá» Ä‘Äƒng bÃ i thÃ nh cÃ´ng!', 'success');
+                    showToast('⏰ Đã hẹn giờ đăng bài thành công!', 'success');
                     closeModal();
                     await loadAllPosts();
                 }
             } catch (err) {
-                showToast('Lá»—i: ' + err.message, 'error');
+                showToast('Lỗi: ' + err.message, 'error');
             } finally {
                 btn.disabled = false; btn.innerHTML = originalHTML;
             }
@@ -484,16 +484,16 @@
             const ids = Array.from(checked).map(cb => cb.value);
             if (ids.length === 0) return;
 
-            const labels = { delete: 'xÃ³a', publish: 'xuáº¥t báº£n', unpublish: 'gá»¡ xuáº¥t báº£n' };
-            if (action === 'delete' && !confirm(`Báº¡n cÃ³ cháº¯c muá»‘n xÃ³a ${ids.length} bÃ i viáº¿t?`)) return;
+            const labels = { delete: 'xóa', publish: 'xuất bản', unpublish: 'gỡ xuất bản' };
+            if (action === 'delete' && !confirm(`Bạn có chắc muốn xóa ${ids.length} bài viết?`)) return;
 
             try {
                 const result = await API.bulkPostAction(action, ids);
-                showToast(`âœ… ÄÃ£ ${labels[action]} ${ids.length} bÃ i viáº¿t!`, 'success');
+                showToast(`✅ Đã ${labels[action]} ${ids.length} bài viết!`, 'success');
                 clearSelection();
                 await loadAllPosts();
             } catch (err) {
-                showToast('Lá»—i: ' + err.message, 'error');
+                showToast('Lỗi: ' + err.message, 'error');
             }
         }
 
