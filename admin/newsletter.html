@@ -737,7 +737,7 @@
             btn.disabled = true;
             btn.textContent = '⏳ Đang gửi...';
             try {
-                const res = await API.request('/send-mail.php', {
+                const res = await API.request('/admin-action.php', {
                     method: 'POST',
                     body: JSON.stringify({ action: 'test' })
                 });
@@ -776,7 +776,7 @@
             btn.textContent = '⏳ Đang gửi...';
 
             try {
-                const res = await API.request('/send-mail.php', {
+                const res = await API.request('/admin-action.php', {
                     method: 'POST',
                     body: JSON.stringify({ action: 'newsletter', subject, body })
                 });
@@ -814,7 +814,7 @@
             btn.textContent = '⏳ Đang gửi...';
 
             try {
-                const res = await API.request('/send-mail.php', {
+                const res = await API.request('/admin-action.php', {
                     method: 'POST',
                     body: JSON.stringify({ action: 'reply', contact_id: currentContactId, body })
                 });
