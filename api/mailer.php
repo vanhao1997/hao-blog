@@ -1,12 +1,20 @@
 <?php
 /**
  * Mailer Utility — Hao Blog
- * Sends emails using PHP mail() function (works natively on cPanel)
+ * Sends emails using PHPMailer (SMTP configuration)
  */
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// Load PHPMailer files
+require_once __DIR__ . '/PHPMailer/src/Exception.php';
+require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
+require_once __DIR__ . '/PHPMailer/src/SMTP.php';
 
 // Mail config from .env (config.php must be loaded by caller via db.php)
 if (!defined('MAIL_FROM')) {
-    define('MAIL_FROM', $_ENV['MAIL_FROM'] ?? 'contact@nguyenvanhao.name.vn');
+    define('MAIL_FROM', $_ENV['SMTP_USER'] ?? 'contact@nguyenvanhao.name.vn');
 }
 if (!defined('MAIL_FROM_NAME')) {
     define('MAIL_FROM_NAME', $_ENV['MAIL_FROM_NAME'] ?? 'Nguyễn Văn Hảo Blog');
@@ -15,28 +23,58 @@ if (!defined('MAIL_FROM_NAME')) {
 class Mailer {
     
     /**
+     * Get a configured PHPMailer instance
+     */
+    private static function getMailer() {
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $_ENV['SMTP_USER'] ?? '';
+            $mail->Password   = $_ENV['SMTP_PASS'] ?? '';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = $_ENV['SMTP_PORT'] ?? 465;
+            $mail->CharSet    = 'UTF-8';
+            
+            // Bypass self-signed cert issues on localhost/shared hosting
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+            
+            $mail->setFrom($mail->Username ?: MAIL_FROM, MAIL_FROM_NAME);
+            return $mail;
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+
+    /**
      * Send a single HTML email
      */
     static function send($to, $subject, $body, $replyTo = null) {
-        $fromEmail = MAIL_FROM;
-        $fromName = MAIL_FROM_NAME;
+        $mail = self::getMailer();
+        if (!$mail) return false;
         
-        $headers = [];
-        $headers[] = "MIME-Version: 1.0";
-        $headers[] = "Content-Type: text/html; charset=UTF-8";
-        $headers[] = "From: {$fromName} <{$fromEmail}>";
-        $headers[] = "Return-Path: {$fromEmail}";
-        $headers[] = "X-Mailer: HaoBlog/1.0";
-        
-        if ($replyTo) {
-            $headers[] = "Reply-To: {$replyTo}";
+        try {
+            if ($replyTo) {
+                $mail->addReplyTo($replyTo);
+            }
+            $mail->addAddress($to);
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = self::wrapTemplate($subject, $body);
+            $mail->AltBody = strip_tags($body);
+            
+            return $mail->send();
+        } catch (Exception $e) {
+            error_log("Email error: {$mail->ErrorInfo}");
+            return false;
         }
-        
-        $htmlBody = self::wrapTemplate($subject, $body);
-        
-        $result = mail($to, "=?UTF-8?B?" . base64_encode($subject) . "?=", $htmlBody, implode("\r\n", $headers), "-f{$fromEmail}");
-        
-        return $result;
     }
     
     /**
@@ -45,17 +83,38 @@ class Mailer {
      */
     static function dispatchMultiple($recipients, $subject, $body) {
         $results = ['sent' => 0, 'failed' => 0, 'errors' => []];
+        $mail = self::getMailer();
+        if (!$mail) return $results;
         
-        foreach ($recipients as $email) {
-            $success = self::send($email, $subject, $body);
-            if ($success) {
-                $results['sent']++;
-            } else {
-                $results['failed']++;
-                $results['errors'][] = $email;
+        try {
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = self::wrapTemplate($subject, $body);
+            $mail->AltBody = strip_tags($body);
+            
+            // Keep connection alive for bulk sending
+            $mail->SMTPKeepAlive = true;
+            
+            foreach ($recipients as $email) {
+                try {
+                    $mail->addAddress($email);
+                    if ($mail->send()) {
+                        $results['sent']++;
+                    } else {
+                        $results['failed']++;
+                        $results['errors'][] = $email;
+                    }
+                    $mail->clearAddresses(); // clear for next iteration
+                    usleep(500000); // 500ms delay to prevent rate limit
+                } catch (Exception $e) {
+                    $results['failed']++;
+                    $results['errors'][] = $email;
+                    $mail->clearAddresses();
+                }
             }
-            // Small delay to avoid rate limiting
-            usleep(100000); // 100ms
+            $mail->smtpClose();
+        } catch (Exception $e) {
+            error_log("Bulk mail error: " . $e->getMessage());
         }
         
         return $results;
@@ -83,11 +142,6 @@ class Mailer {
                     " . nl2br(htmlspecialchars($message)) . "
                 </div>
             </div>
-            <div style='text-align:center;margin-top:24px;'>
-                <a href='https://nguyenvanhao.name.vn/admin/newsletter.html' style='display:inline-block;padding:12px 24px;background:#22C55E;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;'>
-                    📧 Xem trong Admin Panel
-                </a>
-            </div>
         ";
         
         return self::send($adminEmail, $mailSubject, $body, $email);
@@ -110,24 +164,21 @@ class Mailer {
         <tr>
             <td align='center'>
                 <table width='600' cellpadding='0' cellspacing='0' style='max-width:600px;width:100%;'>
-                    <!-- Header -->
                     <tr>
                         <td style='text-align:center;padding:24px 0;'>
                             <span style='display:inline-block;width:40px;height:40px;background:#22C55E;color:#fff;font-weight:bold;font-size:20px;line-height:40px;border-radius:10px;'>H</span>
                             <span style='font-size:18px;font-weight:700;color:#0f172a;margin-left:8px;vertical-align:middle;'>Nguyễn Văn Hảo</span>
                         </td>
                     </tr>
-                    <!-- Content -->
                     <tr>
                         <td style='background:#ffffff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,0.1);'>
                             {$content}
                         </td>
                     </tr>
-                    <!-- Footer -->
                     <tr>
                         <td style='text-align:center;padding:24px 0;color:#94a3b8;font-size:13px;'>
-                            <p style='margin:0 0 8px;'>© 2026 nguyenvanhao.name.vn</p>
-                            <p style='margin:0;'>Email này được gửi từ <a href='https://nguyenvanhao.name.vn' style='color:#22C55E;text-decoration:none;'>nguyenvanhao.name.vn</a></p>
+                            <p style='margin:0 0 8px;'>© " . date('Y') . " nguyenvanhao.name.vn</p>
+                            <p style='margin:0;'>Email này được gửi qua SMTP Server</p>
                         </td>
                     </tr>
                 </table>
