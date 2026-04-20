@@ -4,11 +4,13 @@
  * Sends emails using PHP mail() function (works natively on cPanel)
  */
 
-require_once __DIR__ . '/config.php';
-
-// Mail config from .env
-define('MAIL_FROM', $_ENV['MAIL_FROM'] ?? 'contact@nguyenvanhao.name.vn');
-define('MAIL_FROM_NAME', $_ENV['MAIL_FROM_NAME'] ?? 'Nguyễn Văn Hảo Blog');
+// Mail config from .env (config.php must be loaded by caller via db.php)
+if (!defined('MAIL_FROM')) {
+    define('MAIL_FROM', $_ENV['MAIL_FROM'] ?? 'contact@nguyenvanhao.name.vn');
+}
+if (!defined('MAIL_FROM_NAME')) {
+    define('MAIL_FROM_NAME', $_ENV['MAIL_FROM_NAME'] ?? 'Nguyễn Văn Hảo Blog');
+}
 
 class Mailer {
     
