@@ -7,10 +7,16 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Load PHPMailer files
-require_once __DIR__ . '/PHPMailer/src/Exception.php';
-require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
-require_once __DIR__ . '/PHPMailer/src/SMTP.php';
+// Load PHPMailer files (graceful - won't crash if missing)
+$phpmailerPath = __DIR__ . '/PHPMailer/src/PHPMailer.php';
+if (file_exists($phpmailerPath)) {
+    require_once __DIR__ . '/PHPMailer/src/Exception.php';
+    require_once $phpmailerPath;
+    require_once __DIR__ . '/PHPMailer/src/SMTP.php';
+    define('PHPMAILER_LOADED', true);
+} else {
+    define('PHPMAILER_LOADED', false);
+}
 
 // Mail config from .env (config.php must be loaded by caller via db.php)
 if (!defined('MAIL_FROM')) {
@@ -26,6 +32,9 @@ class Mailer {
      * Get a configured PHPMailer instance
      */
     private static function getMailer() {
+        if (!defined('PHPMAILER_LOADED') || !PHPMAILER_LOADED) {
+            return null;
+        }
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
