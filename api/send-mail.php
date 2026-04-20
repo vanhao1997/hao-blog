@@ -9,6 +9,8 @@
  *   POST action=test    — Send test email
  */
 
+die("{\"status\":\"DEBUG_EARLY_EXIT\"}");
+
 // Global error handler to prevent empty responses
 set_error_handler(function($severity, $message, $file, $line) {
     throw new ErrorException($message, 0, $severity, $file, $line);
