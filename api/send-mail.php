@@ -16,12 +16,17 @@ set_error_handler(function($severity, $message, $file, $line) {
 
 // Wrap everything in try-catch
 try {
-    // Start session BEFORE any output
+    // Start session and buffer output to prevent "headers already sent" from included files
     session_start();
+    ob_start();
     
     // Now load dependencies  
     require_once __DIR__ . '/db.php';
     require_once __DIR__ . '/mailer.php';
+    
+    // Clear out any accidental whitespace output from includes before sending headers
+    $accidental_output = ob_get_length() ? ob_get_clean() : '';
+    ob_start(); // restart buffer for intended output
     
     header('Content-Type: application/json');
     
@@ -156,16 +161,24 @@ try {
             http_response_code(400);
             echo json_encode(["error" => "Action không hợp lệ. Dùng: reply, newsletter, test"]);
     }
+    
+    ob_end_flush();
 
 } catch (\Throwable $e) {
-    // Catch ALL errors including fatal errors
+    restore_error_handler(); // CRITICAL: Stop loop
+    $ob = ob_get_length() ? ob_get_clean() : '';
+    
     http_response_code(500);
-    header('Content-Type: application/json');
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+    }
+    
     echo json_encode([
         "success" => false,
         "error" => "Server error: " . $e->getMessage(),
         "file" => basename($e->getFile()),
-        "line" => $e->getLine()
+        "line" => $e->getLine(),
+        "accidental_output" => $accidental_output ?? '',
+        "buffered" => $ob
     ]);
 }
-?>
