@@ -112,21 +112,71 @@ switch ($method) {
         break;
 
     case 'PUT':
-        // Admin: update status (mark as read/replied)
+        // Admin update status or send reply
         session_start();
         if (!isset($_SESSION['user_id'])) {
             http_response_code(401);
             echo json_encode(["error" => "Unauthorized"]);
             exit;
         }
-
-        $data = json_decode(file_get_contents("php://input"));
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input);
+        
+        // Check if this is a reply action
+        if (isset($data->action) && $data->action === 'reply') {
+            $id = $data->contact_id ?? null;
+            $replyBody = trim($data->body ?? '');
+            
+            if (!$id || !$replyBody) {
+                http_response_code(400);
+                echo json_encode(["error" => "Thiếu contact_id hoặc nội dung"]);
+                exit;
+            }
+            
+            $stmt = $db->prepare("SELECT name, email, subject FROM contact_submissions WHERE id = ?");
+            $stmt->execute([$id]);
+            $contact = $stmt->fetch();
+            
+            if (!$contact) {
+                http_response_code(404);
+                echo json_encode(["error" => "Không tìm thấy tin nhắn"]);
+                exit;
+            }
+            
+            $contactSubject = $contact['subject'] ? $contact['subject'] : 'Tin nhắn từ nguyenvanhao.name.vn';
+            $subject = "Re: " . $contactSubject;
+            $htmlBody = "
+                <p style='margin:0 0 8px;color:#64748b;font-size:14px;'>Xin chào <strong>{$contact['name']}</strong>,</p>
+                <div style='line-height:1.7;font-size:15px;color:#334155;margin:16px 0;white-space:pre-wrap;'>" . nl2br(htmlspecialchars($replyBody)) . "</div>
+                <p style='margin:24px 0 0;color:#64748b;font-size:14px;'>Trân trọng,<br><strong>" . MAIL_FROM_NAME . "</strong></p>
+            ";
+            
+            if (!file_exists(__DIR__ . '/mailer.php')) {
+                echo json_encode(["success" => false, "error" => "Thiếu module mailer"]);
+                exit;
+            }
+            require_once __DIR__ . '/mailer.php';
+            
+            $success = Mailer::send($contact['email'], $subject, $htmlBody, MAIL_FROM);
+            
+            if ($success) {
+                $update = $db->prepare("UPDATE contact_submissions SET status = 'replied' WHERE id = ?");
+                $update->execute([$id]);
+                echo json_encode(["success" => true, "message" => "Đã gửi email trả lời!"]);
+            } else {
+                echo json_encode(["success" => false, "error" => "Lỗi cấu hình server mail"]);
+            }
+            exit;
+        }
+        
+        // Normal status update
         $id = $data->id ?? null;
         $status = $data->status ?? null;
-
-        if (!$id || !in_array($status, ['new', 'read', 'replied'])) {
+        
+        if (!$id || !$status) {
             http_response_code(400);
-            echo json_encode(["error" => "Invalid ID or status"]);
+            echo json_encode(["error" => "Thiếu id hoặc status"]);
             exit;
         }
 

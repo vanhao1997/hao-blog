@@ -737,9 +737,9 @@
             btn.disabled = true;
             btn.textContent = '⏳ Đang gửi...';
             try {
-                const res = await API.request('/admin-action.php', {
+                const res = await API.request('/newsletter.php', {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'test' })
+                    body: JSON.stringify({ action: 'test_mail' })
                 });
                 if (res.success) {
                     showToast(res.message);
@@ -776,9 +776,9 @@
             btn.textContent = '⏳ Đang gửi...';
 
             try {
-                const res = await API.request('/admin-action.php', {
+                const res = await API.request('/newsletter.php', {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'newsletter', subject, body })
+                    body: JSON.stringify({ action: 'send_newsletter', subject, body })
                 });
                 if (res.success) {
                     showToast(res.message);
@@ -814,8 +814,8 @@
             btn.textContent = '⏳ Đang gửi...';
 
             try {
-                const res = await API.request('/admin-action.php', {
-                    method: 'POST',
+                const res = await API.request('/contact.php', {
+                    method: 'PUT',
                     body: JSON.stringify({ action: 'reply', contact_id: currentContactId, body })
                 });
                 if (res.success) {
