@@ -73,6 +73,12 @@ const GlobalSettings = {
           const menuItems = JSON.parse(settings.header_menu);
           const currentPath = window.location.pathname;
 
+          // Ensure "Dự án" is always present in the menu
+          const hasShowcase = menuItems.some(item => item.url === '/showcase');
+          if (!hasShowcase) {
+            menuItems.push({ name: 'Dự án', url: '/showcase' });
+          }
+
           navList.innerHTML = menuItems.map(item => {
             const isActive = currentPath === item.url || (item.url !== '/' && currentPath.startsWith(item.url));
             return `<li><a href="${item.url}" class="nav-link ${isActive ? 'active' : ''}">${Utils.escapeHTML(item.name)}</a></li>`;
