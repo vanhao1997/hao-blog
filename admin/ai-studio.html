@@ -405,6 +405,30 @@
                             </div>
                             <canvas id="bannerCanvas" width="1200" height="630"
                                 class="w-full h-auto rounded-lg border border-slate-200"></canvas>
+
+                            <div class="mt-4 space-y-3">
+                                <div>
+                                    <label
+                                        class="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Nội
+                                        dung Banner</label>
+                                    <textarea id="res-banner-text" rows="2"
+                                        class="w-full text-slate-800 text-sm font-medium bg-slate-50 border border-slate-200 p-2.5 rounded-lg focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition-all resize-none"
+                                        oninput="updateBannerText()"></textarea>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <label
+                                            class="text-xs font-semibold text-slate-500 block uppercase tracking-wider">Cỡ
+                                            chữ Headline</label>
+                                        <span id="fontSizeLabel"
+                                            class="text-xs font-mono font-bold text-indigo-600">56px</span>
+                                    </div>
+                                    <input type="range" id="res-banner-fontsize" min="30" max="100" value="56"
+                                        class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                                        oninput="updateBannerFont()">
+                                </div>
+                            </div>
+
                             <button onclick="saveBannerImage(event)" type="button"
                                 class="w-full mt-3 bg-slate-100 hover:bg-indigo-50 text-indigo-600 font-semibold py-2 rounded border border-slate-200 transition-colors flex justify-center items-center gap-2">
                                 <i data-lucide="download" class="w-4 h-4"></i> Lưu hình vào kho ảnh
@@ -539,7 +563,7 @@
         };
         const bannerPatterns = ['grid', 'lines', 'waves', 'circles', 'triangles', 'hexagons', 'noise', 'none'];
 
-        let bCategory = 'marketing', bThemeKey = 'blue', bPattern = 'grid', bTemplateIdx = 0, bIconPositions = [], bTitle = '';
+        let bCategory = 'marketing', bThemeKey = 'blue', bPattern = 'grid', bTemplateIdx = 0, bIconPositions = [], bTitle = '', bFontSize = 56;
 
         function randomizeBanner() {
             const themeKeys = Object.keys(bannerThemes);
@@ -587,8 +611,8 @@
             bCtx.beginPath(); bCtx.roundRect(catX, catY, catMetrics.width + catPadX * 2, 20 + catPadY * 2, 8); bCtx.fillStyle = badgeGrad; bCtx.fill();
             bCtx.fillStyle = '#ffffff'; bCtx.textBaseline = 'top'; bCtx.textAlign = 'left'; bCtx.fillText(catText, catX + catPadX, catY + catPadY + 1);
             // Title
-            bCtx.font = '800 56px Inter, sans-serif'; bCtx.fillStyle = theme.text; bCtx.textBaseline = 'top'; bCtx.textAlign = 'left';
-            wrapBannerText(bCtx, bTitle, contentMargin, catY + 75, cardW - 100, 70, theme.text);
+            bCtx.font = '800 ' + bFontSize + 'px Inter, sans-serif'; bCtx.fillStyle = theme.text; bCtx.textBaseline = 'top'; bCtx.textAlign = 'left';
+            wrapBannerText(bCtx, bTitle, contentMargin, catY + 75, cardW - 100, bFontSize * 1.25, theme.text);
             // Footer
             bCtx.font = '500 24px Inter, sans-serif'; bCtx.fillStyle = theme.subText; bCtx.textBaseline = 'bottom'; bCtx.textAlign = 'left';
             const footerY = h - margin - 40; bCtx.fillText('nguyenvanhao.name.vn', contentMargin, footerY);
@@ -1265,6 +1289,7 @@ Output Format:
         function renderResult(data) {
             document.getElementById('res-seo-title').value = data.seo_title || '';
             document.getElementById('res-meta-desc').value = data.meta_description || '';
+            document.getElementById('res-banner-text').value = data.seo_title || 'Untitled';
             updateTitleCount(); updateDescCount();
             resultEls.keywords.innerHTML = (Array.isArray(data.keywords) ? data.keywords : []).map(k => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-md border border-slate-200">${k}</span>`).join('');
             const html = marked.parse(data.content_markdown || '');
@@ -1280,20 +1305,26 @@ Output Format:
             const el = document.getElementById('titleCharCount');
             el.textContent = `(${len}/65)`;
             el.className = len >= 55 && len <= 65 ? 'text-emerald-600 font-mono text-[10px]' : len > 65 ? 'text-red-500 font-mono text-[10px]' : 'text-amber-500 font-mono text-[10px]';
+        }
 
-            // Auto update banner title when user changes article title
-            if (state.data !== null && val.trim() !== '') {
-                bTitle = val;
+        function updateBannerText() {
+            bTitle = document.getElementById('res-banner-text').value;
+            clearTimeout(bannerDrawTimeout);
+            bannerDrawTimeout = setTimeout(() => {
+                drawBanner();
+                state.savedBannerUrl = null;
+                const saveStatus = document.getElementById('bannerSaveStatus');
+                if (saveStatus) saveStatus.classList.add('hidden');
+            }, 300);
+        }
 
-                // Debounce canvas drawing to avoid lag while typing
-                clearTimeout(bannerDrawTimeout);
-                bannerDrawTimeout = setTimeout(() => {
-                    drawBanner();
-                    state.savedBannerUrl = null;
-                    const saveStatus = document.getElementById('bannerSaveStatus');
-                    if (saveStatus) saveStatus.classList.add('hidden');
-                }, 300);
-            }
+        function updateBannerFont() {
+            bFontSize = parseInt(document.getElementById('res-banner-fontsize').value) || 56;
+            document.getElementById('fontSizeLabel').innerText = bFontSize + 'px';
+            drawBanner();
+            state.savedBannerUrl = null;
+            const saveStatus = document.getElementById('bannerSaveStatus');
+            if (saveStatus) saveStatus.classList.add('hidden');
         }
 
         function updateDescCount() {
