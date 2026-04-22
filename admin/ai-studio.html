@@ -183,7 +183,7 @@
             <a href="/admin/index" class="nav-item">📊 Dashboard</a>
             <a href="/admin/posts" class="nav-item">📝 Bài viết</a>
             <a href="/admin/categories" class="nav-item">📂 Danh mục</a>
-                <a href="/admin/projects" class="nav-item">🚀 Dự án (Showcase)</a>
+            <a href="/admin/projects" class="nav-item">🚀 Dự án (Showcase)</a>
             <a href="/admin/images" class="nav-item">🖼️ Hình ảnh</a>
             <a href="/admin/newsletter" class="nav-item">📧 Subscribers</a>
             <a href="/admin/banner" class="nav-item">🎨 Tạo Banner</a>
@@ -1273,14 +1273,32 @@ Output Format:
             runSeoAnalysis(data);
         }
 
+        let bannerDrawTimeout;
         function updateTitleCount() {
-            const len = document.getElementById('res-seo-title').value.length;
+            const val = document.getElementById('res-seo-title').value;
+            const len = val.length;
             const el = document.getElementById('titleCharCount');
             el.textContent = `(${len}/65)`;
             el.className = len >= 55 && len <= 65 ? 'text-emerald-600 font-mono text-[10px]' : len > 65 ? 'text-red-500 font-mono text-[10px]' : 'text-amber-500 font-mono text-[10px]';
+
+            // Auto update banner title when user changes article title
+            if (state.data !== null && val.trim() !== '') {
+                bTitle = val;
+
+                // Debounce canvas drawing to avoid lag while typing
+                clearTimeout(bannerDrawTimeout);
+                bannerDrawTimeout = setTimeout(() => {
+                    drawBanner();
+                    state.savedBannerUrl = null;
+                    const saveStatus = document.getElementById('bannerSaveStatus');
+                    if (saveStatus) saveStatus.classList.add('hidden');
+                }, 300);
+            }
         }
+
         function updateDescCount() {
-            const len = document.getElementById('res-meta-desc').value.length;
+            const val = document.getElementById('res-meta-desc').value;
+            const len = val.length;
             const el = document.getElementById('descCharCount');
             el.textContent = `(${len}/160)`;
             el.className = len >= 145 && len <= 160 ? 'text-emerald-600 font-mono text-[10px]' : len > 160 ? 'text-red-500 font-mono text-[10px]' : 'text-amber-500 font-mono text-[10px]';
